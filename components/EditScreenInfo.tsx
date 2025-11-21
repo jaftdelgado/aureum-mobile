@@ -14,7 +14,7 @@ export const EditScreenInfo = ({ path }: { path: string }) => {
           <Text className="font-mono">{path}</Text>
         </View>
 
-        <Text className="text-center text-lg leading-6 text-blue-500">{description}</Text>
+        <Text className="text-center text-lg leading-6 text-success">{description}</Text>
       </View>
     </View>
   );
