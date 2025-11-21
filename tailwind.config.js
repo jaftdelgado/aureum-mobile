@@ -15,7 +15,10 @@ module.exports = {
         success: 'var(--color-success)',
         warning: 'var(--color-warning)',
         error: 'var(--color-error)',
-      }
+      },
+      fontFamily: {
+        geist: ['Geist'],
+    },
     },
   },
   plugins: [],

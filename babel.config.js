@@ -4,9 +4,19 @@ module.exports = function (api) {
 
   plugins.push('react-native-worklets/plugin');
 
+  plugins.push([
+    'module-resolver',
+    {
+      root: ['./src'],
+      alias: {
+        '@': './src',
+        '@core': './src/modules/core',
+      },
+    },
+  ]);
+
   return {
     presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }], 'nativewind/babel'],
-
     plugins,
   };
 };
