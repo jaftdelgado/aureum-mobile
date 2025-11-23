@@ -1,0 +1,19 @@
+:root {
+  --font-display: 34px;
+
+  --font-large-title: 28px;
+
+  --font-title1: 22px;
+  --font-title2: 20px;
+  --font-title3: 18px;
+
+  --font-headline: 17px;
+  --font-body: 17px;
+
+  --font-callout: 16px;
+  --font-subhead: 15px;
+
+  --font-footnote: 13px;
+  --font-caption1: 12px;
+  --font-caption2: 11px;
+}

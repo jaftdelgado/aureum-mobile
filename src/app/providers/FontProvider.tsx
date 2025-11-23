@@ -11,7 +11,7 @@ export function FontProvider({ children }: FontProviderProps) {
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        Geist: require('../../../resources/fonts/Geist.ttf'),
+        Geist: require('../../resources/fonts/Geist.ttf'),
       });
       setFontsLoaded(true);
     }
@@ -19,9 +19,7 @@ export function FontProvider({ children }: FontProviderProps) {
     loadFonts();
   }, []);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  if (!fontsLoaded) return null;
 
   return <>{children}</>;
 }
