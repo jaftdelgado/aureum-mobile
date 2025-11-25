@@ -13,7 +13,10 @@ module.exports = {
       colors: {
         primary: 'var(--color-primary)',
         secondary: 'var(--color-secondary)',
-        background: 'var(--color-background)',
+        bg: 'var(--color-bg)',
+        primaryBtn: 'var(--color-primaryBtn)',
+        primaryText: 'var(--color-primaryText)',
+        secondaryText: 'var(--color-secondaryText)',
         text: 'var(--color-text)',
         card: 'var(--color-card)',
         border: 'var(--color-border)',

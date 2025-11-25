@@ -59,7 +59,7 @@ export const ListItem = ({
       enabled={(swipeLeftActions?.length ?? 0) > 0 || (swipeRightActions?.length ?? 0) > 0}>
       <Pressable
         onPress={onPress}
-        className={cn('border-b border-gray-200 bg-white px-4 py-4 active:bg-gray-50', className)}>
+        className={cn('border-b border-gray-200 px-4 py-4 active:bg-gray-50', className)}>
         {children}
       </Pressable>
     </Swipeable>
