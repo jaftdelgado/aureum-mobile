@@ -2,12 +2,14 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
-
 import { AppProvider } from '@app/providers/AppProvider';
 import { useAuth } from '@app/providers/AuthProvider';
 import { AssetsListScreen } from '@features/assets/screens/AssetsListScreen';
 import { LoginScreen } from '@features/auth/screens/LoginScreen'; 
+import { TabBarProvider } from '@app/providers/TabBarProvider';
+
 import './global.css';
+import { DynamicDock } from '@app/dock/DynamicDock';
 
 const AppContent = () => {
   const { user, loading } = useAuth();
@@ -25,9 +27,12 @@ const AppContent = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <AssetsListScreen />
-    </SafeAreaView>
+    <TabBarProvider>
+      <SafeAreaView style={{ flex: 1 }}>
+        <AssetsListScreen />
+        <DynamicDock />
+      </SafeAreaView>
+    </TabBarProvider>
   );
 };
 
