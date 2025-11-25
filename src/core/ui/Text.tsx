@@ -1,6 +1,7 @@
 import { Text as RNText, TextProps as RNTextProps } from 'react-native';
 import { cn } from '@core/utils/cn';
 import React from 'react';
+import { useThemeColor } from '@core/design/useThemeColor';
 
 type TextType =
   | 'display'
@@ -17,7 +18,7 @@ type TextType =
   | 'caption2';
 
 type TextWeight = 'regular' | 'medium' | 'semibold' | 'bold';
-type TextColor = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+type TextColor = 'default' | 'secondary' | 'success' | 'warning' | 'error';
 
 type Props = RNTextProps & {
   type?: TextType;
@@ -49,13 +50,12 @@ const weightClasses: Record<TextWeight, string> = {
   bold: 'font-bold',
 };
 
-const colorClasses: Record<TextColor, string> = {
-  default: 'text-text',
-  primary: 'text-primary',
-  secondary: 'text-secondary',
-  success: 'text-success',
-  warning: 'text-warning',
-  error: 'text-error',
+const colorMap: Record<TextColor, keyof typeof import('@core/design/colors').colors.light> = {
+  default: 'primaryText',
+  secondary: 'secondaryText',
+  success: 'success',
+  warning: 'warning',
+  error: 'error',
 };
 
 export function Text({
@@ -67,12 +67,14 @@ export function Text({
   children,
   ...rest
 }: Props) {
+  const themeColor = useThemeColor(colorMap[color]);
+
   return (
     <RNText
+      style={{ color: themeColor }}
       className={cn(
         typeClasses[type],
         weightClasses[weight],
-        colorClasses[color],
         align === 'center' && 'text-center',
         align === 'right' && 'text-right',
         className

@@ -1,8 +1,11 @@
 :root {
   --color-primary: #3b82f6;
   --color-secondary: #6b7280;
-  --color-background: #ffffff;
-  --color-text: #1f2937;
+  --color-bg: #fefefe;
+  --color-primaryBtn: #121212;
+  --color-primaryText: #121212;
+  --color-secondaryText: #7a808d;
+  --color-text: #101010;
   --color-card: #f9fafb;
   --color-border: #e5e7eb;
   --color-success: #10b981;
@@ -13,7 +16,10 @@
 [data-theme="dark"] {
   --color-primary: #60a5fa;
   --color-secondary: #9ca3af;
-  --color-background: #111827;
+  --color-bg: #111827;
+  --color-primaryBtn: #f9fafb;
+  --color-primaryText: #f9fafb;
+  --color-secondaryText: #6b7280;
   --color-text: #f9fafb;
   --color-card: #1f2937;
   --color-border: #374151;

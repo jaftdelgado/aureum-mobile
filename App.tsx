@@ -4,10 +4,16 @@ import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
 
 import { AppProvider } from '@app/providers/AppProvider';
+<<<<<<< HEAD
 import { useAuth } from '@app/providers/AuthProvider';
 import TabBar from 'src/app/navigation/components/TabBar';
 import { AssetsListScreen } from '@features/assets/screens/AssetsListScreen';
 import { LoginScreen } from '@features/auth/screens/LoginScreen'; 
+=======
+import { DynamicDock } from 'src/app/dock/DynamicDock';
+
+import { TextField } from '@core/ui/TextField';
+>>>>>>> c75afaf3ef0af4bc279d9d4dfd0b9d2625cb8d06
 import './global.css';
 
 const AppContent = () => {

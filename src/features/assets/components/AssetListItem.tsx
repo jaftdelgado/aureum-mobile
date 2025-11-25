@@ -18,10 +18,9 @@ export const AssetListItem = ({ asset, onPress }: AssetListItemProps) => {
         mode="square"
         size="md"
         placeholderText={asset.symbol[0]}
-        style={{ marginRight: 12 }}
       />
 
-      <View className="flex-1">
+      <View className="ml-4 flex-1">
         <Text type="body" weight="bold" color="default">
           {asset.symbol}
         </Text>
