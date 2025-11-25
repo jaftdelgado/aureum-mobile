@@ -1,7 +1,8 @@
 import React from 'react';
-import { TextInput, View, Text, TextInputProps } from 'react-native';
+import { TextInput, View, TextInputProps } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
+import { Text } from '@core/ui//Text';
 
 const inputWrapperStyles = cva('w-full flex-col', {
   variants: {
@@ -82,9 +83,12 @@ export const TextField = ({
 
   return (
     <View className={cn(inputWrapperStyles({ size }))}>
-      {label && <Text className="text-body font-medium text-gray-800">{label}</Text>}
+      {label && (
+        <Text type="body" weight="medium" color="default">
+          {label}
+        </Text>
+      )}
 
-      {/* Input */}
       <View className="relative w-full">
         <View
           className={cn(
@@ -111,9 +115,13 @@ export const TextField = ({
       </View>
 
       {hasError ? (
-        <Text className="mt-1 text-caption1 text-error">{errorText}</Text>
+        <Text type="caption1" color="error" className="mt-1">
+          {errorText}
+        </Text>
       ) : helperText ? (
-        <Text className="mt-1 text-caption1 text-gray-500">{helperText}</Text>
+        <Text type="caption1" color="secondary" className="mt-1">
+          {helperText}
+        </Text>
       ) : null}
     </View>
   );

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { QueryProvider } from '@app/providers/QueryProvider';
-import { AuthProvider } from './AuthProvider'; 
+import { AuthProvider } from '@app/providers/AuthProvider';
 
 interface AppProviderProps {
   children: ReactNode;
@@ -9,9 +9,7 @@ interface AppProviderProps {
 export const AppProvider = ({ children }: AppProviderProps) => {
   return (
     <AuthProvider>
-      <QueryProvider>
-        {children}
-      </QueryProvider>
+      <QueryProvider>{children}</QueryProvider>
     </AuthProvider>
   );
 };

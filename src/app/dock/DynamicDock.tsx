@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import { useTabBarContext } from '@app/providers/TabBarProvider';
-import { DockActions } from './components/DockActions';
+import { DockActions } from '@app/dock/components/DockActions';
 
 const DynamicDock: React.FC = () => {
   const { state } = useTabBarContext();
@@ -19,8 +19,8 @@ const DynamicDock: React.FC = () => {
 
   return (
     <View pointerEvents="box-none" className="absolute inset-0">
-      <View className="absolute bottom-12 left-8 right-8">
-        <View className="rounded-[26px] bg-white p-2 shadow-md">
+      <View className="absolute bottom-12 left-14 right-14">
+        <View className="rounded-[26px] bg-white p-1 shadow-md">
           {RenderDockContent()}
           <DockActions />
         </View>

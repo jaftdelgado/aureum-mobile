@@ -11,5 +11,5 @@ export function useThemeColor(token: keyof typeof colors.light): string {
     return () => subscription.remove();
   }, []);
 
-  return scheme === 'dark' ? (colors.dark[token] ?? colors.light[token]) : colors.light[token];
+  return scheme === 'light' ? (colors.dark[token] ?? colors.light[token]) : colors.light[token];
 }
