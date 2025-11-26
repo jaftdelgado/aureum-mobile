@@ -1,4 +1,4 @@
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text, ActivityIndicator } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
 
@@ -8,6 +8,7 @@ const buttonStyles = cva('w-full rounded-2xl active:opacity-80 items-center just
       primary: 'bg-primaryBtn text-bg',
       secondary: 'bg-secondary text-white',
       outline: 'border border-gray-300 bg-transparent text-gray-900',
+      link: 'bg-transparent',
     },
 
     size: {
@@ -36,6 +37,8 @@ interface ButtonProps extends VariantProps<typeof buttonStyles> {
   className?: string;
   textClassName?: string;
   onPress?: () => void;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 export const Button = ({
@@ -46,19 +49,32 @@ export const Button = ({
   className,
   textClassName,
   onPress,
+  loading = false,
+  disabled = false
 }: ButtonProps) => {
+
+  const isOutlineOrLink = variant === 'outline' || variant === 'link';
+  const spinnerColor = isOutlineOrLink ? '#000' : '#FFF';
+
   return (
     <Pressable
       onPress={onPress}
-      className={cn(buttonStyles({ variant, size, rounded }), className)}>
-      <Text
-        className={cn(
-          'text-center text-body font-medium',
-          variant === 'outline' ? 'text-gray-900' : 'text-white',
-          textClassName
-        )}>
-        {title}
-      </Text>
+      disabled={disabled || loading}
+      className={cn(buttonStyles({ variant, size, rounded }), (disabled || loading) && 'opacity-50',  className)}>
+      {loading ? (
+        <ActivityIndicator color={spinnerColor} />
+      ) : (
+        <Text
+          className={cn(
+            'text-center text-body font-medium',
+            isOutlineOrLink ? 'text-gray-900' : 'text-white',
+            variant === 'link' && 'text-blue-600',
+            textClassName
+          )}
+        >
+          {title}
+        </Text>
+      )}
     </Pressable>
   );
 };
