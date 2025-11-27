@@ -43,13 +43,16 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
         if (user) {
           const meta = user.user_metadata || {};
           const fullName = meta.full_name || meta.name || "";
-          const parts = fullName.split(" ");
+          const spaceIndex = fullName.indexOf(" ");
+          const first = spaceIndex > 0 ? fullName.substring(0, spaceIndex) : fullName;
+          const last = spaceIndex > 0 ? fullName.substring(spaceIndex + 1) : ".";
           
           setValue("email", user.email || "");
-          setValue("firstName", parts[0] || "");
-          setValue("lastName", parts.slice(1).join(" ") || "");
-          setValue("password", "GOOGLE_DUMMY");
-          setValue("confirmPassword", "GOOGLE_DUMMY");
+          setValue("firstName", first);
+          setValue("lastName", last);
+          const dummyPass = "GoogleDummyPass1!";
+          setValue("password", dummyPass);
+          setValue("confirmPassword", dummyPass);
         }
       };
       fetchUser();
@@ -81,7 +84,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
         role: data.accountType === "teacher" ? "professor" : "student"
       });
 
-      onSuccess(); 
+      console.log("¡Registro completo!");
+      
+      setStep(4);
     } catch (error: any) {
       Alert.alert("Error", error.message || "Error al registrar");
     } finally {
@@ -93,14 +98,21 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     let fields: (keyof SignUpFormData)[] = [];
     if (step === 1) fields = ["firstName", "lastName", "email"];
     if (step === 2) fields = ["username", "accountType"];
+    if (step === 3) fields = ["password", "confirmPassword"];
 
     const isValid = await trigger(fields);
     if (!isValid) return;
 
     if (step === 2 && isGoogleFlow) {
-      handleSubmit(onSubmit)(); 
+      handleSubmit(onSubmit, (errors) => {
+        console.log("Errores de validación impidiendo el envío:", errors);
+        Alert.alert("Faltan datos", "Por favor revisa que tu nombre y apellido estén cargados correctamente.");
+      })(); 
     } else if (step === 3) {
-      handleSubmit(onSubmit)();
+      handleSubmit(onSubmit, (errors) => {
+        console.log("Errores de validación impidiendo el envío:", errors);
+        Alert.alert("Faltan datos", "Por favor revisa que tu nombre y apellido estén cargados correctamente.");
+      })();
     } else {
       setStep(prev => prev + 1);
     }
@@ -189,7 +201,6 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
           <View>
             <Text className="mb-2 font-medium">Soy:</Text>
             <View className="flex-row gap-2">
-              {/* Usamos Controller para el Rol también para leer el valor actual */}
               <Controller
                 control={control}
                 name="accountType"
@@ -254,16 +265,52 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
         </View>
       )}
 
-      <View className="mt-6 gap-3">
-        <Button 
-            title={loading ? "Procesando..." : (step === 2 && isGoogleFlow) || step === 3 ? "Finalizar" : "Siguiente"} 
-            onPress={handleNext} 
-            loading={loading} 
-        />
-        {!isGoogleFlow && step === 1 && onBack && (
-            <Button title="Volver al Login" variant="link" onPress={onBack} />
-        )}
-      </View>
+      {/* Paso 4: Éxito */}
+      {step === 4 && (
+        <View className="items-center gap-6 mt-8 mb-4">
+          
+          <View className="items-center">
+            <Text type="title2" weight="bold" align="center" className="mb-2">
+              ¡Todo listo!
+            </Text>
+            <Text align="center" color="secondary">
+              Tu cuenta ha sido configurada correctamente.
+            </Text>
+          </View>
+
+          <Button 
+            title="Ir al Dashboard" 
+            onPress={onSuccess} 
+            variant="primary"
+            className="mt-2"
+          />
+        </View>
+      )}
+
+      {step < 4 && (
+        <View className="mt-6 gap-3">
+          <Button 
+              title={
+                loading 
+                  ? t("common.loading") // "Procesando..."
+                  : (step === 2 && isGoogleFlow) || step === 3 
+                    ? "Finalizar" 
+                    : t("signup.next") // "Siguiente"
+              } 
+              onPress={handleNext} 
+              loading={loading} 
+          />
+          
+          {!isGoogleFlow && step === 1 && onBack && (
+              <Button 
+                title={t("signup.back")} 
+                variant="link" 
+                onPress={onBack} 
+                className="p-2"
+              />
+          )}
+        </View>
+      )}
     </View>
   );
 };

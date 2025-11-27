@@ -1,7 +1,7 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { AppProvider } from '@app/providers/AppProvider';
 import { useAuth } from '@app/providers/AuthProvider';
 import { AssetsListScreen } from '@features/assets/screens/AssetsListScreen';
@@ -18,6 +18,7 @@ import { Text } from '@core/ui/Text';
 
 const AppContent = () => {
   const { user, loading, signOut } = useAuth();
+  const [authView, setAuthView] = useState<'login' | 'register'>('login');
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [checkingProfile, setCheckingProfile] = useState(false);
 
@@ -44,7 +45,7 @@ const AppContent = () => {
     };
     
     if (!loading) check();
-  }, [user, loading]);
+  }, [user, hasProfile]);
 
   if (loading || checkingProfile) {
     return (
@@ -56,16 +57,55 @@ const AppContent = () => {
   }
 
   if (!user) {
-    return <LoginScreen />;
+    if (authView === 'register') {
+      return (
+        <SafeAreaView className="flex-1 bg-gray-50">
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            className="flex-1"
+          >
+            <ScrollView 
+              contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+              className="px-4"
+            >
+              <View className="w-full max-w-md mx-auto bg-white p-6 rounded-xl shadow-sm">
+                <SignUpForm 
+                  isGoogleFlow={false} 
+                  onSuccess={() => console.log("Registro completado")}
+                  onBack={() => setAuthView('login')} 
+                />
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      );
+    }
+    return (
+      <LoginScreen 
+        onNavigateToRegister={() => setAuthView('register')} 
+      />
+    );
   }
 
   if (hasProfile === false) {
     return (
-      <SafeAreaView className="flex-1 bg-white justify-center px-4">
-        <SignUpForm 
-            isGoogleFlow={true} 
-            onSuccess={() => setHasProfile(true)} 
-        />
+      <SafeAreaView className="flex-1 bg-gray-50">
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          className="flex-1"
+        >
+          <ScrollView 
+            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+            className="px-4"
+          >
+            <View className="w-full max-w-md mx-auto bg-white p-6 rounded-xl shadow-sm">
+              <SignUpForm 
+                  isGoogleFlow={true} 
+                  onSuccess={() => setHasProfile(true)} 
+              />
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -85,7 +125,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AppProvider>
-          <AppContent /> {/* Movemos el contenido aquí adentro */}
+          <AppContent /> 
           <StatusBar style="auto" />
         </AppProvider>
       </SafeAreaProvider>
