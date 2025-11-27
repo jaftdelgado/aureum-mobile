@@ -3,11 +3,11 @@ import { View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView} from 'react-native-safe-area-context';
 import { LoginForm } from '../components/LoginForm';
 
-export const LoginScreen = () => {
-  const handleShowRegister = () => {
-    console.log("Ir a registro");
-  };
+interface LoginScreenProps {
+  onNavigateToRegister: () => void;
+}
 
+export const LoginScreen: React.FC<LoginScreenProps> = ({onNavigateToRegister}) => {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <KeyboardAvoidingView 
@@ -19,7 +19,7 @@ export const LoginScreen = () => {
           className="px-4"
         >
           <View className="w-full max-w-md mx-auto">
-            <LoginForm onShowRegister={handleShowRegister} />
+            <LoginForm onShowRegister={onNavigateToRegister} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
