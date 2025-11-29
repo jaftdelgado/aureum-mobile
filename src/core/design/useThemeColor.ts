@@ -7,9 +7,14 @@ export function useThemeColor(token: keyof typeof colors.light): string {
 
   useEffect(() => {
     const listener = ({ colorScheme }: { colorScheme: ColorSchemeName }) => setScheme(colorScheme);
+
     const subscription = Appearance.addChangeListener(listener);
     return () => subscription.remove();
   }, []);
 
-  return scheme === 'light' ? (colors.dark[token] ?? colors.light[token]) : colors.light[token];
+  if (scheme === 'dark') {
+    return colors.dark[token] ?? colors.light[token];
+  }
+
+  return colors.light[token];
 }

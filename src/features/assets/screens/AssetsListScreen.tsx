@@ -11,7 +11,7 @@ export const AssetsListScreen = () => {
   const { showForm, hide } = useDynamicDock();
 
   return (
-    <View className="bg-bg flex-1">
+    <View className="flex-1 bg-bg">
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
           <Text type="body" weight="medium" color="secondary">

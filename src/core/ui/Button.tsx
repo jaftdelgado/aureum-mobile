@@ -50,9 +50,8 @@ export const Button = ({
   textClassName,
   onPress,
   loading = false,
-  disabled = false
+  disabled = false,
 }: ButtonProps) => {
-
   const isOutlineOrLink = variant === 'outline' || variant === 'link';
   const spinnerColor = isOutlineOrLink ? '#000' : '#FFF';
 
@@ -60,7 +59,11 @@ export const Button = ({
     <Pressable
       onPress={onPress}
       disabled={disabled || loading}
-      className={cn(buttonStyles({ variant, size, rounded }), (disabled || loading) && 'opacity-50',  className)}>
+      className={cn(
+        buttonStyles({ variant, size, rounded }),
+        (disabled || loading) && 'opacity-50',
+        className
+      )}>
       {loading ? (
         <ActivityIndicator color={spinnerColor} />
       ) : (
@@ -70,8 +73,7 @@ export const Button = ({
             isOutlineOrLink ? 'text-gray-900' : 'text-white',
             variant === 'link' && 'text-blue-600',
             textClassName
-          )}
-        >
+          )}>
           {title}
         </Text>
       )}

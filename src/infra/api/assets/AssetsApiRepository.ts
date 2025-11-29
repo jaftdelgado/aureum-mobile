@@ -6,12 +6,12 @@ import { mapAssetDTOToEntity } from '@infra/api/assets/assets.mappers';
 
 export class AssetsApiRepository implements AssetsRepository {
   async getAllAssets(): Promise<Asset[]> {
-    const response = await client.get<AssetDTO[]>('/assets');
+    const response = await client.get<AssetDTO[]>('/api/assets');
     return response.data.map(mapAssetDTOToEntity);
   }
 
   async getAssetById(publicId: string): Promise<Asset> {
-    const response = await client.get<AssetDTO>(`/assets/${publicId}`);
+    const response = await client.get<AssetDTO>(`/api/assets/${publicId}`);
     return mapAssetDTOToEntity(response.data);
   }
 }

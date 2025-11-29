@@ -1,65 +1,104 @@
-import * as React from 'react';
+import React from 'react';
 import { Pressable } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
-import { IconWrapper } from '@core/ui/Icon';
+import { Icon } from '@core/ui/Icon';
+import type { SvgProps } from 'react-native-svg';
+import { useThemeColor } from '@core/design/useThemeColor';
+import { colors } from '@core/design/colors';
 
 const iconButtonStyles = cva('items-center justify-center active:opacity-80', {
   variants: {
     size: {
-      sm: 'h-12 w-12',
-      md: 'h-14 w-14',
-      lg: 'h-16 w-16',
+      xs: 'h-8 w-8',
+      sm: 'h-10 w-10',
+      md: 'h-12 w-12',
+      lg: 'h-14 w-14',
       xl: 'h-16 w-16',
     },
     variant: {
-      primary: 'bg-primaryBtn',
-      secondary: 'bg-gray-200',
-      outline: 'border border-gray-300 bg-transparent',
+      primary: '',
+      secondary: '',
+      thirdy: 'border',
       ghost: 'bg-transparent',
     },
     rounded: {
       none: 'rounded-none',
       md: 'rounded-lg',
       xl: 'rounded-xl',
-      full: 'rounded-[20px]',
+      full: 'rounded-full',
     },
   },
   defaultVariants: {
     size: 'md',
     variant: 'primary',
-    rounded: 'xl',
+    rounded: 'full',
   },
 });
 
 export interface IconButtonProps extends VariantProps<typeof iconButtonStyles> {
   onPress?: () => void;
-  icon: React.FC<{ width?: number; height?: number; className?: string }>;
-  iconSize?: number;
+  icon: React.FC<SvgProps>;
+  disabled?: boolean;
   className?: string;
 }
 
+const colorMap = {
+  primary: { bg: 'primaryBtn' as const, border: 'transparent' as const, icon: 'bg' as const },
+  secondary: {
+    bg: 'secondaryBtn' as const,
+    border: 'transparent' as const,
+    icon: 'primaryText' as const,
+  },
+  thirdy: { bg: 'secondaryBtn' as const, border: 'border' as const, icon: 'primaryText' as const },
+  ghost: {
+    bg: 'transparent' as const,
+    border: 'transparent' as const,
+    icon: 'secondaryText' as const,
+  },
+};
+
+type VariantKey = keyof typeof colorMap;
+type IconColorKey = keyof typeof colors.light;
+
+const iconSizeValues = {
+  xs: 14,
+  sm: 18,
+  md: 22,
+  lg: 20,
+  xl: 18,
+} as const;
+
 export const IconButton: React.FC<IconButtonProps> = ({
   onPress,
-  icon: Icon,
-  iconSize,
-  size,
-  variant,
+  icon: IconComponent,
+  size = 'md',
+  variant = 'primary',
   rounded,
+  disabled = false,
   className,
 }) => {
-  const resolvedSize = iconSize ?? { sm: 20, md: 24, lg: 28, xl: 20 }[size ?? 'md'];
+  const safeVariant = variant as VariantKey;
+  const variantColors = colorMap[safeVariant];
 
-  // Clase Tailwind que determina el color del icono
-  const iconClassName = variant === 'primary' ? 'bg' : 'warning';
+  const backgroundColor = useThemeColor(variantColors.bg);
+  const borderColor = useThemeColor(variantColors.border);
+
+  const safeSize = size ?? 'md';
+  const iconSize = iconSizeValues[safeSize as keyof typeof iconSizeValues];
 
   return (
     <Pressable
       onPress={onPress}
-      className={cn(iconButtonStyles({ size, variant, rounded }), className)}>
-      <IconWrapper className={iconClassName}>
-        <Icon width={resolvedSize} height={resolvedSize} />
-      </IconWrapper>
+      disabled={disabled}
+      className={cn(iconButtonStyles({ size: safeSize, variant: safeVariant, rounded }), className)}
+      style={{
+        backgroundColor,
+        borderColor,
+        borderWidth: safeVariant === 'thirdy' ? 1 : 0,
+        opacity: disabled ? 0.4 : 1,
+      }}>
+      <Icon component={IconComponent} color={variantColors.icon as IconColorKey} size={iconSize} />
     </Pressable>
   );
 };

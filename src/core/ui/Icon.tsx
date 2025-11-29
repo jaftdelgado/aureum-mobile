@@ -1,31 +1,19 @@
-import * as React from 'react';
-import type { ReactElement, ReactNode, FC } from 'react';
+import React from 'react';
+import type { FC } from 'react';
 import type { SvgProps } from 'react-native-svg';
-import tailwindConfig from '../../../tailwind.config.js';
+import { useThemeColor } from '@core/design/useThemeColor';
+import { colors } from '@core/design/colors';
 
-interface IconWrapperProps {
-  className?: string; // el nombre de la clase Tailwind
-  children: ReactNode;
+type IconColor = keyof typeof colors.light;
+
+interface IconProps {
+  color?: IconColor;
+  component: FC<SvgProps>;
+  size?: number;
 }
 
-export const IconWrapper: FC<IconWrapperProps> = ({ className, children }) => {
-  // Mapear la clase a la variable CSS (fallback seguro)
-  const colors = tailwindConfig?.theme?.extend?.colors as Record<string, string>;
-  const color = (className && colors?.[className]) ?? '#171717';
+export const Icon: FC<IconProps> = ({ color = 'primaryText', component: Component, size = 24 }) => {
+  const themeColor = useThemeColor(color);
 
-  return (
-    <>
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child)) {
-          const svgChild = child as ReactElement<SvgProps>;
-          return React.cloneElement(svgChild, {
-            ...svgChild.props,
-            stroke: color,
-            fill: svgChild.props.fill === 'none' ? 'none' : color,
-          });
-        }
-        return child;
-      })}
-    </>
-  );
+  return <Component width={size} height={size} stroke={themeColor} fill="none" strokeWidth={1.6} />;
 };

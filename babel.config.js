@@ -15,6 +15,7 @@ module.exports = function (api) {
         '@domain': './src/domain',
         '@infra': './src/infra',
         '@features': './src/features',
+        '@resources': './src/resources',
       },
     },
   ]);
