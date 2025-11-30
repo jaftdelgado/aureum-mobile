@@ -1,40 +1,42 @@
-// SettingsScreen.tsx
-import React, { useRef } from 'react';
-import { View, Animated } from 'react-native';
-import FixedHeader from '@app/components/screen-header/FixedHeader';
-import DisplayTitle from '@app/components/screen-header/DisplayTitle';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ListContainer } from '@core/ui/ListContainer';
-import { ListOption } from '@core/ui/ListOption';
+import React from 'react';
+import { View } from 'react-native';
+import { Button } from '@core/ui/Button';
+import { Text } from '@core/ui/Text';
+import { useSettings } from '../hooks/usesettings';
+import { useTranslation } from 'react-i18next';
 
 export default function SettingsScreen() {
-  const insets = useSafeAreaInsets();
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const { t } = useTranslation();
+  const { loading, handleLogout, handleDeleteAccount } = useSettings();
 
   return (
-    <View className="flex-1">
-      {/* Barra superior fija */}
-      <FixedHeader title="Settings" scrollY={scrollY} />
+    <View className="flex-1 justify-between bg-bg p-4">
+      <View className="mt-4">
+        <Text type="title1" weight="bold" className="mb-2">
+          {t('settings.title')}
+        </Text>
+        <Text color="secondary">{t('settings.subtitle')}</Text>
+      </View>
 
-      {/* Scrollable content */}
-      <Animated.ScrollView
-        scrollEventThrottle={16}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          useNativeDriver: true,
-        })}
-        contentContainerStyle={{ paddingTop: 50 + insets.top, paddingHorizontal: 16 }}
-        className="flex-1">
-        {/* Título grande dentro del scroll */}
-        <DisplayTitle title="Settings" subtitle="Manage your preferences" scrollY={scrollY} />
+      <View className="mb-6 gap-4">
+        <Button
+          title={t('settings.logout')}
+          variant="outline"
+          onPress={handleLogout}
+          disabled={loading}
+          className="border-gray-300"
+          textClassName="text-gray-700 font-medium"
+        />
 
-        {/* ListContainer con ListOptions */}
-        <ListContainer>
-          <ListOption text="Account" onPress={() => console.log('Account')} />
-          <ListOption text="Notifications" onPress={() => console.log('Notifications')} />
-          <ListOption text="Privacy & Security" onPress={() => console.log('Privacy')} />
-          <ListOption text="Notifications" onPress={() => console.log('Notifications')} />
-        </ListContainer>
-      </Animated.ScrollView>
+        <Button
+          title={loading ? t('settings.deleting') : t('settings.deleteAccount')}
+          variant="outline"
+          onPress={handleDeleteAccount}
+          disabled={loading}
+          className="border-red-200 bg-red-50"
+          textClassName="text-red-600 font-bold"
+        />
+      </View>
     </View>
   );
 }

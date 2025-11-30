@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const noInjectionRegex = /^[^<>]+$/;
+const emailDomainRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const createSignUpSchema = (t: (key: string, options?: any) => string) => {
   return z.object({
@@ -14,8 +15,27 @@ export const createSignUpSchema = (t: (key: string, options?: any) => string) =>
 
     email: z.string()
       .min(1, t("validation.required"))
-      .email(t("validation.email")) 
-      .regex(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, t("validation.format")),
+      .email(t("validation.email"))
+      .regex(emailDomainRegex, "Formato de dominio inválido")
+      .refine((val) => {
+          const parts = val.split('@');
+          if (parts.length !== 2) return false;
+          
+          const domain = parts[1].toLowerCase(); 
+          const domainParts = domain.split('.');
+
+          if (domainParts.length < 2) return false;
+          
+          if (domainParts.some(p => p.length === 0)) return false;
+
+          const name = domainParts[0];
+          
+          const isAllSameChar = name.split('').every(char => char === name[0]);
+          
+          if (isAllSameChar && name.length > 3) return false;
+
+          return true;
+      }, { message: "El dominio del correo parece inválido" }),
 
     username: z.string()
       .min(3, t("validation.minLength", { min: 3 }))

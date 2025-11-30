@@ -16,3 +16,7 @@ export const createProfile = async (payload: CreateProfilePayload) => {
   const response = await client.post('/api/users/profiles', payload);
   return response.data;
 };
+
+export const deleteUserProfile = async (authId: string) => {
+  await client.delete(`/api/users/profiles/${authId}`);
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen } from '@features/auth/screens/LoginScreen';
-import { SignUpForm } from '@features/auth/components/SignUpForm';
+import { RegisterScreen } from '@features/auth/screens/RegisterScreen';
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -21,10 +21,7 @@ const AuthStack = () => {
           />
         )}
       </Stack.Screen>
-      <Stack.Screen name="Register">
-        {(props) => (
-          <SignUpForm {...props} onSuccess={() => props.navigation.replace('AppStack')} />
-        )}
+      <Stack.Screen name="Register" component={RegisterScreen}>
       </Stack.Screen>
     </Stack.Navigator>
   );
