@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 WebBrowser.maybeCompleteAuthSession();
 
 export const useGoogleSignIn = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('auth');
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = async () => {

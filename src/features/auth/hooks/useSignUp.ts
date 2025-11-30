@@ -13,7 +13,7 @@ interface UseSignUpProps {
 }
 
 export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('auth');
   const [step, setStep] = useState(isGoogleFlow ? 2 : 1);
   const [loading, setLoading] = useState(false);
 

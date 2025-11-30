@@ -18,7 +18,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
   onSuccess, 
   onBack 
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('auth');
   
   const { 
     step, 

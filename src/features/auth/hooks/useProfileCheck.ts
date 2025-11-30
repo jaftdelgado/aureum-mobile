@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { User } from '@supabase/supabase-js';
 import { getProfileByAuthId } from '../api/authApi';
+import { set } from 'zod';
 
 export const useProfileCheck = (user: User | null, loadingAuth: boolean) => {
   const [hasProfile, setHasProfile] = useState<boolean | null>(null);
@@ -25,6 +26,7 @@ export const useProfileCheck = (user: User | null, loadingAuth: boolean) => {
           await getProfileByAuthId(user.id);
           console.log("Perfil encontrado.");
           setHasProfile(true);
+          setCheckingProfile(false);
         } catch (e) {
           if (retries > 0) {
             console.log("Perfil no encontrado, reintentando en 1s...");
@@ -32,13 +34,12 @@ export const useProfileCheck = (user: User | null, loadingAuth: boolean) => {
           } else {
             console.warn("Perfil no encontrado tras reintentos. Usuario nuevo.");
             setHasProfile(false);
+            setCheckingProfile(false);
           } 
-        }finally {
-          setCheckingProfile(false);
         }
       };
 
-      verify();
+      verify(2);
     };
 
     if (!loadingAuth) check();

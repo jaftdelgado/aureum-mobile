@@ -13,7 +13,7 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation('auth'); 
   
   const { 
     formData, 

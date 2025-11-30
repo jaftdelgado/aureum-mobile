@@ -6,7 +6,7 @@ export const useLoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t } = useTranslation('auth');
   const [formData, setFormData] = useState({ email: '', password: '' });
 
   const validateEmail = (email: string): string | null => {

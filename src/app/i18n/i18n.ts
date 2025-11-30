@@ -8,7 +8,6 @@ i18n.use(initReactI18next).init({
   fallbackLng: 'es',
   interpolation: { escapeValue: false },
 
-  // Para pruebas rápidas:
   lng: 'es',
 });
 

@@ -6,7 +6,7 @@ import { GoogleLogo } from '@resources/svg/GoogleLogo';
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'; // <--- Importamos
 
 export const GoogleSignIn = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('auth');
   const { handleGoogleLogin, loading } = useGoogleSignIn();
 
   return (

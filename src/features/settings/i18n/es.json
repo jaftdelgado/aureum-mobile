@@ -1,6 +1,18 @@
 {
-  "title": "Ajustes",
+  "title": "Configuración",
+  "subtitle": "Gestiona tus preferencias y cuenta.",
   "logout": "Cerrar sesión",
   "deleting": "Eliminando...",
-  "deleteAccount": "Eliminar cuenta"
+  "deleteAccount": "Eliminar cuenta",
+  
+  "logoutTitle": "Cerrar Sesión",
+  "logoutMsg": "¿Estás seguro de que quieres salir de tu cuenta?",
+  "logoutConfirm": "Salir",
+  
+  "deleteTitle": "Eliminar Cuenta",
+  "deleteMsg": "Esto eliminará tu cuenta permanentemente. ¿Seguro que deseas borrarla?",
+  "deleteConfirm": "Eliminar",
+  
+  "cancel": "Cancelar",
+  "error": "Error"
 }

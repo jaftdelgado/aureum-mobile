@@ -6,5 +6,13 @@
       "lessons": "Lessons",
       "settings": "Settings"
     }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry"
+  },
+  "navigation": {
+      "checkingProfile": "Checking profile..."
   }
 }
