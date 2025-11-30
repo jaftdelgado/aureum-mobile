@@ -46,7 +46,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
       <View className="flex flex-col gap-4">
         <TextField
           label={t('signin.usernameOrEmail')}
-          placeholder="ejemplo@correo.com"
+          placeholder={t('signin.usernamePlaceholder')}
           value={formData.email}
           onChangeText={(text) => handleChange('email', text)}
           autoCapitalize="none"
@@ -58,7 +58,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
 
         <TextField
           label={t('signin.password')}
-          placeholder="••••••••"
+          placeholder={t('signin.passwordPlaceholder')}
           value={formData.password}
           onChangeText={(text) => handleChange('password', text)}
           secureTextEntry

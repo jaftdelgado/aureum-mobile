@@ -1,67 +1,42 @@
 import React from 'react';
-import { View, Alert, Platform } from 'react-native';
-import { useAuth } from '@app/providers/AuthProvider';
+import { View } from 'react-native';
 import { Button } from '@core/ui/Button';
 import { Text } from '@core/ui/Text';
+import { useSettings } from '../hooks/usesettings';
+import { useTranslation } from 'react-i18next';
 
 export default function SettingsScreen() {
-  const { signOut } = useAuth();
-
-  const performLogout = async () => {
-    try {
-      console.log("Cerrando sesión...");
-      await signOut();
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  };
-
-  const handleLogout = () => {
-    if (Platform.OS === 'web') {
-      const confirm = window.confirm("¿Estás seguro de que quieres salir de tu cuenta?");
-      if (confirm) {
-        performLogout();
-      }
-      return;
-    }
-
-    Alert.alert(
-      "Cerrar Sesión",
-      "¿Estás seguro de que quieres salir de tu cuenta?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-          onPress: () => console.log("Logout cancelado"),
-        },
-        {
-          text: "Salir",
-          style: "destructive",
-          onPress: performLogout,
-        },
-      ]
-    );
-  };
+  const { t } = useTranslation();
+  const { loading, handleLogout, handleDeleteAccount } = useSettings();
 
   return (
     <View className="flex-1 bg-bg p-4 justify-between">
       <View className="mt-4">
         <Text type="title1" weight="bold" className="mb-2">
-          Configuración
+          {t("settings.title")}
         </Text>
         <Text color="secondary">
-          Gestiona tus preferencias y cuenta.
+          {t("settings.subtitle")}
         </Text>
-        
       </View>
 
-      <View className="mb-6">
+      <View className="mb-6 gap-4">
         <Button 
-          title="Cerrar Sesión" 
+          title={t("settings.logout")}
           variant="outline" 
           onPress={handleLogout}
+          disabled={loading}
+          className="border-gray-300"
+          textClassName="text-gray-700 font-medium"
+        />
+
+        <Button 
+          title={loading ? t("settings.deleting") : t("settings.deleteAccount")} 
+          variant="outline" 
+          onPress={handleDeleteAccount}
+          disabled={loading}
           className="border-red-200 bg-red-50"
-          textClassName="text-red-600 font-semibold"
+          textClassName="text-red-600 font-bold"
         />
       </View>
     </View>

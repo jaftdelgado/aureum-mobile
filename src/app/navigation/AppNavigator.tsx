@@ -1,13 +1,14 @@
-// src/app/navigation/AppNavigator.tsx
-import React, { useEffect, useState, useRef } from 'react';
+import React from 'react';
 import { View, ActivityIndicator} from 'react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { useAuth } from '@app/providers/AuthProvider';
-import { getProfileByAuthId } from '@features/auth/api/authApi';
 import AuthStack from '@app/navigation/AuthStack';
 import AppStack from '@app/navigation/AppStack';
+import { Text } from '@core/ui/Text';
 import { GoogleRegisterScreen } from '@features/auth/screens/GoogleRegisterScreen';
+import { useProfileCheck } from '@features/auth/hooks/useProfileCheck'; 
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 
 export type RootStackParamList = {
   AuthStack: undefined;
@@ -18,39 +19,17 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
-  const { user, loading } = useAuth();
-  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
-  const checkedUserIdRef = useRef<string | null>(null);
+  const { t } = useTranslation();
+  const { user, loading: loadingAuth } = useAuth();
 
-  useEffect(() => {
-    const checkProfile = async () => {
-      if (!user?.id) {
-        setHasProfile(null);
-        checkedUserIdRef.current = null;
-        return;
-      }
-
-      if (user.id === checkedUserIdRef.current && hasProfile !== null) return;
-
-      checkedUserIdRef.current = user.id;
-
-      try {
-        await getProfileByAuthId(user.id);
-        console.log("Perfil encontrado.");
-        setHasProfile(true);
-      } catch {
-        console.warn("Perfil no encontrado (Usuario nuevo de Google).");
-        setHasProfile(false);
-      }
-    };
-
-    if (!loading) checkProfile();
-  }, [user, loading, hasProfile]);
-
-  if (loading || (user && hasProfile === null)) {
+  const { hasProfile, checkingProfile, setHasProfile } = useProfileCheck(user, loadingAuth);
+  if (loadingAuth || checkingProfile || (user && hasProfile === null)) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white' }}>
         <ActivityIndicator size="large" color="#2563eb" />
+        <Text className="mt-4 text-gray-500">
+            {t("navigation.checkingProfile")}
+        </Text>
       </View>
     );
   }

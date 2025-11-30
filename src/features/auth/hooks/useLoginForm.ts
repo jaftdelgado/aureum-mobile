@@ -1,44 +1,45 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../../../infra/external/supabase';
 
 export const useLoginForm = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({ email: '', password: '' });
 
   const validateEmail = (email: string): string | null => {
     const trimmedEmail = email.trim();
     
-    if (trimmedEmail.length > 254) return "El correo excede la longitud máxima permitida";
-    if (trimmedEmail.length < 5) return "El correo es demasiado corto";
+    if (trimmedEmail.length > 254) return t("validation.maxLength", { max: 254 });
+    if (trimmedEmail.length < 5) return t("validation.minLength", { min: 5 });
 
     const injectionPattern = /['";<>]|--/;
     if (injectionPattern.test(trimmedEmail)) {
-      return "El correo contiene caracteres no permitidos";
+      return t("validation.format");
     }
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
     if (!emailRegex.test(trimmedEmail)) {
-      return "Ingresa un formato de correo válido (ej: usuario@dominio.com)";
+      return t("validation.email");
     }
 
     const domainParts = trimmedEmail.split('@')[1].split('.');
     if (domainParts.some(part => part.length === 0)) {
-      return "El dominio del correo es inválido";
+      return t("validation.format");
     }
 
     return null;
   };
 
   const validatePassword = (password: string): string | null => {
-    if (!password) return "La contraseña es requerida";
-    if (password.length > 128) return "La contraseña es demasiado larga";
+    if (!password) return t("validation.required");
+    if (password.length > 128) return t("validation.maxLength", { max: 128 });
     
     if (/<script>|javascript:/i.test(password)) {
-        return "Contraseña inválida";
+        return t("validation.format");
     }
     
     return null;
@@ -75,13 +76,13 @@ export const useLoginForm = () => {
       
       if (error) {
         if (error.message.includes("Invalid login credentials")) {
-           throw new Error("Correo o contraseña incorrectos");
+           throw new Error(t("signin.invalidCredentials"));
         }
         throw error;
       }
     
     } catch (err: any) {
-      setErrorMsg(err.message || "Error al iniciar sesión");
+      setErrorMsg(err.message || t("signin.loginError"));
     } finally {
       setLoading(false);
     }
