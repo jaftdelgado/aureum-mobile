@@ -119,7 +119,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
   };
 
   return (
-    <View className="w-full">
+    <View className="p-6 bg-white rounded-xl w-full shadow-sm">
       <Text type="title1" weight="bold" align="center" className="mb-6">
         {isGoogleFlow ? "Completa tu Registro" : "Crear Cuenta"}
       </Text>

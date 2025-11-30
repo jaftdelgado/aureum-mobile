@@ -4,6 +4,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri } from 'expo-auth-session';
 import { supabase } from '../../../infra/external/supabase';
 import { Button } from '@core/ui/Button';
+import { GoogleLogo } from '@resources/svg/GoogleLogo';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -60,6 +61,7 @@ export const GoogleSignIn = () => {
         className="border-gray-300 bg-white"
         textClassName="text-gray-700"
         onPress={handleGoogleLogin}
+        leftIcon={<GoogleLogo width={20} height={20} />}
       />
     </View>
   );
