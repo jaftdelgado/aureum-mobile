@@ -14,6 +14,12 @@ const resources = {
         createAccount: "Crear cuenta",
         continueWithGoogle: "Continuar con Google"
       },
+      signup: {
+        back: "Volver al inicio", 
+        next: "Siguiente",
+        createAccount: "Crear cuenta",
+        personalInfo: "Información personal",
+      },
       common: {
         loading: "Cargando..."
       },

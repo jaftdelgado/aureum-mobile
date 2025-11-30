@@ -1,8 +1,9 @@
-import { Pressable, Text, ActivityIndicator } from 'react-native';
+import { Pressable, Text, ActivityIndicator, View } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
+import React from 'react';
 
-const buttonStyles = cva('w-full rounded-2xl active:opacity-80 items-center justify-center', {
+const buttonStyles = cva('w-full rounded-2xl active:opacity-80 items-center justify-center flex-row', {
   variants: {
     variant: {
       primary: 'bg-primaryBtn text-bg',
@@ -39,6 +40,7 @@ interface ButtonProps extends VariantProps<typeof buttonStyles> {
   onPress?: () => void;
   loading?: boolean;
   disabled?: boolean;
+  leftIcon?: React.ReactNode;
 }
 
 export const Button = ({
@@ -51,6 +53,7 @@ export const Button = ({
   onPress,
   loading = false,
   disabled = false,
+  leftIcon,
 }: ButtonProps) => {
   const isOutlineOrLink = variant === 'outline' || variant === 'link';
   const spinnerColor = isOutlineOrLink ? '#000' : '#FFF';
@@ -62,20 +65,26 @@ export const Button = ({
       className={cn(
         buttonStyles({ variant, size, rounded }),
         (disabled || loading) && 'opacity-50',
+        'gap-3',
         className
       )}>
       {loading ? (
         <ActivityIndicator color={spinnerColor} />
       ) : (
-        <Text
-          className={cn(
-            'text-center text-body font-medium',
-            isOutlineOrLink ? 'text-gray-900' : 'text-white',
-            variant === 'link' && 'text-blue-600',
-            textClassName
-          )}>
-          {title}
-        </Text>
+        <>
+          {leftIcon && <View>{leftIcon}</View>}
+          
+          <Text
+            className={cn(
+              'text-center font-medium text-body',
+              isOutlineOrLink ? 'text-gray-900' : 'text-white',
+              variant === 'link' && 'text-blue-600',
+              textClassName
+            )}
+          >
+            {title}
+          </Text>
+        </>
       )}
     </Pressable>
   );
