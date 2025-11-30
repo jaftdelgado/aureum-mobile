@@ -5,7 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { AppProvider } from '@app/providers/AppProvider';
 import AppNavigator from '@app/navigation/AppNavigator';
-import './src/core/i18n';
+import '@app/i18n/i18n';
 import './global.css';
 
 export default function App() {

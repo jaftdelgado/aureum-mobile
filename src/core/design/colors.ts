@@ -9,11 +9,12 @@ export const colors = {
     secondaryText: '#7a808d',
     text: '#101010',
     card: '#f9fafb',
-    border: '#e5e7eb',
+    border: '#eaeaea',
     success: '#10b981',
     warning: '#f59e0b',
     error: '#ef4444',
     transparent: 'transparent',
+    white: '#ffffff',
   },
   dark: {
     primary: '#60a5fa',
@@ -30,5 +31,6 @@ export const colors = {
     warning: '#fbbf24',
     error: '#f87171',
     transparent: 'transparent',
+    white: '#ffffff',
   },
 };

@@ -1,0 +1,22 @@
+{
+  "title": "Teams",
+  "subtitle": "Manage and organize your groups",
+
+  "lastVisited": "Last visited teams",
+  "lastVisited_sub": "Continue where you left off",
+
+  "list": {
+    "create": "Create a new team",
+    "invites": "Team invitations",
+    "myTeams": "My teams",
+    "archived": "Archived teams"
+  },
+
+  "team": {
+    "untitled": "Untitled team",
+    "overview": "Overview",
+    "members": "Members",
+    "assets": "Assets",
+    "settings": "Settings"
+  }
+}

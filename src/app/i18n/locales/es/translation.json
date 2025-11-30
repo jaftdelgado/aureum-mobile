@@ -1,0 +1,32 @@
+{
+  "signin": {
+    "title": "Iniciar Sesión",
+    "usernameOrEmail": "Correo electrónico",
+    "password": "Contraseña",
+    "login": "Entrar",
+    "noAccount": "¿No tienes cuenta?",
+    "createAccount": "Crear cuenta",
+    "continueWithGoogle": "Continuar con Google"
+  },
+  "common": {
+    "loading": "Cargando..."
+  },
+  "validation": {
+    "required": "Requerido",
+    "email": "Correo inválido",
+    "minLength": "Mínimo {{min}} caracteres",
+    "maxLength": "Máximo {{max}} caracteres",
+    "format": "Formato incorrecto"
+  },
+  "teams": {
+    "header": "Equipos",
+    "title": "Equipos",
+    "subtitle": "Administra y organiza tus grupos",
+    "lastVisitedTitle": "Últimos equipos visitados",
+    "lastVisitedSubtitle": "Continúa donde lo dejaste",
+    "createNew": "Crear un nuevo equipo",
+    "invitations": "Invitaciones de equipo",
+    "myTeams": "Mis equipos",
+    "archived": "Equipos archivados"
+  }
+}

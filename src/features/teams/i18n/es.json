@@ -1,0 +1,22 @@
+{
+  "title": "Equipos",
+  "subtitle": "Administra y organiza tus grupos",
+
+  "lastVisited": "Últimos equipos visitados",
+  "lastVisited_sub": "Continúa donde lo dejaste",
+
+  "list": {
+    "create": "Crear un nuevo equipo",
+    "invites": "Invitaciones a equipos",
+    "myTeams": "Mis equipos",
+    "archived": "Archivados"
+  },
+
+  "team": {
+    "untitled": "Equipo sin nombre",
+    "overview": "Resumen",
+    "members": "Miembros",
+    "assets": "Activos Financieros",
+    "settings": "Configuración"
+  }
+}
