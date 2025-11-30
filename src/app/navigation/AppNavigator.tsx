@@ -19,7 +19,7 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('app');
   const { user, loading: loadingAuth, refetchProfile } = useAuth();
 
   const { hasProfile, checkingProfile, setHasProfile } = useProfileCheck(user, loadingAuth);

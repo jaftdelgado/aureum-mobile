@@ -1,0 +1,53 @@
+{
+  "signin": {
+    "title": "Sign In",
+    "usernameOrEmail": "Email address",
+    "usernamePlaceholder": "example@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "login": "Log In",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Sign Up",
+    "continueWithGoogle": "Continue with Google",
+    "loginError": "Login failed",
+    "invalidCredentials": "Invalid email or password"
+  },
+  "signup": {
+    "createAccount": "Create Account",
+    "completeRegistration": "Complete Registration",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "Ex. John",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Ex. Doe",
+    "email": "Email",
+    "emailPlaceholder": "email@example.com",
+    "usernameLabel": "Username (@)",
+    "usernamePlaceholder": "user123",
+    "accountType": "Account Type",
+    "student": "Student",
+    "teacher": "Professor",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "••••••••",
+    "next": "Next",
+    "finish": "Finish",
+    "back": "Back",
+    "goToLogin": "Back to Login"
+  },
+  "validation": {
+    "required": "Required",
+    "email": "Invalid email",
+    "minLength": "Minimum {{min}} characters",
+    "maxLength": "Maximum {{max}} characters",
+    "format": "Invalid format",
+    "passwordMatch": "Passwords do not match"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "next": "Next",
+    "success": "Success",
+    "finish": "Finish"
+  }
+}

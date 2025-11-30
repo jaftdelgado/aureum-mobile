@@ -1,0 +1,50 @@
+{
+  "signin": {
+    "title": "Iniciar Sesión",
+    "usernameOrEmail": "Correo electrónico",
+    "usernamePlaceholder": "ejemplo@correo.com",
+    "password": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "login": "Entrar",
+    "noAccount": "¿No tienes cuenta?",
+    "createAccount": "Regístrate",
+    "continueWithGoogle": "Continuar con Google",
+    "loginError": "Error al iniciar sesión",
+    "invalidCredentials": "Correo o contraseña incorrectos"
+  },
+  "signup": {
+    "createAccount": "Crear Cuenta",
+    "completeRegistration": "Completa tu Registro",
+    "firstName": "Nombre",
+    "firstNamePlaceholder": "Ej. Juan",
+    "lastName": "Apellido",
+    "lastNamePlaceholder": "Ej. Pérez",
+    "email": "Email",
+    "emailPlaceholder": "correo@ejemplo.com",
+    "usernameLabel": "Usuario (@)",
+    "usernamePlaceholder": "usuario123",
+    "accountType": "Tipo de cuenta",
+    "student": "Estudiante",
+    "teacher": "Profesor",
+    "password": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "confirmPassword": "Confirmar",
+    "confirmPasswordPlaceholder": "••••••••",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "goToLogin": "Volver al Login"
+  },
+  "validation": {
+    "required": "Requerido",
+    "email": "Correo inválido",
+    "minLength": "Mínimo {{min}} caracteres",
+    "format": "Formato incorrecto"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "next": "Siguiente",
+    "finish": "Finalizar"
+  }
+}

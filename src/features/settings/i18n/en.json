@@ -1,6 +1,18 @@
 {
   "title": "Settings",
+  "subtitle": "Manage your preferences and account.",
   "logout": "Log out",
   "deleting": "Deleting...",
-  "deleteAccount": "Delete account"
+  "deleteAccount": "Delete account",
+
+  "logoutTitle": "Log Out",
+  "logoutMsg": "Are you sure you want to log out?",
+  "logoutConfirm": "Log Out",
+
+  "deleteTitle": "Delete Account",
+  "deleteMsg": "This will permanently delete your account. Are you sure?",
+  "deleteConfirm": "Delete",
+
+  "cancel": "Cancel",
+  "error": "Error"
 }

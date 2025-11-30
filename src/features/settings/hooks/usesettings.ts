@@ -5,7 +5,7 @@ import { deleteUserProfile } from '@features/auth/api/authApi';
 import { useTranslation } from 'react-i18next';
 
 export const useSettings = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('settings');
   const { user, signOut } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -19,15 +19,15 @@ export const useSettings = () => {
     };
 
     if (Platform.OS === 'web') {
-      if (window.confirm(t("settings.logoutMsg"))) performLogout();
+      if (window.confirm(t("logoutMsg"))) performLogout();
     } else {
       Alert.alert(
-        t("settings.logoutTitle"),
-        t("settings.logoutMsg"),
+        t("logoutTitle"),
+        t("logoutMsg"),
         [
           { text: t("common.cancel"), style: "cancel" },
           { 
-            text: t("settings.logoutConfirm"), 
+            text: t("logoutConfirm"), 
             style: "destructive", 
             onPress: performLogout 
           },
@@ -52,15 +52,15 @@ export const useSettings = () => {
     };
 
     if (Platform.OS === 'web') {
-      if (window.confirm(t("settings.deleteMsg"))) performDelete();
+      if (window.confirm(t("deleteMsg"))) performDelete();
     } else {
       Alert.alert(
-        t("settings.deleteTitle"),
-        t("settings.deleteMsg"),
+        t("deleteTitle"),
+        t("deleteMsg"),
         [
           { text: t("common.cancel"), style: "cancel" },
           { 
-            text: t("settings.deleteConfirm"), 
+            text: t("deleteConfirm"), 
             style: "destructive", 
             onPress: performDelete 
           },
