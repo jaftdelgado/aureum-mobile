@@ -6,22 +6,29 @@ import { LessonsIcon } from '@resources/svg/tab-bar/LessonsIcon';
 import { SettingsIcon } from '@resources/svg/tab-bar/SettingsIcon';
 import type { TabParamList } from '@app/navigation/routes-types';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { useTranslation } from 'react-i18next';
 
 type AppTabBarProps = BottomTabBarProps;
 
 export const tabs = [
-  { key: 'Home', label: 'Home', icon: HomeIcon },
-  { key: 'Teams', label: 'Teams', icon: TeamsIcon },
-  { key: 'Lessons', label: 'Lessons', icon: LessonsIcon },
-  { key: 'Settings', label: 'Settings', icon: SettingsIcon },
+  { key: 'Home', label: 'tabs.home', icon: HomeIcon },
+  { key: 'Teams', label: 'tabs.teams', icon: TeamsIcon },
+  { key: 'Lessons', label: 'tabs.lessons', icon: LessonsIcon },
+  { key: 'Settings', label: 'tabs.settings', icon: SettingsIcon },
 ] as const;
 
 export const AppTabBar: React.FC<AppTabBarProps> = ({ state, navigation }) => {
+  const { t } = useTranslation();
   const activeTab = state.routes[state.index].name as keyof TabParamList;
 
   const handleTabPress = (key: keyof TabParamList) => {
     navigation.navigate(key);
   };
 
-  return <TabBar tabs={tabs} activeTab={activeTab} onTabPress={handleTabPress} />;
+  const translatedTabs = tabs.map(tab => ({
+    ...tab,
+    label: t(tab.label) // Traducimos aquí
+  }));
+
+  return <TabBar tabs={translatedTabs} activeTab={activeTab} onTabPress={handleTabPress} />;
 };
