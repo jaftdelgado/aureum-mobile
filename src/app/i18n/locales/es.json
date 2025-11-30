@@ -1,0 +1,10 @@
+{
+  "app": {
+    "tabs": {
+      "home": "Inicio",
+      "teams": "Equipos",
+      "lessons": "Lecciones",
+      "settings": "Ajustes"
+    }
+  }
+}

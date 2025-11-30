@@ -18,16 +18,17 @@ export const tabs = [
 ] as const;
 
 export const AppTabBar: React.FC<AppTabBarProps> = ({ state, navigation }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('app', { keyPrefix: 'app' });
+
   const activeTab = state.routes[state.index].name as keyof TabParamList;
 
   const handleTabPress = (key: keyof TabParamList) => {
     navigation.navigate(key);
   };
 
-  const translatedTabs = tabs.map(tab => ({
+  const translatedTabs = tabs.map((tab) => ({
     ...tab,
-    label: t(tab.label) // Traducimos aquí
+    label: t(tab.label),
   }));
 
   return <TabBar tabs={translatedTabs} activeTab={activeTab} onTabPress={handleTabPress} />;

@@ -20,7 +20,7 @@ export const TabButton: FC<TabButtonProps> = ({ tab, isActive, onTabPress }) => 
       activeOpacity={0.7}>
       <Icon component={tab.icon} color={isActive ? 'primaryText' : 'secondaryText'} size={24} />
       <Text
-        type="footnote"
+        type="caption2"
         weight={isActive ? 'semibold' : 'regular'}
         color={isActive ? 'default' : 'secondary'}
         className="mt-1">

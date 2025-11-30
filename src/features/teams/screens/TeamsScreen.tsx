@@ -21,10 +21,8 @@ export default function TeamsScreen() {
 
   return (
     <View className="flex-1">
-      {/* Header fijo */}
       <FixedHeader title={t('title')} scrollY={scrollY} />
 
-      {/* Scroll principal */}
       <Animated.ScrollView
         scrollEventThrottle={16}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {

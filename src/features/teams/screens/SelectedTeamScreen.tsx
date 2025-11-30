@@ -1,4 +1,3 @@
-// src/features/teams/screens/SelectedTeamScreen.tsx
 import React, { useRef } from 'react';
 import { View, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,10 +23,8 @@ export default function SelectedTeamScreen() {
 
   return (
     <View className="flex-1">
-      {/* Header fijo */}
       <FixedHeader title={teamId} scrollY={scrollY} />
 
-      {/* Scroll principal */}
       <Animated.ScrollView
         scrollEventThrottle={16}
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
@@ -40,7 +37,6 @@ export default function SelectedTeamScreen() {
         className="flex-1">
         <DisplayTitle title={teamId} scrollY={scrollY} />
 
-        {/* Módulos del equipo */}
         <TeamModules
           onOverview={() => console.log('Overview')}
           onMembers={() => console.log('Members')}
