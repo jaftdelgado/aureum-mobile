@@ -20,7 +20,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
   const { t } = useTranslation();
-  const { user, loading: loadingAuth } = useAuth();
+  const { user, loading: loadingAuth, refetchProfile } = useAuth();
 
   const { hasProfile, checkingProfile, setHasProfile } = useProfileCheck(user, loadingAuth);
   if (loadingAuth || checkingProfile || (user && hasProfile === null)) {
@@ -41,7 +41,14 @@ const AppNavigator = () => {
           <Stack.Screen name="AuthStack" component={AuthStack} />
         ) : hasProfile === false ? (
           <Stack.Screen name="RegisterProfile">
-            {() => <GoogleRegisterScreen onProfileCreated={() => setHasProfile(true)} />}
+            {() => (
+                <GoogleRegisterScreen 
+                    onProfileCreated={async () => {
+                        await refetchProfile();
+                        setHasProfile(true);
+                    }} 
+                />
+            )}
           </Stack.Screen>
         ) : (
           <Stack.Screen name="AppStack" component={AppStack} />
