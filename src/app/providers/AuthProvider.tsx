@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
-import { DeviceEventEmitter } from 'react-native';
+import { DeviceEventEmitter, Image } from 'react-native';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@infra/external/supabase';
 import { AUTH_LOGOUT_EVENT } from '@infra/api/http/client';
 import { getProfileByAuthId } from '@features/auth/api/authApi';
 import { UserProfile } from '@domain/entities/UserProfile'; // <--- Importar Entidad
+import { getAvatarUrl } from '@core/utils/profile';
 
 interface AuthContextType {
   user: User | null;
@@ -26,16 +27,19 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null); // Estado del perfil
+  const [profile, setProfile] = useState<UserProfile | null>(null); 
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchProfileData = useCallback(async (userId: string) => {
     try {
       const data = await getProfileByAuthId(userId);
-      console.log("AuthProvider: Perfil cargado:", data.username);
       setProfile(data);
+
+      if (data.profile_pic_id) {
+        const url = getAvatarUrl(data);
+        await Image.prefetch(url!);
+      }
     } catch (error) {
-      console.warn(" AuthProvider: Usuario sin perfil (o error de red)");
       setProfile(null);
     }
   }, []);
@@ -59,10 +63,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setSession(null);
-    setProfile(null);
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.warn("Error al cerrar sesión en Supabase (ignorable):", error.message);
+      }
+    } catch (error) {
+      console.warn("Error de red al cerrar sesión:", error);
+    } finally {
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+    }
   };
 
   const refetchProfile = async () => {

@@ -5,6 +5,11 @@
   "deleting": "Deleting...",
   "deleteAccount": "Delete account",
 
+  "sections": {
+    "account": "Account",
+    "general": "General"
+  },
+
   "logoutTitle": "Log Out",
   "logoutMsg": "Are you sure you want to log out?",
   "logoutConfirm": "Log Out",
@@ -14,5 +19,17 @@
   "deleteConfirm": "Delete",
 
   "cancel": "Cancel",
-  "error": "Error"
+  "error": "Error",
+  "viewProfile": "View profile",
+  "back": "Back",
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Info",
+    "username": "Username",
+    "role": "Role",
+    "bio": "Bio",
+    "email": "Email",
+    "student": "Student",
+    "professor": "Professor"
+  }
 }
