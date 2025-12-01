@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri } from 'expo-auth-session';
 import { supabase } from '../../../infra/external/supabase';
@@ -18,6 +18,18 @@ export const useGoogleSignIn = () => {
         scheme: 'aureum',
         path: 'auth/callback',
       });
+
+      if (Platform.OS === 'web') {
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectUrl,
+            skipBrowserRedirect: false, 
+          },
+        });
+        if (error) throw error;
+        return;
+      }
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -49,7 +61,9 @@ export const useGoogleSignIn = () => {
       console.error("Error Google:", error);
       Alert.alert(t("common.error"), error.message || "No se pudo iniciar sesión");
     } finally {
-      setLoading(false);
+      if (Platform.OS !== 'web') {
+        setLoading(false);
+      }
     }
   };
 

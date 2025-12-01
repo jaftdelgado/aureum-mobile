@@ -1,10 +1,15 @@
 {
-  "title": "Configuración",
+  "title": "Ajustes",
   "subtitle": "Gestiona tus preferencias y cuenta.",
   "logout": "Cerrar sesión",
   "deleting": "Eliminando...",
   "deleteAccount": "Eliminar cuenta",
   
+  "sections": {
+    "account": "Cuenta",
+    "general": "General"
+  },
+
   "logoutTitle": "Cerrar Sesión",
   "logoutMsg": "¿Estás seguro de que quieres salir de tu cuenta?",
   "logoutConfirm": "Salir",
@@ -14,5 +19,17 @@
   "deleteConfirm": "Eliminar",
   
   "cancel": "Cancelar",
-  "error": "Error"
+  "error": "Error",
+  "viewProfile": "Ver mi perfil",
+  "back": "Volver",
+  "profile": {
+    "title": "Mi Perfil",
+    "personalInfo": "Información Personal",
+    "username": "Usuario",
+    "role": "Rol",
+    "bio": "Biografía",
+    "email": "Correo",
+    "student": "Estudiante",
+    "professor": "Profesor"
+  }
 }

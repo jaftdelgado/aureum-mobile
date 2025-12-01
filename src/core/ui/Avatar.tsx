@@ -26,19 +26,20 @@ export interface AvatarProps extends VariantProps<typeof avatarStyles> {
   source?: ImageSourcePropType | null;
   style?: ImageStyle;
   placeholderText?: string;
+  className?: string;
 }
 
-export const Avatar: React.FC<AvatarProps> = ({ source, mode, size, style, placeholderText }) => {
+export const Avatar: React.FC<AvatarProps> = ({ source, mode, size, style, placeholderText, className }) => {
   const hasImage = source != null;
 
   return hasImage ? (
     <Image
       source={source as ImageSourcePropType}
-      className={cn(avatarStyles({ mode, size }))}
+      className={cn(avatarStyles({ mode, size }), className)}
       style={style}
     />
   ) : (
-    <View className={cn(avatarStyles({ mode, size }))} style={style}>
+    <View className={cn(avatarStyles({ mode, size }), className)} style={style}>
       {placeholderText && <Text className="font-bold text-white">{placeholderText}</Text>}
     </View>
   );

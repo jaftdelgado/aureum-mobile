@@ -3,11 +3,16 @@ import { Alert, Platform } from 'react-native';
 import { useAuth } from '@app/providers/AuthProvider';
 import { deleteUserProfile } from '@features/auth/api/authApi';
 import { useTranslation } from 'react-i18next';
+import { getAvatarUrl, getInitials } from '@core/utils/profile';
+
 
 export const useSettings = () => {
   const { t } = useTranslation('settings');
-  const { user, signOut } = useAuth();
+  const { user, signOut, profile } = useAuth();
   const [loading, setLoading] = useState(false);
+
+  const avatarUrl = getAvatarUrl(profile);
+  const initials = profile ? getInitials(profile.full_name) : "?";
 
   const handleLogout = () => {
     const performLogout = async () => {
@@ -72,6 +77,9 @@ export const useSettings = () => {
   return {
     loading,
     handleLogout,
-    handleDeleteAccount
+    handleDeleteAccount,
+    profile,
+    avatarUrl,
+    initials
   };
 };
