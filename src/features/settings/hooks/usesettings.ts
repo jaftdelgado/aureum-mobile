@@ -7,12 +7,39 @@ import { getAvatarUrl, getInitials } from '@core/utils/profile';
 
 
 export const useSettings = () => {
-  const { t } = useTranslation('settings');
+  const { t, i18n } = useTranslation('settings');
   const { user, signOut, profile } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const avatarUrl = getAvatarUrl(profile);
   const initials = profile ? getInitials(profile.full_name) : "?";
+
+  const handleChangeLanguage = () => {
+    const changeTo = (lang: string) => {
+      i18n.changeLanguage(lang);
+    };
+
+    if (Platform.OS === 'web') {
+      const lang = window.prompt("Type 'es' for Spanish or 'en' for English", i18n.language);
+      if (lang === 'es' || lang === 'en') changeTo(lang);
+    } else {
+      Alert.alert(
+        t('changeLanguage'),
+        t('selectLanguage'),
+        [
+          { 
+            text: t('spanish'), 
+            onPress: () => changeTo('es'),
+            style: i18n.language === 'es' ? 'default' : 'default' 
+          },
+          { 
+            text: t('english'), 
+            onPress: () => changeTo('en') 
+          }
+        ]
+      );
+    }
+  };
 
   const handleLogout = () => {
     const performLogout = async () => {
@@ -78,6 +105,7 @@ export const useSettings = () => {
     loading,
     handleLogout,
     handleDeleteAccount,
+    handleChangeLanguage,
     profile,
     avatarUrl,
     initials

@@ -7,7 +7,6 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '@app/navigation/AppStack'; 
 import FixedHeader from '@app/components/screen-header/FixedHeader';
 import DisplayTitle from '@app/components/screen-header/DisplayTitle';
-import { Section } from '@core/ui/Section';
 import { ListContainer } from '@core/ui/ListContainer';
 import { ListOption } from '@core/ui/ListOption';
 import { Text } from '@core/ui/Text'; 
@@ -16,7 +15,7 @@ import { useSettings } from '../hooks/usesettings';
 
 export default function SettingsScreen() {
   const { t } = useTranslation('settings');
-  const { loading, handleLogout, handleDeleteAccount, profile, avatarUrl, initials } = useSettings();
+  const { loading, handleLogout, handleDeleteAccount, handleChangeLanguage, profile, avatarUrl, initials } = useSettings();
   
   const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
@@ -68,7 +67,13 @@ export default function SettingsScreen() {
         
         <View className="mt-auto"> 
             <ListContainer>
-            
+
+              <ListOption 
+                text={t('changeLanguage')} 
+                onPress={handleChangeLanguage}
+                iconVariant="gray"
+              />
+
               <ListOption 
                 text={t('logout')} 
                 onPress={handleLogout}

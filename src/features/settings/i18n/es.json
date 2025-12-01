@@ -17,7 +17,11 @@
   "deleteTitle": "Eliminar Cuenta",
   "deleteMsg": "Esto eliminará tu cuenta permanentemente. ¿Seguro que deseas borrarla?",
   "deleteConfirm": "Eliminar",
-  
+  "language": "Idioma",
+  "changeLanguage": "Cambiar idioma",
+  "selectLanguage": "Selecciona tu idioma preferido",
+  "english": "Inglés",
+  "spanish": "Español",
   "cancel": "Cancelar",
   "error": "Error",
   "viewProfile": "Ver mi perfil",
