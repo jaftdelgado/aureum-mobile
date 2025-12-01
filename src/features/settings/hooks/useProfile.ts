@@ -5,16 +5,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '@app/providers/AuthProvider';
 import { getAvatarUrl, getInitials } from '@core/utils/profile';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from '@app/navigation/AppStack';
 
 export const useProfile = () => {
   const { t } = useTranslation('settings');
   const { user, profile } = useAuth();
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const scrollY = useRef(new Animated.Value(0)).current;
   const avatarUrl = getAvatarUrl(profile);
   const initials = profile ? getInitials(profile.full_name) : "?";
-
+  const handleEditProfile = () => navigation.navigate('EditProfile');
   const handleGoBack = () => navigation.goBack();
 
   console.log("Datos del Perfil:", profile); 
@@ -30,5 +32,6 @@ export const useProfile = () => {
     avatarUrl,
     initials,
     handleGoBack,
+    handleEditProfile
   };
 };
