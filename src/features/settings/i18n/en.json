@@ -22,6 +22,10 @@
   "error": "Error",
   "viewProfile": "View profile",
   "back": "Back",
+  "editProfile": "Edit Profile",
+  "changePhoto": "Change photo",
+  "saveChanges": "Save Changes",
+  "updateError": "Could not update profile. Please try again.",
   "profile": {
     "title": "My Profile",
     "personalInfo": "Personal Info",
@@ -30,6 +34,7 @@
     "bio": "Bio",
     "email": "Email",
     "student": "Student",
-    "professor": "Professor"
+    "professor": "Professor",
+    "name": "Full Name"
   }
 }

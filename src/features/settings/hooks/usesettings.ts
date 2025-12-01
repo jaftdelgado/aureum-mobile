@@ -30,12 +30,12 @@ export const useSettings = () => {
         t("logoutTitle"),
         t("logoutMsg"),
         [
-          { text: t("common.cancel"), style: "cancel" },
           { 
             text: t("logoutConfirm"), 
             style: "destructive", 
             onPress: performLogout 
           },
+          { text: t("cancel"), style: "cancel" },
         ]
       );
     }
@@ -63,7 +63,7 @@ export const useSettings = () => {
         t("deleteTitle"),
         t("deleteMsg"),
         [
-          { text: t("common.cancel"), style: "cancel" },
+          { text: t("cancel"), style: "cancel" },
           { 
             text: t("deleteConfirm"), 
             style: "destructive", 
