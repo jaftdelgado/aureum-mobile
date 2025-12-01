@@ -17,7 +17,11 @@
   "deleteTitle": "Delete Account",
   "deleteMsg": "This will permanently delete your account. Are you sure?",
   "deleteConfirm": "Delete",
-
+  "language": "Language",
+  "changeLanguage": "Change language",
+  "selectLanguage": "Select your preferred language",
+  "english": "English",
+  "spanish": "Spanish",
   "cancel": "Cancel",
   "error": "Error",
   "viewProfile": "View profile",
