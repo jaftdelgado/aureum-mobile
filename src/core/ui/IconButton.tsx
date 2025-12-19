@@ -1,13 +1,14 @@
 import React from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
 import { Icon } from '@core/ui/Icon';
 import type { SvgProps } from 'react-native-svg';
 import { useThemeColor } from '@core/design/useThemeColor';
 import { colors } from '@core/design/colors';
+import { GlassContainer } from './GlassContainer';
 
-const iconButtonStyles = cva('items-center justify-center active:opacity-80', {
+const iconButtonStyles = cva('items-center justify-center active:opacity-80 overflow-hidden', {
   variants: {
     size: {
       xs: 'h-8 w-8',
@@ -19,7 +20,7 @@ const iconButtonStyles = cva('items-center justify-center active:opacity-80', {
     variant: {
       primary: '',
       secondary: '',
-      thirdy: 'border',
+      thirdy: '',
       ghost: 'bg-transparent',
     },
     rounded: {
@@ -50,16 +51,17 @@ const colorMap = {
     border: 'transparent' as const,
     icon: 'primaryText' as const,
   },
-  thirdy: { bg: 'secondaryBtn' as const, border: 'border' as const, icon: 'primaryText' as const },
+  thirdy: {
+    bg: 'transparent' as const,
+    border: 'border' as const, // Ahora activamos el borde del tema aquí
+    icon: 'primaryText' as const,
+  },
   ghost: {
     bg: 'transparent' as const,
     border: 'transparent' as const,
     icon: 'secondaryText' as const,
   },
 };
-
-type VariantKey = keyof typeof colorMap;
-type IconColorKey = keyof typeof colors.light;
 
 const iconSizeValues = {
   xs: 14,
@@ -69,36 +71,53 @@ const iconSizeValues = {
   xl: 18,
 } as const;
 
+type VariantKey = keyof typeof colorMap;
+type IconColorKey = keyof typeof colors.light;
+
 export const IconButton: React.FC<IconButtonProps> = ({
   onPress,
   icon: IconComponent,
   size = 'md',
   variant = 'primary',
-  rounded,
+  rounded = 'full',
   disabled = false,
   className,
 }) => {
   const safeVariant = variant as VariantKey;
-  const variantColors = colorMap[safeVariant];
+  const safeSize = size ?? 'md';
+  const safeRounded = rounded ?? 'full';
 
+  const variantColors = colorMap[safeVariant];
   const backgroundColor = useThemeColor(variantColors.bg);
   const borderColor = useThemeColor(variantColors.border);
 
-  const safeSize = size ?? 'md';
   const iconSize = iconSizeValues[safeSize as keyof typeof iconSizeValues];
+
+  const renderContent = () => (
+    <Icon component={IconComponent} color={variantColors.icon as IconColorKey} size={iconSize} />
+  );
 
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
-      className={cn(iconButtonStyles({ size: safeSize, variant: safeVariant, rounded }), className)}
+      className={cn(
+        iconButtonStyles({ size: safeSize, variant: safeVariant, rounded: safeRounded }),
+        className
+      )}
       style={{
-        backgroundColor,
-        borderColor,
+        backgroundColor: safeVariant === 'thirdy' ? undefined : backgroundColor,
+        borderColor: borderColor,
         borderWidth: safeVariant === 'thirdy' ? 1 : 0,
         opacity: disabled ? 0.4 : 1,
       }}>
-      <Icon component={IconComponent} color={variantColors.icon as IconColorKey} size={iconSize} />
+      {safeVariant === 'thirdy' ? (
+        <GlassContainer intensity={60} style={StyleSheet.absoluteFill}>
+          {renderContent()}
+        </GlassContainer>
+      ) : (
+        renderContent()
+      )}
     </Pressable>
   );
 };

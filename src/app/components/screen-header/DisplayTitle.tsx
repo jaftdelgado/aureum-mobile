@@ -18,7 +18,7 @@ export default function DisplayTitle({ title, scrollY, className }: DisplayTitle
   });
 
   return (
-    <Animated.View style={{ opacity: largeTitleOpacity }} className={cn('mb-4', className)}>
+    <Animated.View style={{ opacity: largeTitleOpacity }} className={cn('px-4', className)}>
       <Text type="display" color="default" weight="bold">
         {title}
       </Text>

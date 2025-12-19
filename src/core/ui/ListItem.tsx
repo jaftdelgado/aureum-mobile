@@ -1,7 +1,9 @@
 import React, { ReactNode } from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { cn } from '@core/utils/cn';
+import { useTheme } from '@app/providers/ThemeProvider';
+import { Text } from '@core/ui/Text'; // Tu componente Text personalizado
 
 type SwipeAction = {
   label: string;
@@ -26,22 +28,25 @@ export const ListItem = ({
   swipeRightActions,
   className,
 }: ListItemProps) => {
+  const { theme, isDark } = useTheme();
+
   const renderActions = (actions?: SwipeAction[]) => {
     if (!actions || actions.length === 0) return undefined;
 
     return (
-      <View style={{ height: '100%', flexDirection: 'row' }}>
+      <View style={styles.actionsContainer}>
         {actions.map((action, idx) => (
           <Pressable
             key={idx}
             onPress={action.onPress}
             style={{
               width: action.width ?? 80,
-              backgroundColor: action.color ?? '#666',
+              backgroundColor: action.color ?? (isDark ? theme.secondaryBtn : theme.secondary),
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={{ color: action.textColor ?? '#fff', fontWeight: '600' }}>
+            {/* Usamos tu componente Text con peso semibold para las acciones */}
+            <Text weight="semibold" style={{ color: action.textColor ?? theme.white }}>
               {action.label}
             </Text>
           </Pressable>
@@ -56,12 +61,33 @@ export const ListItem = ({
       overshootRight={false}
       renderLeftActions={() => renderActions(swipeLeftActions)}
       renderRightActions={() => renderActions(swipeRightActions)}
-      enabled={(swipeLeftActions?.length ?? 0) > 0 || (swipeRightActions?.length ?? 0) > 0}>
+      enabled={(swipeLeftActions?.length ?? 0) > 0 || (swipeRightActions?.length ?? 0) > 0}
+      // Opcional: Color de fondo del contenedor del swipe para evitar saltos de color
+      containerStyle={{ backgroundColor: theme.bg }}>
       <Pressable
         onPress={onPress}
-        className={cn('border-b border-gray-200 px-4 py-4 active:bg-gray-50', className)}>
+        // Usamos style para el color de borde y el efecto active dinámico
+        style={({ pressed }) => [
+          {
+            backgroundColor: pressed
+              ? isDark
+                ? '#1f2937'
+                : '#f3f4f6' // Simula un active:bg dinámico
+              : theme.bg,
+            borderBottomColor: theme.border,
+            borderBottomWidth: 1,
+          },
+        ]}
+        className={cn('px-4 py-4', className)}>
         {children}
       </Pressable>
     </Swipeable>
   );
 };
+
+const styles = StyleSheet.create({
+  actionsContainer: {
+    height: '100%',
+    flexDirection: 'row',
+  },
+});

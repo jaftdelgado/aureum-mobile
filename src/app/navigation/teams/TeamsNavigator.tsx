@@ -16,9 +16,6 @@ export function TeamsNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {/* Nivel 1 */}
       <Stack.Screen name="Teams" component={TeamsScreen} />
-
-      {/* Nivel 2 */}
-      {/* Nivel 3 */}
       <Stack.Screen name="SelectedTeamRoot" component={SelectedTeamNavigator} />
     </Stack.Navigator>
   );

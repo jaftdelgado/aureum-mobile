@@ -1,6 +1,6 @@
 // src/core/ui/ListOption.tsx
 import React, { FC, ReactNode } from 'react';
-import { TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+import { TouchableOpacity, TouchableOpacityProps, View, Image } from 'react-native';
 import { Icon } from '@core/ui/Icon';
 import { Text } from '@core/ui/Text';
 import { cn } from '@core/utils/cn';
@@ -10,7 +10,7 @@ import { IconContainer } from '@core/ui/IconContainer';
 
 export interface ListOptionProps extends TouchableOpacityProps {
   text: string | ReactNode;
-  icon?: Parameters<typeof IconContainer>[0]['icon'];
+  icon?: Parameters<typeof IconContainer>[0]['icon'] | string;
   iconVariant?: Parameters<typeof IconContainer>[0]['variant'];
   iconSize?: number;
   containerSize?: number;
@@ -36,23 +36,32 @@ export const ListOption: FC<ListOptionProps> = ({
       {...props}
       activeOpacity={0.6}
       className={cn('flex-row items-center justify-between rounded-lg px-4 py-3', className)}
-      style={[
-        !isLast && {
-          borderBottomWidth: 1,
-          borderBottomColor: borderColor,
-        },
-      ]}>
+      style={[!isLast && { borderBottomWidth: 1, borderBottomColor: borderColor }]}>
       <View className="flex-row items-center space-x-3">
         {icon ? (
-          <IconContainer
-            icon={icon}
-            variant={iconVariant}
-            size={containerSize}
-            iconSize={iconSize}
-            className="mr-4"
-          />
+          typeof icon === 'string' ? (
+            <Image
+              source={{ uri: icon }}
+              style={{
+                width: containerSize,
+                height: containerSize,
+                borderRadius: containerSize / 2,
+              }}
+              resizeMode="cover"
+              defaultSource={undefined} // opcional: require('../../assets/placeholder.png')
+            />
+          ) : (
+            // icon es componente
+            <IconContainer
+              icon={icon}
+              variant={iconVariant}
+              size={containerSize}
+              iconSize={iconSize}
+              className="mr-4"
+            />
+          )
         ) : (
-          <View style={{ width: containerSize }} />
+          <View style={{ width: containerSize, height: containerSize }} />
         )}
 
         {typeof text === 'string' ? (

@@ -1,19 +1,24 @@
+export interface AssetCategory {
+  categoryId: number;
+  name: string;
+}
+
 export interface Asset {
   publicId: string;
-  symbol: string;
-  name: string;
-  type: 'Stock' | 'Crypto' | 'ETF';
-  basePrice?: number;
+  assetName: string;
+  assetSymbol: string;
+  assetType: string;
+  basePrice: number;
+
   volatility?: number;
-  drift?: number;
-  maxPrice?: number;
-  minPrice?: number;
-  dividendYield?: number;
-  liquidity?: number;
-  createdAt: Date;
-  imageUrl?: string;
-  category?: {
-    id: number;
-    name: string;
-  };
+  drift?: number | null;
+  maxPrice?: number | null;
+  minPrice?: number | null;
+  dividendYield?: number | null;
+  liquidity?: number | null;
+  assetPicUrl?: string | null;
+
+  category?: AssetCategory | null;
+
+  isSelected?: boolean;
 }

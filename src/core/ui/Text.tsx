@@ -2,7 +2,8 @@ import { Text as RNText, TextProps as RNTextProps } from 'react-native';
 import React from 'react';
 import { cva, VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
-import { useThemeColor } from '@core/design/useThemeColor';
+import { useTheme } from '@app/providers/ThemeProvider';
+import { colors } from '@core/design/colors';
 
 type TextColor = 'default' | 'secondary' | 'success' | 'warning' | 'error';
 
@@ -12,7 +13,8 @@ type Props = RNTextProps &
     className?: string;
   };
 
-const colorMap: Record<TextColor, keyof typeof import('@core/design/colors').colors.light> = {
+// Mapeo de nuestras keys de color a las keys del objeto de colores
+const colorMap: Record<TextColor, keyof typeof colors.light> = {
   default: 'primaryText',
   secondary: 'secondaryText',
   success: 'success',
@@ -62,13 +64,19 @@ export function Text({
   color = 'default',
   className,
   children,
+  style, // Extraemos style por si pasas estilos manuales
   ...rest
 }: Props) {
-  const themeColor = useThemeColor(colorMap[color]);
+  // 1. Extraemos el objeto theme actual del Provider
+  const { theme } = useTheme();
+
+  // 2. Obtenemos el valor hexadecimal directamente del objeto theme
+  const themeColor = theme[colorMap[color]];
 
   return (
     <RNText
-      style={{ color: themeColor }}
+      // Aplicamos el color y permitimos que 'style' externo sobreescriba si es necesario
+      style={[{ color: themeColor }, style]}
       className={cn(textStyles({ type, weight, align }), className)}
       {...rest}>
       {children}

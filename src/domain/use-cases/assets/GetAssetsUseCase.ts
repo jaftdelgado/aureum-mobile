@@ -1,10 +1,26 @@
-import { AssetsRepository } from '@domain/repositories/AssetsRepository';
-import { Asset } from '@domain/entities/Asset';
+import type { AssetRepository } from '../../repositories/AssetRepository';
+import type { Asset } from '../../entities/Asset';
 
 export class GetAssetsUseCase {
-  constructor(private assetsRepository: AssetsRepository) {}
+  private assetRepository: AssetRepository;
 
-  async execute(): Promise<Asset[]> {
-    return this.assetsRepository.getAllAssets();
+  constructor(assetRepository: AssetRepository) {
+    this.assetRepository = assetRepository;
+  }
+
+  async execute(
+    query: Record<string, unknown>,
+    selectedAssetIds: string[] = []
+  ): Promise<{
+    data: Asset[];
+    meta: {
+      totalItems: number;
+      itemCount: number;
+      itemsPerPage: number;
+      totalPages: number;
+      currentPage: number;
+    };
+  }> {
+    return this.assetRepository.getAssets(query, selectedAssetIds);
   }
 }

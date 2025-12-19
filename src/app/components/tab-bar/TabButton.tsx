@@ -16,7 +16,7 @@ export const TabButton: FC<TabButtonProps> = ({ tab, isActive, onTabPress }) => 
     <TouchableOpacity
       key={tab.key}
       onPress={() => onTabPress(tab.key)}
-      className="flex-1 items-center justify-center"
+      className="flex-1 items-center justify-center pt-2"
       activeOpacity={0.7}>
       <Icon component={tab.icon} color={isActive ? 'primaryText' : 'secondaryText'} size={24} />
       <Text

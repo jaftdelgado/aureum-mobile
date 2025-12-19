@@ -1,13 +1,17 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
 import { DeviceEventEmitter } from 'react-native';
-import { supabase } from '../../external/supabase';
 
-const GATEWAY_URL = process.env.EXPO_PUBLIC_API_GATEWAY_URL;
+/**
+ * URL local del contenedor
+ * Docker: -p 8076:3000
+ */
+const DEV_BASE_URL = 'http://localhost:8076';
 
 export const AUTH_LOGOUT_EVENT = 'auth:logout';
 
 export class HttpError extends Error {
   public status: number;
+
   constructor(status: number, message: string) {
     super(message);
     this.status = status;
@@ -19,39 +23,27 @@ const triggerServerDisconnect = () => {
   DeviceEventEmitter.emit('server-disconnect');
 };
 
-export const client: AxiosInstance = axios.create({
-  baseURL: GATEWAY_URL,
+export const devClient: AxiosInstance = axios.create({
+  baseURL: DEV_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-client.interceptors.request.use(
-  async (config) => {
-    const { data, error } = await supabase.auth.getSession();
-    const token = data.session?.access_token;
-
-    if (error || !token) {
-      return Promise.reject(new HttpError(401, 'No hay sesión activa. Petición cancelada.'));
-    }
-
-    config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-client.interceptors.response.use(
+devClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) DeviceEventEmitter.emit(AUTH_LOGOUT_EVENT);
+    if (error.response?.status === 401) {
+      DeviceEventEmitter.emit(AUTH_LOGOUT_EVENT);
+    }
     return Promise.reject(error);
   }
 );
 
+/**
+ * HTTP CLIENT
+ */
 export class HttpClient {
   private instance: AxiosInstance;
 
@@ -107,7 +99,7 @@ export class HttpClient {
         throw new HttpError(status, message);
       }
 
-      console.error('[HttpClientNative] Network error:', error.message);
+      console.error('[HttpClientDev] Network error:', error.message);
       triggerServerDisconnect();
       throw new HttpError(0, 'Network Error');
     }
@@ -146,4 +138,4 @@ export class HttpClient {
   }
 }
 
-export const httpClient = new HttpClient(client);
+export const httpClient = new HttpClient(devClient);
