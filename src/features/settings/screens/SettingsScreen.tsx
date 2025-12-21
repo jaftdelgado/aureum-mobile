@@ -15,7 +15,7 @@ import { useSettings } from '../hooks/usesettings';
 
 export default function SettingsScreen() {
   const { t } = useTranslation('settings');
-  const { loading, handleLogout, handleDeleteAccount, handleChangeLanguage, profile, avatarUrl, initials } = useSettings();
+  const { loading, handleLogout, handleDeleteAccount, handleChangeLanguage, user, avatarUrl, initials } = useSettings();
   
   const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
@@ -40,7 +40,7 @@ export default function SettingsScreen() {
         <View>
           <DisplayTitle title={t('title')} scrollY={scrollY} />
 
-          {profile && (
+          {user && (
             <View className="mb-3">
               <Text type="title3" weight="semibold" className="mb-3">
                 {t('sections.account')}
@@ -52,12 +52,12 @@ export default function SettingsScreen() {
               >
                 <Avatar 
                   size="md" 
-                  source={avatarUrl ? { uri: avatarUrl } : null}
+                  source={avatarUrl}
                   placeholderText={initials} 
                   className="mr-4"
                 /> 
                 <View className="flex-1">
-                  <Text type="body" weight="bold">{profile.full_name}</Text>
+                  <Text type="body" weight="bold">{user.fullName}</Text>
                   <Text type="caption1" color="secondary">{t('viewProfile')}</Text>
                 </View>
               </TouchableOpacity>

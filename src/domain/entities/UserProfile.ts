@@ -1,11 +1,11 @@
 export interface UserProfile {
-  profile_id: number;
-  auth_user_id: string;
+  id: string;
+  authUserId: string;
   username: string;
-  full_name: string;
-  bio?: string | null;
-  role: 'student' | 'professor';
-  profile_pic_id?: string | null;
-  created_at?: string;
-  updated_at?: string;
+  fullName: string;
+  bio?: string;
+  role: "student" | "professor";
+  avatarUrl?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

@@ -1,4 +1,4 @@
-import type { Asset } from '@domain/entities/Asset';
+import type { Asset } from "@domain/entities/Asset";
 
 export interface AssetRepository {
   getAssets(

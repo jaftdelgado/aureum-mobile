@@ -8,11 +8,11 @@ import { getAvatarUrl, getInitials } from '@core/utils/profile';
 
 export const useSettings = () => {
   const { t, i18n } = useTranslation('settings');
-  const { user, signOut, profile } = useAuth();
+  const { user, logout} = useAuth();
   const [loading, setLoading] = useState(false);
 
-  const avatarUrl = getAvatarUrl(profile);
-  const initials = profile ? getInitials(profile.full_name) : "?";
+  const avatarUrl = user?.avatarUrl;
+  const initials = user?.fullName ? getInitials(user.fullName) : "?";
 
   const handleChangeLanguage = () => {
     const changeTo = (lang: string) => {
@@ -44,7 +44,7 @@ export const useSettings = () => {
   const handleLogout = () => {
     const performLogout = async () => {
       try {
-        await signOut();
+        await logout();
       } catch (error) {
         console.error("Error al cerrar sesión:", error);
       }
@@ -74,7 +74,7 @@ export const useSettings = () => {
       setLoading(true);
       try {
         await deleteUserProfile(user.id);
-        await signOut(); 
+        await logout(); 
       } catch (error) {
         console.error("Error al eliminar cuenta:", error);
         Alert.alert(t("common.error"), "No se pudo eliminar la cuenta. Inténtalo más tarde.");
@@ -106,7 +106,7 @@ export const useSettings = () => {
     handleLogout,
     handleDeleteAccount,
     handleChangeLanguage,
-    profile,
+    user,
     avatarUrl,
     initials
   };

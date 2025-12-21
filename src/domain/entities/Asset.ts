@@ -20,5 +20,8 @@ export interface Asset {
 
   category?: AssetCategory | null;
 
+  createdAt?: Date;
+  updatedAt?: Date;
+
   isSelected?: boolean;
 }

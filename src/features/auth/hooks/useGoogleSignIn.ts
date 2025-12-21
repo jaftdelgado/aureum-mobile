@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Alert, Platform } from 'react-native';
+import { Alert} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { makeRedirectUri } from 'expo-auth-session';
 import { supabase } from '../../../infra/external/supabase';
 import { useTranslation } from 'react-i18next';
+import NetInfo from '@react-native-community/netinfo';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,35 +15,41 @@ export const useGoogleSignIn = () => {
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
+      const networkState = await NetInfo.fetch();
+      if (networkState.isConnected === false) {
+        throw new Error("No hay conexión a internet. Verifique su red.");
+      }
+
       const redirectUrl = makeRedirectUri({
         scheme: 'aureum',
         path: 'auth/callback',
       });
 
-      if (Platform.OS === 'web') {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectUrl,
-            skipBrowserRedirect: false, 
-          },
-        });
-        if (error) throw error;
-        return;
-      }
-
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
-          skipBrowserRedirect: true,
+          skipBrowserRedirect: true, 
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account'
+          }
         },
       });
 
       if (error) throw error;
 
       if (data?.url) {
-        const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
+        let authUrl = data.url;
+
+        if (authUrl.includes('prompt=')) {
+           authUrl = authUrl.replace(/prompt=[^&]+/, 'prompt=select_account');
+        } else {
+           const separator = authUrl.includes('?') ? '&' : '?';
+           authUrl = `${authUrl}${separator}prompt=select_account`;
+        }
+
+        const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUrl);
         
         if (result.type === 'success' && result.url) {
           const params = new URLSearchParams(result.url.split('#')[1]);
@@ -61,9 +68,7 @@ export const useGoogleSignIn = () => {
       console.error("Error Google:", error);
       Alert.alert(t("common.error"), error.message || "No se pudo iniciar sesión");
     } finally {
-      if (Platform.OS !== 'web') {
-        setLoading(false);
-      }
+      setLoading(false);
     }
   };
 

@@ -1,116 +1,182 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
-import { DeviceEventEmitter, Image } from 'react-native';
-import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@infra/external/supabase';
-import { AUTH_LOGOUT_EVENT } from '@infra/api/http/client';
-import { getProfileByAuthId } from '@features/auth/api/authApi';
-import { UserProfile } from '@domain/entities/UserProfile'; // <--- Importar Entidad
-import { getAvatarUrl } from '@core/utils/profile';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { AppState, DeviceEventEmitter, Alert } from 'react-native';
+import { AuthApiRepository } from '../../infra/external/auth/AuthApiRepository';
+import { ProfileApiRepository } from '../../infra/api/users/ProfileApiRepository';
+import { LoginUseCase } from '../../domain/use-cases/auth/LoginUseCase';
+import { RegisterUseCase } from '../../domain/use-cases/auth/RegisterUseCase';
+import { LogoutUseCase } from '../../domain/use-cases/auth/LogoutUseCase';
+import { GetSessionUseCase } from '../../domain/use-cases/auth/GetSessionUseCase';
+import { LoggedInUser } from '../../domain/entities/LoggedInUser';
+import { RegisterData } from '../../domain/entities/RegisterData';
+
+const authRepository = new AuthApiRepository();
+const profileRepository = new ProfileApiRepository();
+const AUTH_LOGOUT_EVENT = 'auth:logout';
+const SERVER_DISCONNECT_EVENT = 'server-disconnect';
+const loginUseCase = new LoginUseCase(authRepository, profileRepository);
+const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
+const logoutUseCase = new LogoutUseCase(authRepository);
+const getSessionUseCase = new GetSessionUseCase(authRepository, profileRepository);
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  profile: UserProfile | null; 
-  loading: boolean;
-  signOut: () => Promise<void>;
-  refetchProfile: () => Promise<void>; 
+  user: LoggedInUser | null;
+  isLoading: boolean;
+  login: (data: any) => Promise<void>; 
+  register: (data: RegisterData) => Promise<void>;
+  logout: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  refreshSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-export const useAuth = () => useContext(AuthContext);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<LoggedInUser | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null); 
-  const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchProfileData = useCallback(async (userId: string) => {
+  const checkCurrentSession = async () => {
     try {
-      const data = await getProfileByAuthId(userId);
-      setProfile(data);
+      const currentUser = await getSessionUseCase.execute();
+      
+      if (currentUser) {
+        const hasProfile = await profileRepository.checkProfileExists(currentUser.id);
+        
+        if (hasProfile) {
+          const fullProfile = await profileRepository.getProfile(currentUser.id);
+          
+          if (fullProfile) {
+              setUser({
+                  ...currentUser,
+                  username: fullProfile.username,
+                  role: fullProfile.role
+              });
+          } else {
+              setUser(currentUser); 
+          }
 
-      if (data.profile_pic_id) {
-        const url = getAvatarUrl(data);
-        await Image.prefetch(url!);
-      }
-    } catch (error) {
-      setProfile(null);
-    }
-  }, []);
-
-  const loadSession = async () => {
-    try {
-      const { data } = await supabase.auth.getSession();
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-
-      if (data.session?.user) {
-        await fetchProfileData(data.session.user.id);
+        } else {
+          setUser(currentUser); 
+        }
       } else {
-        setProfile(null);
+        setUser(null);
       }
     } catch (error) {
-      console.error("Error loading session:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.warn("Error al cerrar sesión en Supabase (ignorable):", error.message);
-      }
-    } catch (error) {
-      console.warn("Error de red al cerrar sesión:", error);
-    } finally {
+      console.log('No session found or error:', error);
       setUser(null);
-      setSession(null);
-      setProfile(null);
-    }
-  };
-
-  const refetchProfile = async () => {
-    if (user?.id) {
-      await fetchProfileData(user.id);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    loadSession();
+    checkCurrentSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        await fetchProfileData(session.user.id);
-      } else {
-        setProfile(null);
-      }
-      setLoading(false);
+    const unsubscribe = authRepository.onAuthStateChange(async (changedUser) => {
+        if (changedUser) {
+           const hasProfile = await profileRepository.checkProfileExists(changedUser.id);
+           
+           if (hasProfile) {
+               const fullProfile = await profileRepository.getProfile(changedUser.id);
+               if (fullProfile) {
+                   setUser({ ...changedUser, username: fullProfile.username, role: fullProfile.role });
+               } else {
+                   setUser(changedUser);
+               }
+           } else {
+               setUser(changedUser);
+           }
+        } else {
+           setUser(null);
+        }
+        setIsLoading(false);
     });
 
     const logoutListener = DeviceEventEmitter.addListener(AUTH_LOGOUT_EVENT, () => {
-      signOut();
+      logout();
+      Alert.alert("Sesión Expirada", "Tu sesión ha caducado o se inició en otro dispositivo.");
+    });
+
+    const serverListener = DeviceEventEmitter.addListener(SERVER_DISCONNECT_EVENT, () => {
+      Alert.alert(
+        "Error de Conexión", 
+        "No pudimos conectar con el servidor. Por favor intenta más tarde."
+      );
+    });
+
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        checkCurrentSession();
+      }
     });
 
     return () => {
-      authListener.subscription.unsubscribe();
+      unsubscribe();
+      subscription.remove();
       logoutListener.remove();
+      serverListener.remove();
     };
-  }, [fetchProfileData]);
+  }, []);
+
+  const login = async (data: any) => {
+    setIsLoading(true);
+    try {
+      const loggedUser = await loginUseCase.execute(data.email, data.password);
+      setUser(loggedUser);
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const register = async (data: RegisterData) => {
+    setIsLoading(true);
+    try {
+      await registerUseCase.execute(data);
+    } catch (error: any) {
+      console.error('Register error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    setIsLoading(true);
+    try {
+      await logoutUseCase.execute();
+      setUser(null);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginWithGoogle = async () => {
+      try {
+          await authRepository.loginWithGoogle();
+      } catch (error) {
+          console.error("Google login error:", error);
+      }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signOut, refetchProfile }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        login,
+        register,
+        logout,
+        loginWithGoogle,
+        refreshSession: checkCurrentSession,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

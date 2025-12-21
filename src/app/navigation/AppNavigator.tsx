@@ -4,17 +4,13 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 
-// Providers y Hooks
 import { useAuth } from '@app/providers/AuthProvider';
 import { useTheme } from '@app/providers/ThemeProvider';
-import { useProfileCheck } from '@features/auth/hooks/useProfileCheck';
 
-// Navegación y Pantallas
 import AuthStack from '@app/navigation/AuthStack';
 import AppStack from '@app/navigation/AppStack';
 import { GoogleRegisterScreen } from '@features/auth/screens/GoogleRegisterScreen';
 
-// UI Components
 import { Text } from '@core/ui/Text';
 
 export type RootStackParamList = {
@@ -28,9 +24,10 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const AppNavigator = () => {
   const { t } = useTranslation('app');
   const { theme, isDark } = useTheme();
-  const { user, loading: loadingAuth, refetchProfile } = useAuth();
+  
+  const { user, isLoading } = useAuth(); 
 
-  const { hasProfile, checkingProfile, setHasProfile } = useProfileCheck(user, loadingAuth);
+  const hasProfile = user?.username && user?.role;
 
   const customNavigationTheme = {
     ...(isDark ? DarkTheme : DefaultTheme),
@@ -45,15 +42,10 @@ const AppNavigator = () => {
     },
   };
 
-  if (loadingAuth || checkingProfile || (user && hasProfile === null)) {
+  if (isLoading) {
     return (
       <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: theme.bg,
-        }}>
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bg }}>
         <ActivityIndicator size="large" color={theme.primary} />
         <Text style={{ color: theme.secondaryText }} className="mt-4">
           {t('navigation.checkingProfile')}
@@ -67,18 +59,10 @@ const AppNavigator = () => {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!user ? (
           <Stack.Screen name="AuthStack" component={AuthStack} />
-        ) : hasProfile === false ? (
-          <Stack.Screen name="RegisterProfile">
-            {() => (
-              <GoogleRegisterScreen
-                onProfileCreated={async () => {
-                  await refetchProfile();
-                  setHasProfile(true);
-                }}
-              />
-            )}
-          </Stack.Screen>
+        ) : !hasProfile ? (
+          <Stack.Screen name="RegisterProfile" component={GoogleRegisterScreen} />
         ) : (
+          
           <Stack.Screen name="AppStack" component={AppStack} />
         )}
       </Stack.Navigator>

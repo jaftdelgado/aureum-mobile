@@ -1,5 +1,5 @@
-import type { AssetRepository } from '../../repositories/AssetRepository';
-import type { Asset } from '../../entities/Asset';
+import type { AssetRepository } from "@domain/repositories/AssetRepository";
+import type { Asset } from "@domain/entities/Asset";
 
 export class GetAssetsUseCase {
   private assetRepository: AssetRepository;
