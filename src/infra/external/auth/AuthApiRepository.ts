@@ -92,12 +92,23 @@ export class AuthApiRepository implements AuthRepository {
       provider: "google",
       options: { 
         redirectTo: redirectUrl,
-        skipBrowserRedirect: true, 
+        skipBrowserRedirect: true,
+        queryParams: {
+          prompt: 'select_account consent', 
+          access_type: 'offline'
+        }
       },
     });
 
     if (error) throw new Error(error.message);
-    if (data?.url) await Linking.openURL(data.url);
+    if (data?.url) {
+      let finalUrl = data.url;
+      if (!finalUrl.includes('prompt=')) {
+        finalUrl += '&prompt=select_account';
+      }
+    
+      await Linking.openURL(finalUrl);
+    }
   }
 
   onAuthStateChange(callback: (user: LoggedInUser | null) => void): () => void {

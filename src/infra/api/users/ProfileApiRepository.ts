@@ -10,7 +10,7 @@ export class ProfileApiRepository implements ProfileRepository {
   
   async getProfile(userId: string): Promise<UserProfile | null> {
     try {
-      const response = await client.get<UserProfileDTO>(`/users/${userId}`);
+      const response = await client.get<UserProfileDTO>(`/api/users/profiles/${userId}`);
       return mapDTOToUserProfile(response.data);
     } catch (error: any) {
       if (error.response?.status === 404 || error.message?.includes("404")) {
@@ -23,13 +23,13 @@ export class ProfileApiRepository implements ProfileRepository {
 
   async getPublicProfile(userId: string): Promise<TeamMember | null> {
     try {
-      const response = await client.get<any>(`/users/profiles/${userId}`);
+      const response = await client.get<any>(`/api/users/profiles/${userId}`);
       
       return {
-        id: response.data.auth_user_id || response.data.id, // Usamos el ID disponible
-        name: response.data.full_name,                      // <--- Aquí estaba el error (fullName -> name)
-        email: response.data.email || "",                   // Campo requerido por tu interfaz
-        role: response.data.role,                           // "student" | "professor"
+        id: response.data.auth_user_id || response.data.id, 
+        name: response.data.full_name,                     
+        email: response.data.email || "",                  
+        role: response.data.role,                          
         avatarUrl: response.data.profile_pic_id,
       } as TeamMember;
     } catch (error) {
@@ -40,7 +40,7 @@ export class ProfileApiRepository implements ProfileRepository {
 
   async checkProfileExists(authId: string): Promise<boolean> {
     try {
-      await client.get(`/users/${authId}`);
+      await client.get(`/api/users/profiles/${authId}`);
       return true;
     } catch (error: any) {
       return false;
@@ -56,11 +56,11 @@ export class ProfileApiRepository implements ProfileRepository {
       role: data.accountType,
       profile_pic_id: null 
     };
-    await client.post("/users", payload);
+    await client.post(`/api/users/profiles`, payload);
   }
 
   async updateProfile(authId: string, data: { bio?: string }): Promise<void> {
-    await client.put(`/users/${authId}`, data);
+    await client.patch(`/api/users/profiles/${authId}`, data)
   }
 
   async uploadAvatar(authId: string, imageFile: any): Promise<void> {
@@ -71,7 +71,7 @@ export class ProfileApiRepository implements ProfileRepository {
       type: imageFile.type || "image/jpeg",
     } as any); 
 
-    await client.post(`/users/${authId}/avatar`, formData, {
+    await client.post(`/api/users/profiles/${authId}/avatar`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -79,6 +79,6 @@ export class ProfileApiRepository implements ProfileRepository {
   }
 
   async deleteAccount(authId: string): Promise<void> {
-     await client.delete(`/users/${authId}`);
+     await client.delete(`/api/users/profiles/${authId}`);
   }
 }

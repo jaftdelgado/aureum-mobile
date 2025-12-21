@@ -3,9 +3,14 @@ import { Alert } from "react-native";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { supabase } from "../../../infra/external/supabase";
-import { createProfile } from "../api/authApi";
 import { createSignUpSchema, SignUpFormData } from "../schemas/signUpSchema";
+
+import { AuthApiRepository } from "../../../infra/external/auth/AuthApiRepository";
+import { ProfileApiRepository } from "../../../infra/api/users/ProfileApiRepository";
+import { RegisterUseCase } from "../../../domain/use-cases/auth/RegisterUseCase";
+import { GetSocialUserUseCase } from "../../../domain/use-cases/auth/GetSocialUserUseCase";
+
+const GOOGLE_AUTH_DUMMY_PASS = "GoogleDummyPass1!";
 
 interface UseSignUpProps {
   isGoogleFlow: boolean;
@@ -14,8 +19,13 @@ interface UseSignUpProps {
 
 export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
   const { t } = useTranslation('auth');
-  const [step, setStep] = useState(isGoogleFlow ? 2 : 1);
+  
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [shouldHideBackButton, setShouldHideBackButton] = useState(false);
+
+  const authRepository = new AuthApiRepository();
+  const profileRepository = new ProfileApiRepository();
 
   const { control, handleSubmit, trigger, setValue, setError, formState: { errors } } = useForm<SignUpFormData>({
     resolver: zodResolver(createSignUpSchema(t)),
@@ -28,70 +38,61 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
 
   useEffect(() => {
     if (isGoogleFlow) {
-      const fetchUser = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        const user = session?.user;
-        if (user) {
-          const meta = user.user_metadata || {};
-          const fullName = meta.full_name || meta.name || "";
-          const spaceIndex = fullName.indexOf(" ");
+      const loadData = async () => {
+        try {
+          const getSocialUser = new GetSocialUserUseCase(authRepository);
+          const socialUser = await getSocialUser.execute();
           
-          const first = spaceIndex > 0 ? fullName.substring(0, spaceIndex) : fullName;
-          const last = spaceIndex > 0 ? fullName.substring(spaceIndex + 1) : ".";
-          
-          setValue("email", user.email || "");
-          setValue("firstName", first);
-          setValue("lastName", last);
-          const dummyPass = "GoogleDummyPass1!";
-          setValue("password", dummyPass);
-          setValue("confirmPassword", dummyPass);
+          if (socialUser) {
+            setValue("email", socialUser.email);
+            setValue("password", GOOGLE_AUTH_DUMMY_PASS);
+            setValue("confirmPassword", GOOGLE_AUTH_DUMMY_PASS);
+            
+            setValue("firstName", socialUser.firstName);
+            setValue("lastName", socialUser.lastName);
+
+            if (socialUser.firstName.length >= 2 && socialUser.lastName.length >= 2) {
+               setStep(2);
+               setShouldHideBackButton(true); 
+            }
+          }
+        } catch (e) {
+          console.log("Error cargando usuario social:", e);
         }
       };
-      fetchUser();
+      loadData();
     }
   }, [isGoogleFlow, setValue]);
 
   const onSubmit = async (data: SignUpFormData) => {
     setLoading(true);
     try {
-      let userId = "";
-
-      if (!isGoogleFlow) {
-        const { data: auth, error } = await supabase.auth.signUp({
-          email: data.email,
-          password: data.password,
-        });
-        if (error) {
-          if (error.message.includes("User already registered") || error.status === 422) {
-            setError("email", { 
-              type: "manual", 
-              message: "Este correo ya está registrado. Intenta iniciar sesión." 
-            });
-            setStep(1); 
-            return; 
-          }
-          throw error;
-        }
-        if (!auth.user) throw new Error("No user ID");
-        userId = auth.user.id;
-      } else {
-        const { data: { user } } = await supabase.auth.getUser();
-        userId = user!.id;
-      }
-
-      await createProfile({
-        auth_user_id: userId,
+      const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
+      
+      await registerUseCase.execute({
+        email: data.email,
+        password: data.password,
         username: data.username,
-        full_name: `${data.firstName} ${data.lastName}`.trim(),
-        role: data.accountType === "teacher" ? "professor" : "student"
+        firstName: data.firstName,
+        lastName: data.lastName,
+        accountType: data.accountType,
+        isGoogle: isGoogleFlow,
       });
 
-      console.log("¡Registro completo!");
       onSuccess(); 
       
     } catch (error: any) {
-      console.error(error);
-      Alert.alert(t("common.error"), error.message || "Error al registrar");
+      const errorMessage = error.message || "";
+      
+      if (errorMessage.includes("User already registered") || errorMessage.includes("already exists")) {
+        setStep(1);
+        setError("email", { 
+          type: "manual", 
+          message: t("signup.errors.emailAlreadyRegistered") || "Correo ya registrado"
+        });
+      } else {
+        Alert.alert(t("common.error"), errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -99,14 +100,20 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
 
   const handleNext = async () => {
     let fields: (keyof SignUpFormData)[] = [];
+    
     if (step === 1) fields = ["firstName", "lastName", "email"];
     if (step === 2) fields = ["username", "accountType"];
-    if (step === 3) fields = ["password", "confirmPassword"];
+    
+    if (step === 3 && !isGoogleFlow) {
+        fields = ["password", "confirmPassword"];
+    }
 
     const isValid = await trigger(fields);
     if (!isValid) return;
 
-    if ((step === 2 && isGoogleFlow) || step === 3) {
+    const isLastStep = (isGoogleFlow && step === 2) || step === 3;
+
+    if (isLastStep) {
       handleSubmit(onSubmit, (errors) => {
          console.log("Errores validación:", errors);
          Alert.alert("Faltan datos", "Revisa los campos requeridos.");
@@ -116,12 +123,19 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
     }
   };
 
+  const handleBack = () => {
+    if (shouldHideBackButton && step === 2) return; 
+    if (step > 1) setStep(prev => prev - 1);
+  };
+
   return {
     step,
     loading,
     control,
     errors,
     setValue,
-    handleNext
+    handleNext,
+    handleBack, 
+    shouldHideBackButton 
   };
 };
