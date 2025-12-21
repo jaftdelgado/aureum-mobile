@@ -1,36 +1,42 @@
-import type { AuthRepository } from "@domain/repositories/AuthRepository";
-import type { LoggedInUser } from "@domain/entities/LoggedInUser";
-import type { ProfileRepository } from "@domain/repositories/ProfileRepository";
+import type { AuthRepository } from "../../repositories/AuthRepository";
+import type { ProfileRepository } from "../../repositories/ProfileRepository";
+import type { LoggedInUser } from "../../entities/LoggedInUser";
 
 export class GetSessionUseCase {
-  private authRepo: AuthRepository;
-  private profileRepo: ProfileRepository;
-
-  constructor(authRepo: AuthRepository, profileRepo: ProfileRepository) {
-    this.authRepo = authRepo;
-    this.profileRepo = profileRepo;
-  }
+  constructor(
+    private authRepository: AuthRepository,
+    private profileRepository: ProfileRepository 
+  ) {}
 
   async execute(): Promise<LoggedInUser | null> {
-    const baseUser = await this.authRepo.getSession();
-    if (!baseUser) return null;
+    // 1. Obtenemos el usuario básico de Supabase (Email, ID)
+    const user = await this.authRepository.getSession();
+    
+    if (!user) {
+      return null;
+    }
 
+    // 2. Intentamos buscar su perfil extendido en nuestra BD (Username, Role, Bio)
     try {
-      const profile = await this.profileRepo.getProfile(baseUser.id);
+      const profile = await this.profileRepository.getProfile(user.id);
+      
       if (profile) {
+        // 3. Si existe, mezclamos los datos
         return {
-          ...baseUser,
+          ...user,
           username: profile.username,
-          fullName: profile.full_name,
+          fullName: profile.fullName,
           bio: profile.bio,
           role: profile.role,
-          avatarUrl: profile.profile_pic_id ?? baseUser.avatarUrl
+          avatarUrl: profile.avatarUrl || user.avatarUrl, // Priorizamos el del perfil
         };
       }
     } catch (error) {
-      console.warn("Error cargando perfil de sesión", error);
+      // Si falla obtener el perfil (ej. error 404), devolvemos el usuario básico
+      // para que la app sepa que está autenticado pero sin perfil (y lo mande a registrarse)
+      console.log("Perfil no encontrado o error:", error);
     }
-    
-    return baseUser;
+
+    return user;
   }
 }

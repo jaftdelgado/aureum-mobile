@@ -1,8 +1,17 @@
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SignUpForm } from "../components/SignUpForm";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../../app/providers/AuthProvider";
 
-export const GoogleRegisterScreen = ({ onProfileCreated }: { onProfileCreated: () => void }) => {
+export const GoogleRegisterScreen = () => {
+  const { refreshSession } = useAuth(); 
+  const handleProfileCreated = async () => {
+    try {
+      await refreshSession();
+    } catch (error) {
+      console.error("Error actualizando sesión:", error);
+    }
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F9FAFB' }}>
       <KeyboardAvoidingView 
@@ -16,7 +25,7 @@ export const GoogleRegisterScreen = ({ onProfileCreated }: { onProfileCreated: (
           <View style={{ width: '100%', maxWidth: 448, alignSelf: 'center', backgroundColor: 'white', padding: 24, borderRadius: 12, shadowColor: "#000", shadowOpacity: 0.1, shadowRadius: 4, elevation: 2 }}>
             <SignUpForm 
               isGoogleFlow={true} 
-              onSuccess={onProfileCreated} 
+              onSuccess={handleProfileCreated} 
             />
           </View>
         </ScrollView>
