@@ -43,7 +43,10 @@ export class ProfileApiRepository implements ProfileRepository {
       await client.get(`/api/users/profiles/${authId}`);
       return true;
     } catch (error: any) {
-      return false;
+      if (error.status === 404 || error.response?.status === 404) {
+        return false;
+      }
+      throw error;
     }
   }
 
@@ -53,7 +56,7 @@ export class ProfileApiRepository implements ProfileRepository {
       username: data.username,
       full_name: `${data.firstName} ${data.lastName}`,
       bio: "",
-      role: data.accountType,
+      role: data.accountType.toLowerCase(),
       profile_pic_id: null 
     };
     await client.post(`/api/users/profiles`, payload);

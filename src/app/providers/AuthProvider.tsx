@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { AppState } from 'react-native';
+import { AppState, DeviceEventEmitter, Alert } from 'react-native';
 import { AuthApiRepository } from '../../infra/external/auth/AuthApiRepository';
 import { ProfileApiRepository } from '../../infra/api/users/ProfileApiRepository';
 import { LoginUseCase } from '../../domain/use-cases/auth/LoginUseCase';
@@ -11,7 +11,8 @@ import { RegisterData } from '../../domain/entities/RegisterData';
 
 const authRepository = new AuthApiRepository();
 const profileRepository = new ProfileApiRepository();
-
+const AUTH_LOGOUT_EVENT = 'auth:logout';
+const SERVER_DISCONNECT_EVENT = 'server-disconnect';
 const loginUseCase = new LoginUseCase(authRepository, profileRepository);
 const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
 const logoutUseCase = new LogoutUseCase(authRepository);
@@ -36,7 +37,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkCurrentSession = async () => {
     try {
       const currentUser = await getSessionUseCase.execute();
-      setUser(currentUser);
+      
+      if (currentUser) {
+        const hasProfile = await profileRepository.checkProfileExists(currentUser.id);
+        
+        if (hasProfile) {
+          const fullProfile = await profileRepository.getProfile(currentUser.id);
+          
+          if (fullProfile) {
+              setUser({
+                  ...currentUser,
+                  username: fullProfile.username,
+                  role: fullProfile.role
+              });
+          } else {
+              setUser(currentUser); 
+          }
+
+        } else {
+          setUser(currentUser); 
+        }
+      } else {
+        setUser(null);
+      }
     } catch (error) {
       console.log('No session found or error:', error);
       setUser(null);
@@ -50,12 +73,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const unsubscribe = authRepository.onAuthStateChange(async (changedUser) => {
         if (changedUser) {
-           const fullUser = await getSessionUseCase.execute();
-           setUser(fullUser);
+           const hasProfile = await profileRepository.checkProfileExists(changedUser.id);
+           
+           if (hasProfile) {
+               const fullProfile = await profileRepository.getProfile(changedUser.id);
+               if (fullProfile) {
+                   setUser({ ...changedUser, username: fullProfile.username, role: fullProfile.role });
+               } else {
+                   setUser(changedUser);
+               }
+           } else {
+               setUser(changedUser);
+           }
         } else {
            setUser(null);
         }
         setIsLoading(false);
+    });
+
+    const logoutListener = DeviceEventEmitter.addListener(AUTH_LOGOUT_EVENT, () => {
+      logout();
+      Alert.alert("Sesión Expirada", "Tu sesión ha caducado o se inició en otro dispositivo.");
+    });
+
+    const serverListener = DeviceEventEmitter.addListener(SERVER_DISCONNECT_EVENT, () => {
+      Alert.alert(
+        "Error de Conexión", 
+        "No pudimos conectar con el servidor. Por favor intenta más tarde."
+      );
     });
 
     const subscription = AppState.addEventListener('change', (state) => {
@@ -67,6 +112,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       unsubscribe();
       subscription.remove();
+      logoutListener.remove();
+      serverListener.remove();
     };
   }, []);
 

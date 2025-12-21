@@ -1,5 +1,5 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, { useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next'; 
 import { Button } from '@core/ui/Button';
 import { Separator } from '@core/ui/Separator';
@@ -7,6 +7,7 @@ import { Text } from '@core/ui/Text';
 import { TextField } from '@core/ui/TextField'; 
 import { GoogleSignIn } from './GoogleSignIn';
 import { useLoginForm } from '../hooks/useLoginForm';
+import { Ionicons } from '@expo/vector-icons';
 
 interface LoginFormProps {
   onShowRegister: () => void;
@@ -14,6 +15,7 @@ interface LoginFormProps {
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
   const { t } = useTranslation('auth'); 
+  const [showPassword, setShowPassword] = useState(false);
   
   const { 
     formData, 
@@ -56,16 +58,29 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
           disabled={loading}
         />
 
-        <TextField
-          label={t('signin.password')}
-          placeholder={t('signin.passwordPlaceholder')}
-          value={formData.password}
-          onChangeText={(text) => handleChange('password', text)}
-          secureTextEntry
-          errorText={errors.password}
-          error={!!errors.password}
-          disabled={loading}
-        />
+        <View>
+          <TextField
+            label={t('signin.password')}
+            placeholder={t('signin.passwordPlaceholder')}
+            value={formData.password}
+            onChangeText={(text) => handleChange('password', text)}
+            secureTextEntry={!showPassword} 
+            errorText={errors.password}
+            error={!!errors.password}
+            disabled={loading}
+          />
+          <TouchableOpacity 
+            onPress={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-12" 
+            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+          >
+            <Ionicons 
+              name={showPassword ? "eye-off-outline" : "eye-outline"} 
+              size={24} 
+              color="#6B7280" 
+            />
+          </TouchableOpacity>
+        </View>
 
         <Button
           title={loading ? t("common.loading") : t("signin.login")}

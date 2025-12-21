@@ -94,7 +94,7 @@ export class AuthApiRepository implements AuthRepository {
         redirectTo: redirectUrl,
         skipBrowserRedirect: true,
         queryParams: {
-          prompt: 'select_account consent', 
+          prompt: 'select_account', 
           access_type: 'offline'
         }
       },
@@ -102,12 +102,16 @@ export class AuthApiRepository implements AuthRepository {
 
     if (error) throw new Error(error.message);
     if (data?.url) {
-      let finalUrl = data.url;
-      if (!finalUrl.includes('prompt=')) {
-        finalUrl += '&prompt=select_account';
+      let authUrl = data.url;
+      
+      if (authUrl.includes('prompt=')) {
+        authUrl = authUrl.replace(/prompt=[^&]+/, 'prompt=select_account');
+      } else {
+        const separator = authUrl.includes('?') ? '&' : '?';
+        authUrl = `${authUrl}${separator}prompt=select_account`;
       }
     
-      await Linking.openURL(finalUrl);
+      await Linking.openURL(authUrl);
     }
   }
 
