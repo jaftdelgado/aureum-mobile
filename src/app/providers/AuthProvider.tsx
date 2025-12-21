@@ -73,8 +73,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const unsubscribe = authRepository.onAuthStateChange(async (changedUser) => {
         if (changedUser) {
-           const hasProfile = await profileRepository.checkProfileExists(changedUser.id);
+           let hasProfile = await profileRepository.checkProfileExists(changedUser.id);
            
+           if (!hasProfile) {
+               await new Promise(resolve => setTimeout(resolve, 1500));
+               hasProfile = await profileRepository.checkProfileExists(changedUser.id);
+           }
+
            if (hasProfile) {
                const fullProfile = await profileRepository.getProfile(changedUser.id);
                if (fullProfile) {
