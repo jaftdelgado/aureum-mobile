@@ -12,6 +12,7 @@ import { Button } from '@core/ui/Button';
 import { useProfile } from '../hooks/useProfile';
 
 export const ProfileScreen = () => {
+  const insets = useSafeAreaInsets();
   const {
     t,
     user,
@@ -31,8 +32,6 @@ export const ProfileScreen = () => {
     );
   }
 
-  const insets = useSafeAreaInsets();
-
   if (!profile) return null;
 
   return (
@@ -51,7 +50,7 @@ export const ProfileScreen = () => {
             size="xl" 
             mode="rounded" 
             placeholderText={initials}
-            source={avatarUrl ? { uri: avatarUrl } : null} 
+            source={avatarUrl} 
             className="mb-4"
           />
           

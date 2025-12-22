@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text, ImageStyle, StyleProp } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ViewStyle, StyleProp } from 'react-native'; 
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
-import { Image } from 'expo-image';
+import { Image, ImageSource } from 'expo-image';
 
 const avatarStyles = cva('overflow-hidden items-center justify-center bg-gray-300', {
   variants: {
@@ -24,8 +24,10 @@ const avatarStyles = cva('overflow-hidden items-center justify-center bg-gray-30
 });
 
 export interface AvatarProps extends VariantProps<typeof avatarStyles> {
-  source?: string | null;
-  style?: StyleProp<ImageStyle>;
+  source?: string | ImageSource | null; 
+
+  style?: StyleProp<ViewStyle>; 
+  
   placeholderText?: string;
   placeholder?: string | number;
   className?: string;
@@ -40,18 +42,30 @@ export const Avatar: React.FC<AvatarProps> = ({
   placeholder,
   className,
 }) => {
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setHasError(false);
+  }, [source]);
   const hasImage = !!source;
+
   const imageSource = typeof source === 'string' ? { uri: source } : source;
+
+  const showImage = hasImage && !hasError;
 
   return (
     <View className={cn(avatarStyles({ mode, size }), className)} style={style}>
-      {hasImage ? (
+      {showImage ? (
         <Image
-          source={imageSource!}
+          source={imageSource} 
           style={{ width: '100%', height: '100%' }}
           contentFit="cover"
           cachePolicy="disk"
           placeholder={placeholder}
+          onError={(e) => {
+            console.log("Avatar load error:", e.error); 
+            setHasError(true);
+          }}
         />
       ) : (
         placeholderText && <Text className="font-bold text-white">{placeholderText}</Text>

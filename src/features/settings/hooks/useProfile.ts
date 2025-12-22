@@ -1,15 +1,13 @@
 import { useState, useCallback } from 'react';
-import { Animated } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
 import { useAuth } from '@app/providers/AuthProvider';
 import { AppStackParamList } from '@app/navigation/AppStack';
-import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; // <--- Importar Repositorio
-import { UserProfile } from '../../../domain/entities/UserProfile'; // <--- Importar Entidad
-import { getAvatarUrl, getInitials } from '@core/utils/profile';
+import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; 
+import { UserProfile } from '../../../domain/entities/UserProfile'; 
+import { getInitials } from '@core/utils/profile';
 
 export const useProfile = () => {
   const { t } = useTranslation('settings');
@@ -19,8 +17,6 @@ export const useProfile = () => {
   
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  const scrollY = new Animated.Value(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -45,13 +41,11 @@ export const useProfile = () => {
 
       fetchProfile();
 
-      return () => {
-        isActive = false;
-      };
+      return () => { isActive = false; };
     }, [user?.id])
   );
 
-  const avatarUrl = getAvatarUrl(profile);
+  const avatarUrl = profile?.avatarUrl || null; 
   const initials = profile ? getInitials(profile.fullName) : "?";
 
   const handleEditProfile = () => navigation.navigate('EditProfile');
