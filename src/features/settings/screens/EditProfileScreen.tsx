@@ -62,17 +62,18 @@ export const EditProfileScreen = () => {
             <Section title={t('profile.personalInfo')}>
               <View className="gap-3">
                 <TextField 
-                  label={t('profile.name')}
-                  value={fullName}
-                  onChangeText={setFullName}
-                  placeholder="Tu nombre"
-                />
-
-                <TextField 
                   label={t('profile.username')} 
                   value={`@${profile.username}`} 
                   editable={false} 
                   className="opacity-50"
+                />
+
+                <TextField 
+                  label={t('profile.name')}
+                  value={fullName}
+                  onChangeText={setFullName}
+                  placeholder="Tu nombre"
+                  inputClassName="h-12 py-3 text-body leading-5"
                 />
 
                 <TextField 

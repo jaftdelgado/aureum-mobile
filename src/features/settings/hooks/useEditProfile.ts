@@ -10,7 +10,7 @@ import { UserProfile } from '../../../domain/entities/UserProfile';
 import { getInitials } from '@core/utils/profile';
 
 export const useEditProfile = () => {
-  const { user } = useAuth(); 
+  const { user, refreshSession } = useAuth(); 
   const { t } = useTranslation('settings');
   const navigation = useNavigation();
 
@@ -69,6 +69,7 @@ export const useEditProfile = () => {
       if (fullName !== profile.fullName || bio !== profile.bio) {
         await profileRepo.updateProfile(user.id, {
            bio: bio,
+           full_name: fullName,
         } as any); 
         
       }
@@ -86,6 +87,8 @@ export const useEditProfile = () => {
           throw imgError;
         }
       }
+
+      await refreshSession();
 
       navigation.goBack();
       

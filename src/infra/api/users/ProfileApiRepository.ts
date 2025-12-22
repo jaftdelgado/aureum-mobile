@@ -83,18 +83,22 @@ export class ProfileApiRepository implements ProfileRepository {
     await client.patch(`/api/users/profiles/${authId}`, data);
   }
 
-  async uploadAvatar(authId: string, imageFile: any): Promise<void> {
+  async uploadAvatar(authId: string, imageFile: { uri: string; type?: string; fileName?: string | null }): Promise<void> {
     const formData = new FormData();
     
-    const filePayload = {
+    const fileToUpload = {
       uri: imageFile.uri,
-      name: imageFile.fileName || `avatar_${authId}.jpg`, 
-      type: imageFile.type || "image/jpeg",            
+      name: imageFile.fileName || `avatar_${authId}.jpg`,
+      type: imageFile.type || 'image/jpeg',
     } as any;
 
-    formData.append("file", filePayload); 
+    formData.append('file', fileToUpload);
 
-    await client.post(`/api/users/profiles/${authId}/avatar`, formData);
+    await client.post(`/api/users/profiles/${authId}/avatar`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', 
+      },
+    });
   }
 
   async deleteAccount(authId: string): Promise<void> {
