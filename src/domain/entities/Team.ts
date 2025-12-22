@@ -1,9 +1,9 @@
 export interface Team {
-  publicId: string;
-  professorId: string | null;
+  public_id: string;
+  professor_id: string | null;
   name: string;
   description?: string | null;
-  teamPic?: string | null;
-  accessCode: string;
-  createdAt: Date;
+  team_pic?: string | null; 
+  access_code: string;
+  created_at: string;
 }
