@@ -49,19 +49,14 @@ export const useTeamsList = () => {
 
   const handleTeamPress = (team: Team) => {
     // @ts-ignore
-    navigation.navigate('SelectedTeam', { 
-      screen: 'TeamOverview',
-      params: { teamId: team.publicId, teamName: team.name }
-    });
+    
   };
 
   const handleCreateTeam = () => {
-    // @ts-ignore
     navigation.navigate('CreateTeam');
   };
 
   const handleJoinTeam = () => {
-    // @ts-ignore
     navigation.navigate('JoinTeam');
   };
 

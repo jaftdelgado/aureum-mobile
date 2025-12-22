@@ -15,8 +15,34 @@ export class TeamsApiRepository {
     return response.map(mapTeamDTOToEntity);
   }
 
-  async createTeam(data: { name: string; code: string; owner_id: string }): Promise<Team> {
-    const response = await httpClient.post<TeamDTO>('/api/teams', data);
+  async createTeam(data: { name: string; description?: string; professor_id: string; image?: { uri: string; type: string; name: string } }): Promise<Team> {
+    const formData = new FormData();
+    formData.append('professor_id', data.professor_id);
+    formData.append('name', data.name);
+    if (data.description) {
+      formData.append('description', data.description);
+    }
+
+    if (data.image) {
+      formData.append('file', {
+        uri: data.image.uri,
+        type: data.image.type,
+        name: data.image.name,
+      } as any);
+    }
+    
+    const response = await httpClient.post<TeamDTO>('/api/courses', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    
+    return mapTeamDTOToEntity(response);
+  }
+
+  async joinTeam(userId: string, code: string): Promise<Team> {
+    const response = await httpClient.post<TeamDTO>('/api/memberships/join', { 
+      access_code: code,
+      user_id: userId 
+    });
     return mapTeamDTOToEntity(response);
   }
 }
