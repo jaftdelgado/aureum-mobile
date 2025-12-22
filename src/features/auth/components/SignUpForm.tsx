@@ -110,6 +110,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 onChangeText={onChange}
                 value={value}
                 autoCapitalize="none"
+                autoCorrect={false}
                 errorText={errors.username?.message}
                 error={!!errors.username}
               />

@@ -3,8 +3,7 @@ import { Alert, Platform } from 'react-native';
 import { useAuth } from '@app/providers/AuthProvider';
 import { deleteUserProfile } from '@features/auth/api/authApi';
 import { useTranslation } from 'react-i18next';
-import { getAvatarUrl, getInitials } from '@core/utils/profile';
-
+import { getInitials } from '@core/utils/profile';
 
 export const useSettings = () => {
   const { t, i18n } = useTranslation('settings');

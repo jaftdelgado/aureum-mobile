@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { createSignUpSchema, SignUpFormData } from "../schemas/signUpSchema";
-
+import { useAuth } from "../../../app/providers/AuthProvider";
 import { AuthApiRepository } from "../../../infra/external/auth/AuthApiRepository";
 import { ProfileApiRepository } from "../../../infra/api/users/ProfileApiRepository";
 import { RegisterUseCase } from "../../../domain/use-cases/auth/RegisterUseCase";
@@ -19,7 +19,7 @@ interface UseSignUpProps {
 
 export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
   const { t } = useTranslation('auth');
-  
+  const { refreshSession } = useAuth();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [shouldHideBackButton, setShouldHideBackButton] = useState(false);
@@ -28,7 +28,8 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
   const profileRepository = new ProfileApiRepository();
 
   const { control, handleSubmit, trigger, setValue, setError, formState: { errors } } = useForm<SignUpFormData>({
-    resolver: zodResolver(createSignUpSchema(t)),
+    resolver: zodResolver(createSignUpSchema((key, opts) => t(key, opts) as string)),
+    mode: "onChange",
     defaultValues: {
       firstName: "", lastName: "", email: "",
       username: "", accountType: "student",
@@ -48,10 +49,11 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
             setValue("password", GOOGLE_AUTH_DUMMY_PASS);
             setValue("confirmPassword", GOOGLE_AUTH_DUMMY_PASS);
             
-            setValue("firstName", socialUser.firstName);
-            setValue("lastName", socialUser.lastName);
+            if (socialUser.firstName) setValue("firstName", socialUser.firstName);
+            if (socialUser.lastName) setValue("lastName", socialUser.lastName);
 
-            if (socialUser.firstName.length >= 2 && socialUser.lastName.length >= 2) {
+            if (socialUser.firstName && socialUser.firstName.length >= 2 && 
+                socialUser.lastName && socialUser.lastName.length >= 2) {
                setStep(2);
                setShouldHideBackButton(true); 
             }
@@ -70,15 +72,12 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
       const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
       
       await registerUseCase.execute({
-        email: data.email,
-        password: data.password,
-        username: data.username,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        accountType: data.accountType,
+        ...data,
+        accountType: data.accountType, 
         isGoogle: isGoogleFlow,
       });
-
+      await refreshSession();
+      
       onSuccess(); 
       
     } catch (error: any) {
@@ -86,6 +85,7 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
       
       if (errorMessage.includes("User already registered") || errorMessage.includes("already exists")) {
         setStep(1);
+        setShouldHideBackButton(false); 
         setError("email", { 
           type: "manual", 
           message: t("signup.errors.emailAlreadyRegistered") || "Correo ya registrado"
@@ -114,10 +114,21 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
     const isLastStep = (isGoogleFlow && step === 2) || step === 3;
 
     if (isLastStep) {
-      handleSubmit(onSubmit, (errors) => {
-         console.log("Errores validación:", errors);
-         Alert.alert("Faltan datos", "Revisa los campos requeridos.");
-      })();
+      handleSubmit(
+        onSubmit, 
+        (formErrors) => { 
+          console.log("Errores de validación:", formErrors);
+          
+          if (isGoogleFlow && (formErrors.firstName || formErrors.lastName)) {
+            Alert.alert(
+              t("common.attention", "Atención"), 
+              t("signup.errors.checkName", "Por favor verifica tu nombre y apellido.")
+            );
+            setStep(1);
+            setShouldHideBackButton(false); 
+          }
+        }
+      )();
     } else {
       setStep(prev => prev + 1);
     }

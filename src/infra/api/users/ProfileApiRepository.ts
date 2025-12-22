@@ -1,22 +1,39 @@
-import { client } from "../http/client"; 
+import { httpClient as client } from "../http/client"; 
 import type { ProfileRepository } from "../../../domain/repositories/ProfileRepository";
 import type { UserProfile } from "../../../domain/entities/UserProfile";
 import type { RegisterData } from "../../../domain/entities/RegisterData";
 import type { TeamMember } from "../../../domain/entities/TeamMember";
 import { mapDTOToUserProfile } from "./profile.mappers";
 import type { UserProfileDTO } from "./profile.dto";
+import { blobToBase64 } from "@core/utils/fileUtils";
 
 export class ProfileApiRepository implements ProfileRepository {
   
-  async getProfile(userId: string): Promise<UserProfile | null> {
+  async getProfile(authId: string): Promise<UserProfile | null> {
     try {
-      const response = await client.get<UserProfileDTO>(`/api/users/profiles/${userId}`);
-      return mapDTOToUserProfile(response.data);
-    } catch (error: any) {
-      if (error.response?.status === 404 || error.message?.includes("404")) {
-        return null;
+      const dto = await client.get<UserProfileDTO>(`/api/users/profiles/${authId}`);
+      if (!dto) return null;
+      let avatarBase64: string | undefined = undefined;
+
+      if (dto.profile_pic_id) {
+        try {
+          const blob = await client.getBlob(`/api/users/profiles/${authId}/avatar`);
+          
+          avatarBase64 = await blobToBase64(blob);
+        } catch (imageError) {
+          console.warn("No se pudo descargar avatar:", imageError);
+        }
       }
-      console.warn("Error fetching profile:", error);
+
+      const userProfile = mapDTOToUserProfile(dto);
+      
+      return {
+        ...userProfile,
+        avatarUrl: avatarBase64 
+      };
+
+    } catch (error) {
+      console.error(`Error fetching profile for ${authId}`, error);
       return null;
     }
   }
@@ -62,21 +79,24 @@ export class ProfileApiRepository implements ProfileRepository {
     await client.post(`/api/users/profiles`, payload);
   }
 
-  async updateProfile(authId: string, data: { bio?: string }): Promise<void> {
-    await client.patch(`/api/users/profiles/${authId}`, data)
+  async updateProfile(authId: string, data: { bio?: string; full_name?: string }): Promise<void> {
+    await client.patch(`/api/users/profiles/${authId}`, data);
   }
 
-  async uploadAvatar(authId: string, imageFile: any): Promise<void> {
+  async uploadAvatar(authId: string, imageFile: { uri: string; type?: string; fileName?: string | null }): Promise<void> {
     const formData = new FormData();
-    formData.append("file", {
+    
+    const fileToUpload = {
       uri: imageFile.uri,
-      name: imageFile.fileName || "avatar.jpg",
-      type: imageFile.type || "image/jpeg",
-    } as any); 
+      name: imageFile.fileName || `avatar_${authId}.jpg`,
+      type: imageFile.type || 'image/jpeg',
+    } as any;
+
+    formData.append('file', fileToUpload);
 
     await client.post(`/api/users/profiles/${authId}/avatar`, formData, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data', 
       },
     });
   }

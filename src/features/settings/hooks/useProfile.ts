@@ -1,37 +1,67 @@
-import { useRef } from 'react';
-import { Animated } from 'react-native';
+import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '@app/providers/AuthProvider';
-import { getAvatarUrl, getInitials } from '@core/utils/profile';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from '@app/providers/AuthProvider';
 import { AppStackParamList } from '@app/navigation/AppStack';
+import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; 
+import { UserProfile } from '../../../domain/entities/UserProfile'; 
+import { getInitials } from '@core/utils/profile';
+import { Animated } from 'react-native';
 
 export const useProfile = () => {
   const { t } = useTranslation('settings');
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const fetchProfile = async () => {
+        if (!user?.id) return;
+        
+        try {
+          const profileRepo = new ProfileApiRepository();
+          const data = await profileRepo.getProfile(user.id);
+          
+          if (isActive && data) {
+            setProfile(data);
+          }
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+        } finally {
+          if (isActive) setLoading(false);
+        }
+      };
+
+      fetchProfile();
+
+      return () => { isActive = false; };
+    }, [user?.id])
+  );
+
+  const avatarUrl = profile?.avatarUrl || null; 
+  const initials = profile ? getInitials(profile.fullName) : "?";
   const scrollY = useRef(new Animated.Value(0)).current;
-  const avatarUrl = getAvatarUrl(profile);
-  const initials = profile ? getInitials(profile.full_name) : "?";
   const handleEditProfile = () => navigation.navigate('EditProfile');
   const handleGoBack = () => navigation.goBack();
-
-  console.log("Datos del Perfil:", profile); 
-  console.log("ID de Foto:", profile?.profile_pic_id);
-  console.log("URL Generada:", avatarUrl);
 
   return {
     t,
     user,
-    profile,
+    profile, 
+    loading, 
     insets,
     scrollY,
     avatarUrl,
     initials,
     handleGoBack,
-    handleEditProfile
+    handleEditProfile,
   };
 };

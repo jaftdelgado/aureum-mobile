@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@core/ui/Avatar';
@@ -12,17 +12,25 @@ import { Button } from '@core/ui/Button';
 import { useProfile } from '../hooks/useProfile';
 
 export const ProfileScreen = () => {
+  const insets = useSafeAreaInsets();
   const {
     t,
     user,
     profile,
+    loading,
     avatarUrl,
     initials,
     handleGoBack,
     handleEditProfile
   } = useProfile();
 
-  const insets = useSafeAreaInsets();
+  if (loading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-bg">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   if (!profile) return null;
 
@@ -42,12 +50,12 @@ export const ProfileScreen = () => {
             size="xl" 
             mode="rounded" 
             placeholderText={initials}
-            source={avatarUrl ? { uri: avatarUrl } : null} 
+            source={avatarUrl} 
             className="mb-4"
           />
           
           <Text type="title2" weight="bold" align="center">
-            {profile.full_name}
+            {profile.fullName}
           </Text>
           
           <Text type="body" color="secondary" align="center">

@@ -93,12 +93,20 @@ export class HttpClient {
 
       if (error.response) {
         const status = error.response.status;
-        const message =
+        let rawMessage = 
           (error.response.data as any)?.detail ||
           (error.response.data as any)?.message ||
-          error.message ||
-          `Error HTTP ${status}`;
+          error.message;
 
+        if (typeof rawMessage === 'object') {
+          try {
+            rawMessage = JSON.stringify(rawMessage);
+          } catch (e) {
+            rawMessage = "Error desconocido (objeto no serializable)";
+          }
+        }
+
+        const message = rawMessage || `Error HTTP ${status}`;
         if (status >= 500) {
           triggerServerDisconnect();
           throw new HttpError(status, 'Server Unavailable');
@@ -117,16 +125,25 @@ export class HttpClient {
     return this.request<T>('GET', url, { params });
   }
 
-  post<T>(url: string, data?: any) {
-    return this.request<T>('POST', url, { data });
+  post<T>(url: string, data?: any, config?: { headers?: Record<string, string> }) {
+    return this.request<T>('POST', url, { 
+      data, 
+      headers: config?.headers 
+    });
   }
 
-  put<T>(url: string, data?: any) {
-    return this.request<T>('PUT', url, { data });
+  put<T>(url: string, data?: any, config?: { headers?: Record<string, string> }) {
+    return this.request<T>('PUT', url, { 
+      data, 
+      headers: config?.headers 
+    });
   }
 
-  patch<T>(url: string, data?: any) {
-    return this.request<T>('PATCH', url, { data });
+  patch<T>(url: string, data?: any, config?: { headers?: Record<string, string> }) {
+    return this.request<T>('PATCH', url, { 
+      data, 
+      headers: config?.headers 
+    });
   }
 
   delete<T>(url: string) {
