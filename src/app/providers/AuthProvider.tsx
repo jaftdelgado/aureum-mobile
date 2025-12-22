@@ -48,7 +48,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               setUser({
                   ...currentUser,
                   username: fullProfile.username,
-                  role: fullProfile.role
+                  role: fullProfile.role,
+                  fullName: fullProfile.fullName,
               });
           } else {
               setUser(currentUser); 
