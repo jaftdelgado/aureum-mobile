@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@app/providers/AuthProvider';
 import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; // Usamos el Repo
 import { UserProfile } from '../../../domain/entities/UserProfile';
-import { getAvatarUrl, getInitials } from '@core/utils/profile';
+import { getInitials } from '@core/utils/profile';
 
 export const useEditProfile = () => {
   const { user } = useAuth(); 
@@ -27,29 +27,26 @@ export const useEditProfile = () => {
 
   useEffect(() => {
     const fetchProfileData = async () => {
-        if (!user?.id) return;
-        try {
-            const data = await profileRepo.getProfile(user.id);
-            if (data) {
-                setProfile(data);
-                setFullName(data.fullName || '');
-                setBio(data.bio || '');
-            }
-        } catch (error) {
-            console.error(error);
-            Alert.alert(t('error'), "No se pudo cargar el perfil");
-            navigation.goBack();
+      if (!user?.id) return;
+      try {
+        const data = await profileRepo.getProfile(user.id);
+        if (data) {
+          setProfile(data);
+          setFullName(data.fullName || '');
+          setBio(data.bio || '');
         }
+      } catch (error) {
+        console.error(error);
+      }
     };
     fetchProfileData();
   }, [user?.id]);
 
-  const currentAvatarUrl = getAvatarUrl(profile);
-  const initials = profile ? getInitials(fullName) : "?";
-  
   const imageSource = selectedImage 
     ? { uri: selectedImage.uri } 
-    : (currentAvatarUrl ? { uri: currentAvatarUrl } : null);
+    : (profile?.avatarUrl ? { uri: profile.avatarUrl } : null);
+
+  const initials = profile ? getInitials(fullName) : "?";
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -77,11 +74,17 @@ export const useEditProfile = () => {
       }
 
       if (selectedImage) {
-        await profileRepo.uploadAvatar(user.id, {
+        try {
+          console.log("Subiendo imagen:", selectedImage.uri);
+          await profileRepo.uploadAvatar(user.id, {
             uri: selectedImage.uri,
-            type: selectedImage.mimeType, 
-            fileName: selectedImage.fileName
-        });
+            type: selectedImage.mimeType || 'image/jpeg', 
+            fileName: selectedImage.fileName || 'upload.jpg'
+          });
+        } catch (imgError) {
+          console.error("Error detallado de imagen:", imgError);
+          throw imgError;
+        }
       }
 
       navigation.goBack();

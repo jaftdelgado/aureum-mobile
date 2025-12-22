@@ -1,4 +1,4 @@
-import { client } from "../http/client"; 
+import { httpClient as client } from "../http/client"; 
 import type { ProfileRepository } from "../../../domain/repositories/ProfileRepository";
 import type { UserProfile } from "../../../domain/entities/UserProfile";
 import type { RegisterData } from "../../../domain/entities/RegisterData";
@@ -12,10 +12,10 @@ export class ProfileApiRepository implements ProfileRepository {
   async getProfile(authId: string): Promise<UserProfile | null> {
     try {
       const dto = await client.get<UserProfileDTO>(`/api/users/profiles/${authId}`);
-      
+      if (!dto) return null;
       let avatarBase64: string | undefined = undefined;
 
-      if (dto.data.profile_pic_id) {
+      if (dto.profile_pic_id) {
         try {
           const blob = await client.getBlob(`/api/users/profiles/${authId}/avatar`);
           
@@ -25,7 +25,7 @@ export class ProfileApiRepository implements ProfileRepository {
         }
       }
 
-      const userProfile = mapDTOToUserProfile(dto.data);
+      const userProfile = mapDTOToUserProfile(dto);
       
       return {
         ...userProfile,
@@ -94,11 +94,7 @@ export class ProfileApiRepository implements ProfileRepository {
 
     formData.append("file", filePayload); 
 
-    await client.post(`/api/users/profiles/${authId}/avatar`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    await client.post(`/api/users/profiles/${authId}/avatar`, formData);
   }
 
   async deleteAccount(authId: string): Promise<void> {

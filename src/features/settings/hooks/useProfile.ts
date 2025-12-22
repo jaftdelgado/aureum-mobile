@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import { AppStackParamList } from '@app/navigation/AppStack';
 import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; 
 import { UserProfile } from '../../../domain/entities/UserProfile'; 
 import { getInitials } from '@core/utils/profile';
+import { Animated } from 'react-native';
 
 export const useProfile = () => {
   const { t } = useTranslation('settings');
@@ -47,7 +48,7 @@ export const useProfile = () => {
 
   const avatarUrl = profile?.avatarUrl || null; 
   const initials = profile ? getInitials(profile.fullName) : "?";
-
+  const scrollY = useRef(new Animated.Value(0)).current;
   const handleEditProfile = () => navigation.navigate('EditProfile');
   const handleGoBack = () => navigation.goBack();
 
@@ -61,6 +62,6 @@ export const useProfile = () => {
     avatarUrl,
     initials,
     handleGoBack,
-    handleEditProfile
+    handleEditProfile,
   };
 };
