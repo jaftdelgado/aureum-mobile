@@ -17,13 +17,13 @@ export const mapTeamDTOToEntity = (dto: TeamDTO): Team => {
     : undefined;
 
   return {
-    publicId: dto.public_id,
-    professorId: dto.professor_id,
+    public_id: dto.public_id,
+    professor_id: dto.professor_id,
     name: dto.name,
     description: dto.description ?? undefined,
-    teamPic: imageUrl, 
-    accessCode: dto.access_code,
-    createdAt: new Date(dto.created_at),
+    team_pic: imageUrl, 
+    access_code: dto.access_code,
+    created_at: dto.created_at,
   };
 };
 

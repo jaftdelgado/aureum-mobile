@@ -84,7 +84,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
            if (hasProfile) {
                const fullProfile = await profileRepository.getProfile(changedUser.id);
                if (fullProfile) {
-                   setUser({ ...changedUser, username: fullProfile.username, role: fullProfile.role });
+                   setUser({ 
+                    ...changedUser, 
+                    username: fullProfile.username, 
+                    role: fullProfile.role,
+                    fullName: fullProfile.fullName
+                  });
                } else {
                    setUser(changedUser);
                }

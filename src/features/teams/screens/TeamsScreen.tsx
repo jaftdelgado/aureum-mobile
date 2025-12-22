@@ -62,7 +62,7 @@ export const TeamsScreen = () => {
     
       <AnimatedFlatList
         data={teams}
-        keyExtractor={(item: any) => item.teamId} 
+        keyExtractor={(item: any) => item.public_id} 
         renderItem={({ item }: any) => (
           <TeamCard 
             team={item} 
