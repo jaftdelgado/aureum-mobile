@@ -7,6 +7,12 @@
       "settings": "Settings"
     }
   },
+  "auth": {
+    "session_expired_title": "Session Expired",
+    "session_expired_msg": "Your session has expired or was started on another device.",
+    "connection_error_title": "Connection Error",
+    "connection_error_msg": "Could not connect to the server."
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",

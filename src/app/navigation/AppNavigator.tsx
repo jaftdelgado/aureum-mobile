@@ -1,55 +1,51 @@
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useTranslation } from 'react-i18next';
+import { useAuth } from '../providers/AuthProvider';
 
-import { useAuth } from '@app/providers/AuthProvider';
-import { useTheme } from '@app/providers/ThemeProvider';
+import { RootStackParamList, AppStackParamList } from './routes-types';
 
-import AuthStack from '@app/navigation/AuthStack';
-import { RootStackParamList } from './routes-types';
-import { Text } from '@core/ui/Text';
-import { BottomTabNavigator } from './BottomTabNavigator';
-import { ProfileScreen } from '@features/settings/screens/ProfileScreen';
-import { EditProfileScreen } from '@features/settings/screens/EditProfileScreen';
+import { AuthStack } from './AuthStack'; 
+import { BottomTabNavigator } from './BottomTabNavigator'; 
+import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
+import { EditProfileScreen } from '../../features/settings/screens/EditProfileScreen';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+const AppStack = createNativeStackNavigator<AppStackParamList>();
 
-const AppNavigator = () => {
-  const { t } = useTranslation('app');
-  const { theme } = useTheme();
-  
-  const { user, isLoading } = useAuth(); 
-
-
-  if (isLoading) {
-    return (
-      <View
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.bg }}>
-        <ActivityIndicator size="large" color={theme.primary} />
-        <Text style={{ color: theme.secondaryText }} className="mt-4">
-          {t('navigation.checkingProfile')}
-        </Text>
-      </View>
-    );
-  }
-
+const AppStackScreen = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!user ? (
-          <Stack.Screen name="Auth" component={AuthStack} />
-        ) : (
-          <>
-            <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-          </>
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AppStack.Navigator screenOptions={{ headerShown: false }}>
+      <AppStack.Screen name="MainTabs" component={BottomTabNavigator} />
+      
+      <AppStack.Screen 
+        name="Profile" 
+        component={ProfileScreen} 
+        options={{ presentation: 'card' }}
+      />
+      <AppStack.Screen 
+        name="EditProfile" 
+        component={EditProfileScreen} 
+        options={{ presentation: 'modal' }}
+      />
+    </AppStack.Navigator>
   );
 };
 
-export default AppNavigator;
+export const AppNavigator = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return null; 
+
+  return (
+    <NavigationContainer>
+      <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        {!user ? (
+          <RootStack.Screen name="Auth" component={AuthStack} />
+        ) : (
+          <RootStack.Screen name="App" component={AppStackScreen} />
+        )}
+      </RootStack.Navigator>
+    </NavigationContainer>
+  );
+};

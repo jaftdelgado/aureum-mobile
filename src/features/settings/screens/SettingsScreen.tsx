@@ -3,8 +3,7 @@ import { View, Animated, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native'; 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'; 
-import { AppStackParamList } from '@app/navigation/AppStack'; 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';  
 import FixedHeader from '@app/components/screen-header/FixedHeader';
 import DisplayTitle from '@app/components/screen-header/DisplayTitle';
 import { ListContainer } from '@core/ui/ListContainer';
@@ -12,6 +11,7 @@ import { ListOption } from '@core/ui/ListOption';
 import { Text } from '@core/ui/Text'; 
 import { Avatar } from '@core/ui/Avatar';
 import { useSettings } from '../hooks/usesettings'; 
+import { AppStackParamList } from '@app/navigation/routes-types';
 
 export default function SettingsScreen() {
   const { t } = useTranslation('settings');

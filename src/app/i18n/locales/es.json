@@ -7,6 +7,12 @@
       "settings": "Ajustes"
     }
   },
+  "auth": {
+    "session_expired_title": "Sesión Expirada",
+    "session_expired_msg": "Tu sesión ha caducado o se inició en otro dispositivo.",
+    "connection_error_title": "Error de Conexión",
+    "connection_error_msg": "No pudimos conectar con el servidor."
+  },
   "common": {
     "loading": "Cargando...",
     "error": "Ha ocurrido un error",
