@@ -20,14 +20,13 @@ export class LoginUseCase {
         return {
           ...baseUser,
           username: profile.username,
-          fullName: profile.full_name,
+          fullName: profile.fullName,
           bio: profile.bio,
           role: profile.role,
-          avatarUrl: profile.profile_pic_id ?? baseUser.avatarUrl 
+          avatarUrl: profile.avatarUrl ?? baseUser.avatarUrl 
         };
       }
     } catch (error) {
-      console.warn("Login exitoso, pero falló carga de perfil", error);
     }
 
     return baseUser;

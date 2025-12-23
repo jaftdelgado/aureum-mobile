@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Alert, Platform } from 'react-native';
 import { useAuth } from '@app/providers/AuthProvider';
-import { deleteUserProfile } from '@features/auth/api/authApi';
+import { deleteAccountUseCase } from '../../../app/di';
 import { useTranslation } from 'react-i18next';
 import { getInitials } from '@core/utils/profile';
 
@@ -72,7 +72,7 @@ export const useSettings = () => {
       if (!user?.id) return;
       setLoading(true);
       try {
-        await deleteUserProfile(user.id);
+        await deleteAccountUseCase.execute(user.id);
         await logout(); 
       } catch (error) {
         console.error("Error al eliminar cuenta:", error);

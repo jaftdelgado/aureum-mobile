@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../providers/AuthProvider';
 
 import { RootStackParamList, AppStackParamList } from './routes-types';
-
+import * as Linking from 'expo-linking';
 import { AuthStack } from './AuthStack'; 
 import { BottomTabNavigator } from './BottomTabNavigator'; 
 import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
@@ -12,6 +12,28 @@ import { EditProfileScreen } from '../../features/settings/screens/EditProfileSc
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();
+
+const linking = {
+  prefixes: [Linking.createURL('/')], 
+  config: {
+    screens: {
+      Auth: {
+        screens: {
+          Login: 'login',
+        }
+      },
+      App: {
+        screens: {
+          MainTabs: {
+            screens: {
+              Home: 'home',
+            }
+          }
+        }
+      }
+    }
+  }
+};
 
 const AppStackScreen = () => {
   return (
@@ -38,7 +60,7 @@ export const AppNavigator = () => {
   if (isLoading) return null; 
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking as any}>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
         {!user ? (
           <RootStack.Screen name="Auth" component={AuthStack} />

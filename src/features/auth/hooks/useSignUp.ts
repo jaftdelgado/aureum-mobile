@@ -4,28 +4,24 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { createSignUpSchema, SignUpFormData } from "../schemas/signUpSchema";
+import { getSocialUserUseCase } from "../../../app/di";
 import { useAuth } from "../../../app/providers/AuthProvider";
-import { AuthApiRepository } from "../../../infra/external/auth/AuthApiRepository";
-import { ProfileApiRepository } from "../../../infra/api/users/ProfileApiRepository";
-import { RegisterUseCase } from "../../../domain/use-cases/auth/RegisterUseCase";
-import { GetSocialUserUseCase } from "../../../domain/use-cases/auth/GetSocialUserUseCase";
 
 const GOOGLE_AUTH_DUMMY_PASS = "GoogleDummyPass1!";
 
 interface UseSignUpProps {
   isGoogleFlow: boolean;
   onSuccess: () => void;
+  onBack?: () => void; 
 }
 
-export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
+export const useSignUp = ({ isGoogleFlow, onSuccess, onBack }: UseSignUpProps) => {
   const { t } = useTranslation('auth');
-  const { refreshSession } = useAuth();
+  const { register, refreshSession } = useAuth();
+  
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [shouldHideBackButton, setShouldHideBackButton] = useState(false);
-
-  const authRepository = new AuthApiRepository();
-  const profileRepository = new ProfileApiRepository();
 
   const { control, handleSubmit, trigger, setValue, setError, formState: { errors } } = useForm<SignUpFormData>({
     resolver: zodResolver(createSignUpSchema((key, opts) => t(key, opts) as string)),
@@ -41,8 +37,7 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
     if (isGoogleFlow) {
       const loadData = async () => {
         try {
-          const getSocialUser = new GetSocialUserUseCase(authRepository);
-          const socialUser = await getSocialUser.execute();
+          const socialUser = await getSocialUserUseCase.execute();
           
           if (socialUser) {
             setValue("email", socialUser.email);
@@ -69,23 +64,22 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
   const onSubmit = async (data: SignUpFormData) => {
     setLoading(true);
     try {
-      const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
-      
-      await registerUseCase.execute({
+      await register({
         ...data,
         accountType: data.accountType, 
         isGoogle: isGoogleFlow,
       });
+
       await refreshSession();
-      
+
       onSuccess(); 
       
     } catch (error: any) {
       const errorMessage = error.message || "";
       
-      if (errorMessage.includes("User already registered") || errorMessage.includes("already exists")) {
+      if (errorMessage.includes("already registered") || errorMessage.includes("already exists")) {
         setStep(1);
-        setShouldHideBackButton(false); 
+        setShouldHideBackButton(false);
         setError("email", { 
           type: "manual", 
           message: t("signup.errors.emailAlreadyRegistered") || "Correo ya registrado"
@@ -103,10 +97,7 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
     
     if (step === 1) fields = ["firstName", "lastName", "email"];
     if (step === 2) fields = ["username", "accountType"];
-    
-    if (step === 3 && !isGoogleFlow) {
-        fields = ["password", "confirmPassword"];
-    }
+    if (step === 3 && !isGoogleFlow) fields = ["password", "confirmPassword"];
 
     const isValid = await trigger(fields);
     if (!isValid) return;
@@ -114,21 +105,13 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
     const isLastStep = (isGoogleFlow && step === 2) || step === 3;
 
     if (isLastStep) {
-      handleSubmit(
-        onSubmit, 
-        (formErrors) => { 
-          console.log("Errores de validación:", formErrors);
-          
-          if (isGoogleFlow && (formErrors.firstName || formErrors.lastName)) {
-            Alert.alert(
-              t("common.attention", "Atención"), 
-              t("signup.errors.checkName", "Por favor verifica tu nombre y apellido.")
-            );
-            setStep(1);
-            setShouldHideBackButton(false); 
-          }
+      handleSubmit(onSubmit, (formErrors) => {
+        if (isGoogleFlow && (formErrors.firstName || formErrors.lastName)) {
+           Alert.alert(t("common.attention"), t("signup.errors.checkName"));
+           setStep(1);
+           setShouldHideBackButton(false);
         }
-      )();
+      })();
     } else {
       setStep(prev => prev + 1);
     }
@@ -136,7 +119,11 @@ export const useSignUp = ({ isGoogleFlow, onSuccess }: UseSignUpProps) => {
 
   const handleBack = () => {
     if (shouldHideBackButton && step === 2) return; 
-    if (step > 1) setStep(prev => prev - 1);
+    if (step > 1) {
+      setStep(prev => prev - 1);
+    } else if (onBack) {
+      onBack();
+    }
   };
 
   return {
