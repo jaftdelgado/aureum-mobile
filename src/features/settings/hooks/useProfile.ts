@@ -1,19 +1,21 @@
 import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'; 
 import { useAuth } from '@app/providers/AuthProvider';
-import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; 
+import { profileRepository } from '../../../app/di'; 
 import { UserProfile } from '../../../domain/entities/UserProfile'; 
 import { getInitials } from '@core/utils/profile';
 import { Animated } from 'react-native';
-import { useAppNavigation } from '@app/hooks/useAppNavigation';
+import { AppStackParamList } from '../../../app/navigation/routes-types'; 
 
 export const useProfile = () => {
   const { t } = useTranslation('settings');
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
-  const navigation = useAppNavigation();
+
+  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,8 +28,7 @@ export const useProfile = () => {
         if (!user?.id) return;
         
         try {
-          const profileRepo = new ProfileApiRepository();
-          const data = await profileRepo.getProfile(user.id);
+          const data = await profileRepository.getProfile(user.id);
           
           if (isActive && data) {
             setProfile(data);
@@ -48,7 +49,10 @@ export const useProfile = () => {
   const avatarUrl = profile?.avatarUrl || null; 
   const initials = profile ? getInitials(profile.fullName) : "?";
   const scrollY = useRef(new Animated.Value(0)).current;
-  const handleEditProfile = () => navigation.navigate('EditProfile');
+
+  const handleEditProfile = (currentProfile: UserProfile) => {
+    navigation.navigate('EditProfile', { profile: currentProfile });
+  };
   const handleGoBack = () => navigation.goBack();
 
   return {

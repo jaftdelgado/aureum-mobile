@@ -1,4 +1,5 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
+import { UserProfile } from '../../domain/entities/UserProfile';
 
 export type AssetsStackParamList = {
   Assets: undefined;
@@ -31,8 +32,7 @@ export type TabParamList = {
 export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<any>;
   Profile: undefined;
-  EditProfile: undefined;
-  Details: { id: string };
+  EditProfile: { profile: UserProfile };
 };
 
 export type RootStackParamList = {

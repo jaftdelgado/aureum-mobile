@@ -1,44 +1,40 @@
 {
-  "title": "Ajustes",
-  "subtitle": "Gestiona tus preferencias y cuenta.",
-  "logout": "Cerrar sesión",
-  "deleting": "Eliminando...",
-  "deleteAccount": "Eliminar cuenta",
-  
-  "sections": {
-    "account": "Cuenta",
-    "general": "General"
-  },
-
-  "logoutTitle": "Cerrar Sesión",
-  "logoutMsg": "¿Estás seguro de que quieres salir de tu cuenta?",
-  "logoutConfirm": "Salir",
-  
-  "deleteTitle": "Eliminar Cuenta",
-  "deleteMsg": "Esto eliminará tu cuenta permanentemente. ¿Seguro que deseas borrarla?",
-  "deleteConfirm": "Eliminar",
-  "language": "Idioma",
-  "changeLanguage": "Cambiar idioma",
-  "selectLanguage": "Selecciona tu idioma preferido",
-  "english": "Inglés",
+  "title": "Configuración",
+  "changeLanguage": "Cambiar Idioma",
+  "selectLanguage": "Selecciona un idioma",
   "spanish": "Español",
+  "english": "Inglés",
+  "logout": "Cerrar Sesión",
+  "logoutTitle": "¿Cerrar sesión?",
+  "logoutMsg": "¿Estás seguro de que quieres salir?",
+  "logoutConfirm": "Salir",
   "cancel": "Cancelar",
-  "error": "Error",
-  "viewProfile": "Ver mi perfil",
-  "back": "Volver",
+  "deleteAccount": "Eliminar Cuenta",
+  "deleting": "Eliminando...",
+  "deleteTitle": "Eliminar Cuenta",
+  "deleteMsg": "Esta acción es irreversible. ¿Estás seguro?",
+  "deleteConfirm": "Eliminar",
+  "viewProfile": "Ver perfil",
   "editProfile": "Editar Perfil",
-  "changePhoto": "Cambiar foto",
   "saveChanges": "Guardar Cambios",
-  "updateError": "No se pudo actualizar el perfil. Inténtalo de nuevo.",
+  "changePhoto": "Cambiar foto",
+  "back": "Volver",
+  "updateError": "No se pudo actualizar el perfil",
+  "sections": {
+    "account": "Cuenta"
+  },
   "profile": {
     "title": "Mi Perfil",
     "personalInfo": "Información Personal",
-    "username": "Usuario",
-    "role": "Rol",
-    "bio": "Biografía",
-    "email": "Correo",
     "student": "Estudiante",
     "professor": "Profesor",
-    "name": "Nombre Completo"
+    "username": "Usuario",
+    "name": "Nombre",
+    "bio": "Biografía",
+    "email": "Correo electrónico",
+    "noBio": "Sin biografía"
+  },
+  "common": {
+    "error": "Error"
   }
 }

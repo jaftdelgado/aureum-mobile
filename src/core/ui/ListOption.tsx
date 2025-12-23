@@ -1,5 +1,4 @@
-// src/core/ui/ListOption.tsx
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, isValidElement } from 'react';
 import { TouchableOpacity, TouchableOpacityProps, View, Image } from 'react-native';
 import { Icon } from '@core/ui/Icon';
 import { Text } from '@core/ui/Text';
@@ -10,13 +9,13 @@ import { IconContainer } from '@core/ui/IconContainer';
 
 export interface ListOptionProps extends TouchableOpacityProps {
   text: string | ReactNode;
-  icon?: Parameters<typeof IconContainer>[0]['icon'] | string;
+  icon?: ReactNode | Parameters<typeof IconContainer>[0]['icon'] | string; 
   iconVariant?: Parameters<typeof IconContainer>[0]['variant'];
   iconSize?: number;
   containerSize?: number;
-
   className?: string;
   isLast?: boolean;
+  showChevron?: boolean;
 }
 
 export const ListOption: FC<ListOptionProps> = ({
@@ -27,9 +26,49 @@ export const ListOption: FC<ListOptionProps> = ({
   iconVariant = 'gray',
   iconSize = 18,
   containerSize = 32,
+  showChevron = true,
   ...props
 }) => {
   const borderColor = useThemeColor('border');
+
+  const renderIcon = () => {
+    if (!icon) return <View style={{ width: containerSize, height: containerSize }} />;
+
+    if (typeof icon === 'string') {
+      return (
+        <Image
+          source={{ uri: icon }}
+          style={{
+            width: containerSize,
+            height: containerSize,
+            borderRadius: containerSize / 2,
+          }}
+          resizeMode="cover"
+        />
+      );
+    }
+
+    if (isValidElement(icon)) {
+      return (
+        <View 
+          style={{ width: containerSize, height: containerSize, alignItems: 'center', justifyContent: 'center' }} 
+          className="mr-4"
+        >
+          {icon}
+        </View>
+      );
+    }
+
+    return (
+      <IconContainer
+        icon={icon as any} 
+        variant={iconVariant}
+        size={containerSize}
+        iconSize={iconSize}
+        className="mr-4"
+      />
+    );
+  };
 
   return (
     <TouchableOpacity
@@ -38,31 +77,8 @@ export const ListOption: FC<ListOptionProps> = ({
       className={cn('flex-row items-center justify-between rounded-lg px-4 py-3', className)}
       style={[!isLast && { borderBottomWidth: 1, borderBottomColor: borderColor }]}>
       <View className="flex-row items-center space-x-3">
-        {icon ? (
-          typeof icon === 'string' ? (
-            <Image
-              source={{ uri: icon }}
-              style={{
-                width: containerSize,
-                height: containerSize,
-                borderRadius: containerSize / 2,
-              }}
-              resizeMode="cover"
-              defaultSource={undefined} // opcional: require('../../assets/placeholder.png')
-            />
-          ) : (
-            // icon es componente
-            <IconContainer
-              icon={icon}
-              variant={iconVariant}
-              size={containerSize}
-              iconSize={iconSize}
-              className="mr-4"
-            />
-          )
-        ) : (
-          <View style={{ width: containerSize, height: containerSize }} />
-        )}
+        
+        {renderIcon()}
 
         {typeof text === 'string' ? (
           <Text type="body" weight="regular" color="default">
@@ -73,7 +89,9 @@ export const ListOption: FC<ListOptionProps> = ({
         )}
       </View>
 
-      <Icon component={ChevronRight} size={20} color="secondaryText" />
+      {showChevron && (
+        <Icon component={ChevronRight} size={20} color="secondaryText" />
+      )}
     </TouchableOpacity>
   );
 };

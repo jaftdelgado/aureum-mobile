@@ -1,25 +1,34 @@
-import type { ProfileRepository } from "../../repositories/ProfileRepository";
+import { ProfileRepository } from "../../repositories/ProfileRepository";
+import { ReactNativeFile } from "../../../infra/types/http-types";
+
+export interface UpdateProfileParams {
+  userId: string;
+  firstName: string;
+  lastName: string;
+  bio: string;
+  image?: { uri: string; fileName?: string; mimeType?: string };
+}
 
 export class UpdateProfileUseCase {
-  private readonly profileRepository: ProfileRepository;
+  constructor(private profileRepository: ProfileRepository) {}
 
-  constructor(profileRepository: ProfileRepository) {
-    this.profileRepository = profileRepository;
-  }
+  async execute(params: UpdateProfileParams): Promise<void> {
+    const { userId, firstName, lastName, bio, image } = params;
 
-  async execute(
-    userId: string, 
-    currentBio: string | undefined, 
-    newBio: string, 
-    newImage: any | null
-  ): Promise<void> {
+    const fullName = `${firstName} ${lastName}`.trim();
     
-    if (newBio !== currentBio) {
-      await this.profileRepository.updateProfile(userId, { bio: newBio });
-    }
+    await this.profileRepository.updateProfile(userId, {
+      bio: bio,
+      full_name: fullName, 
+    });
 
-    if (newImage) {
-      await this.profileRepository.uploadAvatar(userId, newImage);
+    if (image) {
+      const file: ReactNativeFile = {
+        uri: image.uri,
+        name: image.fileName || `avatar_${userId}.jpg`,
+        type: image.mimeType || 'image/jpeg',
+      };
+      await this.profileRepository.uploadAvatar(userId, file);
     }
   }
 }

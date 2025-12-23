@@ -1,44 +1,40 @@
 {
   "title": "Settings",
-  "subtitle": "Manage your preferences and account.",
-  "logout": "Log out",
-  "deleting": "Deleting...",
-  "deleteAccount": "Delete account",
-
-  "sections": {
-    "account": "Account",
-    "general": "General"
-  },
-
-  "logoutTitle": "Log Out",
+  "changeLanguage": "Change Language",
+  "selectLanguage": "Select a language",
+  "spanish": "Spanish",
+  "english": "English",
+  "logout": "Log Out",
+  "logoutTitle": "Log Out?",
   "logoutMsg": "Are you sure you want to log out?",
   "logoutConfirm": "Log Out",
-
-  "deleteTitle": "Delete Account",
-  "deleteMsg": "This will permanently delete your account. Are you sure?",
-  "deleteConfirm": "Delete",
-  "language": "Language",
-  "changeLanguage": "Change language",
-  "selectLanguage": "Select your preferred language",
-  "english": "English",
-  "spanish": "Spanish",
   "cancel": "Cancel",
-  "error": "Error",
+  "deleteAccount": "Delete Account",
+  "deleting": "Deleting...",
+  "deleteTitle": "Delete Account",
+  "deleteMsg": "This action is irreversible. Are you sure?",
+  "deleteConfirm": "Delete",
   "viewProfile": "View profile",
-  "back": "Back",
   "editProfile": "Edit Profile",
-  "changePhoto": "Change photo",
   "saveChanges": "Save Changes",
-  "updateError": "Could not update profile. Please try again.",
+  "changePhoto": "Change photo",
+  "back": "Back",
+  "updateError": "Could not update profile",
+  "sections": {
+    "account": "Account"
+  },
   "profile": {
     "title": "My Profile",
     "personalInfo": "Personal Info",
-    "username": "Username",
-    "role": "Role",
-    "bio": "Bio",
-    "email": "Email",
     "student": "Student",
     "professor": "Professor",
-    "name": "Full Name"
+    "username": "Username",
+    "name": "Name",
+    "bio": "Bio",
+    "email": "Email",
+    "noBio": "No biography"
+  },
+  "common": {
+    "error": "Error"
   }
 }

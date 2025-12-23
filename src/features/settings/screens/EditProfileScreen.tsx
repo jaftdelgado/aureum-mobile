@@ -22,6 +22,10 @@ export const EditProfileScreen = () => {
 
   if (!profile) return null;
 
+  const BIO_LIMIT = 160;
+  const currentLength = bio.length;
+  const isNearLimit = currentLength >= (BIO_LIMIT - 10);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View className="flex-1 bg-bg px-4" style={{ paddingBottom: insets.bottom + 10 }}>
@@ -73,19 +77,33 @@ export const EditProfileScreen = () => {
                   value={fullName}
                   onChangeText={setFullName}
                   placeholder="Tu nombre"
-                  inputClassName="h-12 py-3 text-body leading-5"
+                  inputClassName="py-3 text-body leading-5" 
                 />
 
-                <TextField 
-                  label={t('profile.bio')}
-                  value={bio}
-                  onChangeText={setBio}
-                  placeholder="Escribe algo..."
-                  multiline={true}
-                  textAlignVertical="top"
-                  inputClassName="h-12 py-3 text-body leading-5" 
-                  scrollEnabled={true} 
-                />
+                <View>
+                  <TextField 
+                    label={t('profile.bio')}
+                    value={bio}
+                    onChangeText={setBio}
+                    placeholder="Escribe algo..."
+                    multiline={true}
+                    textAlignVertical="top"
+                    className="h-32 items-start py-2" 
+                    inputClassName="text-body leading-5 h-full" 
+                    scrollEnabled={true} 
+                    maxLength={BIO_LIMIT} 
+                  />
+                  
+                  <Text 
+                    type="caption1" 
+                    align="right"
+                    color={isNearLimit ? 'error' : 'secondary'}
+                    className="mt-1"
+                  >
+                    {currentLength}/{BIO_LIMIT}
+                  </Text>
+                </View>
+
               </View>
             </Section>
             
