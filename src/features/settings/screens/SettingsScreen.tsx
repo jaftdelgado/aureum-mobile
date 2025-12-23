@@ -12,6 +12,7 @@ import { Text } from '@core/ui/Text';
 import { Avatar } from '@core/ui/Avatar';
 import { useSettings } from '../hooks/usesettings'; 
 import { AppStackParamList } from '@app/navigation/routes-types';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SettingsScreen() {
   const { t } = useTranslation('settings');
@@ -71,13 +72,13 @@ export default function SettingsScreen() {
               <ListOption 
                 text={t('changeLanguage')} 
                 onPress={handleChangeLanguage}
-                iconVariant="gray"
+                icon={<Ionicons name="language-outline" size={20} color="#6B7280" />}
               />
 
               <ListOption 
                 text={t('logout')} 
                 onPress={handleLogout}
-                iconVariant="gray"
+                icon={<Ionicons name="log-out-outline" size={20} color="#6B7280" />}
               />
 
               <ListOption 
@@ -87,7 +88,7 @@ export default function SettingsScreen() {
                   </Text>
                 }
                 onPress={handleDeleteAccount}
-                iconVariant="gray"
+                icon={<Ionicons name="trash-outline" size={20} color="#EF4444" />}
                 isLast 
               />
 

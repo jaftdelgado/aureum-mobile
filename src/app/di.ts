@@ -15,6 +15,7 @@ import { GetProfessorTeamsUseCase } from '../domain/use-cases/teams/GetProfessor
 import { GetStudentTeamsUseCase } from '../domain/use-cases/teams/GetStudentTeamsUseCase';
 import { CreateTeamUseCase } from '../domain/use-cases/teams/CreateTeamUseCase';
 import { JoinTeamUseCase } from '../domain/use-cases/teams/JoinTeamUseCase';
+import { UpdateProfileUseCase } from '../domain/use-cases/profile/UpdateProfileUseCase';
 
 export const authRepository = new AuthApiRepository();
 export const profileRepository = new ProfileApiRepository();
@@ -29,6 +30,7 @@ export const checkProfileExistsUseCase = new CheckProfileExistsUseCase(profileRe
 export const getSocialUserUseCase = new GetSocialUserUseCase(authRepository);
 export const enrichSessionUserUseCase = new EnrichSessionUserUseCase(authRepository, profileRepository);
 export const deleteAccountUseCase = new DeleteAccountUseCase(profileRepository);
+export const updateProfileUseCase = new UpdateProfileUseCase(profileRepository);
 
 export const getProfessorTeamsUseCase = new GetProfessorTeamsUseCase(teamsRepository);
 export const getStudentTeamsUseCase = new GetStudentTeamsUseCase(teamsRepository);
