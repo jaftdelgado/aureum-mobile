@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { blobToBase64 } from '@core/utils/fileUtils';
-import { TeamsApiRepository } from '../../../infra/api/teams/TeamsApiRepository'; // Importamos el repo
-
-const teamsRepository = new TeamsApiRepository();
+import { teamsRepository } from '../../../app/di';
 
 export const useTeamImage = (teamId: string, imageId?: string | null) => {
   const [imageSource, setImageSource] = useState<string | null>(null);

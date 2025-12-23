@@ -2,18 +2,11 @@ import React from 'react';
 import { View } from 'react-native'; 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useIsFocused } from '@react-navigation/native'; 
-
+import { TeamsStackParamList } from '../routes-types';
 import { TeamsScreen } from '../../../features/teams/screens/TeamsScreen';
 import { SelectedTeamNavigator } from './SelectedTeamNavigator';
 import { JoinTeamScreen } from '../../../features/teams/screens/JoinTeamScreen';
 import { CreateTeamScreen } from '../../../features/teams/screens/CreateTeamScreen';
-
-export type TeamsStackParamList = {
-  TeamsList: undefined;
-  SelectedTeam: { teamId: string; teamName: string };
-  JoinTeam: undefined;
-  CreateTeam: undefined;
-};
 
 const Stack = createNativeStackNavigator<TeamsStackParamList>();
 

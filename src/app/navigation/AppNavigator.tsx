@@ -8,39 +8,20 @@ import { useAuth } from '@app/providers/AuthProvider';
 import { useTheme } from '@app/providers/ThemeProvider';
 
 import AuthStack from '@app/navigation/AuthStack';
-import AppStack from '@app/navigation/AppStack';
-import { GoogleRegisterScreen } from '@features/auth/screens/GoogleRegisterScreen';
-
+import { RootStackParamList } from './routes-types';
 import { Text } from '@core/ui/Text';
-
-export type RootStackParamList = {
-  AuthStack: undefined;
-  AppStack: undefined;
-  RegisterProfile: undefined;
-};
+import { BottomTabNavigator } from './BottomTabNavigator';
+import { ProfileScreen } from '@features/settings/screens/ProfileScreen';
+import { EditProfileScreen } from '@features/settings/screens/EditProfileScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator = () => {
   const { t } = useTranslation('app');
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
   
   const { user, isLoading } = useAuth(); 
 
-  const hasProfile = user?.username && user?.role;
-
-  const customNavigationTheme = {
-    ...(isDark ? DarkTheme : DefaultTheme),
-    colors: {
-      ...(isDark ? DarkTheme.colors : DefaultTheme.colors),
-      primary: theme.primary,
-      background: theme.bg,
-      card: theme.card,
-      text: theme.text,
-      border: theme.border,
-      notification: theme.error,
-    },
-  };
 
   if (isLoading) {
     return (
@@ -55,15 +36,16 @@ const AppNavigator = () => {
   }
 
   return (
-    <NavigationContainer theme={customNavigationTheme}>
+    <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!user ? (
-          <Stack.Screen name="AuthStack" component={AuthStack} />
-        ) : !hasProfile ? (
-          <Stack.Screen name="RegisterProfile" component={GoogleRegisterScreen} />
+          <Stack.Screen name="Auth" component={AuthStack} />
         ) : (
-          
-          <Stack.Screen name="AppStack" component={AppStack} />
+          <>
+            <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+          </>
         )}
       </Stack.Navigator>
     </NavigationContainer>

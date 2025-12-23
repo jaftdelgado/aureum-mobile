@@ -8,6 +8,7 @@ import { Button } from '@core/ui/Button';
 import { TeamCard } from '../components/TeamCard';
 import { useTeamsList } from '../hooks/useTeamsList';
 import FixedHeader from '@app/components/screen-header/FixedHeader';
+import { useAuth } from '@app/providers/AuthProvider';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -15,14 +16,13 @@ export const TeamsScreen = () => {
   const { t } = useTranslation('teams');
   const insets = useSafeAreaInsets();
   const scrollY = useRef(new Animated.Value(0)).current;
-  
+  const {user} = useAuth();
+  const userRole=user?.role;
+
   const { 
     teams, 
-    loading, 
-    refreshing, 
-    userRole, 
-    handleRefresh, 
-    handleTeamPress,
+    isLoading, 
+    handleSelectTeam, 
     handleCreateTeam,
     handleJoinTeam
   } = useTeamsList();
@@ -41,9 +41,10 @@ export const TeamsScreen = () => {
   );
 
   const renderEmpty = () => {
-    if (loading) return null;
+    if (isLoading) return null;
+
     return (
-      <View className="flex-1 justify-center items-center py-20">
+      <View className="flex-1 justify-center items-center py-20 px-6">
         <Text type="title3" color="secondary" align="center" className="mb-4">
           {t('no_teams', 'No tienes cursos activos')}
         </Text>
@@ -51,6 +52,7 @@ export const TeamsScreen = () => {
           title={userRole === 'professor' ? t('create_first', 'Crear mi primer curso') : t('join_first', 'Unirme a un curso')}
           onPress={userRole === 'professor' ? handleCreateTeam : handleJoinTeam}
           variant="outline"
+          className="w-full"
         />
       </View>
     );
@@ -60,13 +62,22 @@ export const TeamsScreen = () => {
     <View className="flex-1 bg-gray-50">
       <FixedHeader title={t('title')} scrollY={scrollY} />
     
+      {isLoading && teams.length === 0 && (
+        <View className="absolute inset-0 z-50 justify-center items-center bg-gray-50/80">
+          <ActivityIndicator size="large" color="#0000ff" />
+          <Text type="body" color="secondary" className="mt-4">
+            {t('loading_teams', 'Cargando cursos...')}
+          </Text>
+        </View>
+      )}
+
       <AnimatedFlatList
         data={teams}
         keyExtractor={(item: any) => item.public_id} 
         renderItem={({ item }: any) => (
           <TeamCard 
             team={item} 
-            onPress={handleTeamPress} 
+            onPress={() => handleSelectTeam(item)} 
             role={userRole}
           />
         )}
@@ -78,26 +89,18 @@ export const TeamsScreen = () => {
         scrollEventThrottle={16}
         
         contentContainerStyle={{
-          paddingTop: 60 + insets.top, 
+          paddingTop: 80 + insets.top, 
           paddingHorizontal: 16,
-          paddingBottom: 100, 
+          paddingBottom: 120, 
           flexGrow: 1,
         }}
         
         ListHeaderComponent={renderHeader}
-        ListEmptyComponent={renderEmpty}
-        
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={handleRefresh}
-            progressViewOffset={insets.top + 20} 
-          />
-        }
+        ListEmptyComponent={renderEmpty}       
         showsVerticalScrollIndicator={false}
       />
 
-      {!loading && teams.length > 0 && (
+      {!isLoading && teams.length > 0 && (
         <View 
           className="absolute right-4 left-4"
           style={{ bottom: insets.bottom + 20 }}
@@ -105,14 +108,8 @@ export const TeamsScreen = () => {
           <Button
             title={userRole === 'professor' ? t('create_team', 'Crear Nuevo Curso') : t('join_team', 'Unirse a Curso')}
             onPress={userRole === 'professor' ? handleCreateTeam : handleJoinTeam}
-            className="shadow-lg"
+            className="shadow-xl"
           />
-        </View>
-      )}
-
-      {loading && (
-        <View className="absolute inset-0 justify-center items-center bg-white/50">
-          <ActivityIndicator size="large" color="#0000ff" />
         </View>
       )}
     </View>

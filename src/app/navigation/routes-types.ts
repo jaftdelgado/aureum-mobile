@@ -18,4 +18,5 @@ export type RootStackParamList = {
   Auth: undefined; 
   MainTabs: NavigatorScreenParams<TabParamList>;
   Profile: undefined;
+  EditProfile: undefined;
 };
