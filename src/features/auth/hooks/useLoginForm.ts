@@ -1,99 +1,63 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../../infra/external/supabase';
 
-export const useLoginForm = () => {
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+import { useAuth } from '../../../app/providers/AuthProvider'; 
+import { loginSchema, LoginFormData } from '../schemas/loginSchema'; 
+
+export const useLoginForm = (onShowRegister?: () => void) => {
   const { t } = useTranslation('auth');
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const { login } = useAuth(); 
+  
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const validateEmail = (email: string): string | null => {
-    const trimmedEmail = email.trim();
-    
-    if (trimmedEmail.length > 254) return t("validation.maxLength", { max: 254 });
-    if (trimmedEmail.length < 5) return t("validation.minLength", { min: 5 });
-
-    const injectionPattern = /['";<>]|--/;
-    if (injectionPattern.test(trimmedEmail)) {
-      return t("validation.format");
+  const { 
+    control, 
+    handleSubmit, 
+    formState: { errors },
+    watch,
+    setValue 
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: ''
     }
+  });
 
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
-    if (!emailRegex.test(trimmedEmail)) {
-      return t("validation.email");
-    }
+  const formData = watch();
 
-    const domainParts = trimmedEmail.split('@')[1].split('.');
-    if (domainParts.some(part => part.length === 0)) {
-      return t("validation.format");
-    }
-
-    return null;
-  };
-
-  const validatePassword = (password: string): string | null => {
-    if (!password) return t("validation.required");
-    if (password.length > 128) return t("validation.maxLength", { max: 128 });
-    
-    if (/<script>|javascript:/i.test(password)) {
-        return t("validation.format");
-    }
-    
-    return null;
-  };
-
-  const handleChange = (field: keyof typeof formData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
-    if (errorMsg) setErrorMsg(null);
-  };
-
-  const handleSubmit = async () => {
-    const { email, password } = formData;
-
-    const newErrors: typeof errors = {};
-    
-    const emailError = validateEmail(email);
-    if (emailError) newErrors.email = emailError;
-
-    const passwordError = validatePassword(password);
-    if (passwordError) newErrors.password = passwordError;
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
+  const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
+    setErrorMsg(null);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ 
-        email: email.trim(), 
-        password 
-      });
-      
-      if (error) {
-        if (error.message.includes("Invalid login credentials")) {
-           throw new Error(t("signin.invalidCredentials"));
-        }
-        throw error;
+      await login({ email: data.email, password: data.password });
+    } catch (error: any) {
+      console.error("Login hook error:", error);
+      if (error.message?.includes("Invalid login")) {
+        setErrorMsg(t('signin.errors.invalidCredentials'));
+      } else {
+        setErrorMsg(t('common.error'));
       }
-    
-    } catch (err: any) {
-      setErrorMsg(err.message || t("signin.loginError"));
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (field: keyof LoginFormData, value: string) => {
+    setValue(field, value, { shouldValidate: true });
+  };
+
   return {
+    control,
     formData,
-    handleChange,
-    loading,
     errors,
+    loading,
     errorMsg,
-    handleSubmit
+    handleChange, 
+    handleSubmit: handleSubmit(onSubmit),
+    onShowRegister
   };
 };

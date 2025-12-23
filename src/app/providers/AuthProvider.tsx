@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { AppState, DeviceEventEmitter, Alert } from 'react-native';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import { AppState, DeviceEventEmitter, Alert, Linking } from 'react-native';
 import { LoggedInUser } from '../../domain/entities/LoggedInUser';
 import { RegisterData } from '../../domain/entities/RegisterData';
 import { AUTH_EVENTS } from '../events/authEvents';
@@ -13,10 +13,22 @@ import {
   enrichSessionUserUseCase 
 } from '../di';
 
+const extractParamsFromUrl = (url: string) => {
+  const params: Record<string, string> = {};
+  const queryString = url.split('#')[1] || url.split('?')[1];
+  if (queryString) {
+    queryString.split('&').forEach(param => {
+      const [key, value] = param.split('=');
+      if (key && value) params[key] = decodeURIComponent(value);
+    });
+  }
+  return params;
+};
+
 interface AuthContextType {
   user: LoggedInUser | null;
   isLoading: boolean;
-  login: (data: { email: string, password: string }) => Promise<void>; // Tipado estricto
+  login: (data: { email: string, password: string }) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -30,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
 
-  const refreshSession = async () => {
+  const refreshSession = useCallback(async () => {
     try {
       const enrichedUser = await enrichSessionUserUseCase.execute();
       setUser(enrichedUser);
@@ -40,49 +52,64 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    refreshSession();
-
     const unsubscribe = authRepository.onAuthStateChange(async (authUser) => {
       if (authUser) {
+        console.log("Supabase Auth Change: User detected");
         const enrichedUser = await enrichSessionUserUseCase.execute(authUser);
         setUser(enrichedUser);
-      } else {
-        setUser(null);
       }
-      setIsLoading(false);
+    });
+
+    const handleDeepLink = async (event: { url: string }) => {
+      if (event.url.includes('auth/callback')) {
+        console.log("Deep link recibido!");
+        setIsLoading(true);
+
+        const params = extractParamsFromUrl(event.url);
+        if (params.access_token && params.refresh_token) {
+          try {
+            console.log("Estableciendo sesión manualmente...");
+            await authRepository.setSession(params.access_token, params.refresh_token);
+          } catch (e) {
+            console.error("Error setting session:", e);
+          }
+        }
+
+        setTimeout(() => {
+            refreshSession();
+        }, 500);
+      }
+    };
+
+    const subscription = Linking.addEventListener('url', handleDeepLink);
+
+    Linking.getInitialURL().then((url) => {
+      if (url && url.includes('auth/callback')) {
+         handleDeepLink({ url });
+      } else {
+         refreshSession();
+      }
+    });
+
+    const appStateListener = AppState.addEventListener('change', (state) => {
+      if (state === 'active') refreshSession();
     });
 
     const logoutListener = DeviceEventEmitter.addListener(AUTH_EVENTS.LOGOUT, () => {
-      handleLogout(); 
-      Alert.alert(
-        t('auth.session_expired_title'), 
-        t('auth.session_expired_msg')
-      );
-    });
-
-    const serverListener = DeviceEventEmitter.addListener(AUTH_EVENTS.SERVER_DISCONNECT, () => {
-      Alert.alert(
-        t('auth.connection_error_title'), 
-        t('auth.connection_error_msg')
-      );
-    });
-
-    const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') {
-        refreshSession();
-      }
+      handleLogout();
+      Alert.alert(t('auth.session_expired_title'), t('auth.session_expired_msg'));
     });
 
     return () => {
       unsubscribe();
       subscription.remove();
+      appStateListener.remove();
       logoutListener.remove();
-      serverListener.remove();
     };
-  }, []);
+  }, [refreshSession]);
 
   const login = async (data: { email: string, password: string }) => {
     setIsLoading(true);
@@ -102,6 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       await registerUseCase.execute(data);
+      await refreshSession();
     } catch (error: any) {
       console.error('Register error:', error);
       throw error;
@@ -132,15 +160,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        login,
-        register,
-        logout: handleLogout,
-        loginWithGoogle,
-        refreshSession,
-      }}
+      value={{ user, isLoading, login, register, logout: handleLogout, loginWithGoogle, refreshSession }}
     >
       {children}
     </AuthContext.Provider>

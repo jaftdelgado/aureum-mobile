@@ -13,12 +13,7 @@ export class AuthApiRepository implements AuthRepository {
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error("No se pudo iniciar sesión");
 
-    return mapUserDTOToLoggedInUser({
-      id: data.user.id,
-      email: data.user.email,
-      created_at: data.user.created_at,
-      avatar_url: data.user.user_metadata?.avatar_url || null,
-    }); 
+    return mapSessionToUser(data.user)
   }
 
   async logout(): Promise<void> {
@@ -35,12 +30,7 @@ export class AuthApiRepository implements AuthRepository {
     const user = data.session?.user;
     if (!user) return null;
 
-    return mapUserDTOToLoggedInUser({
-        id: user.id,
-        email: user.email,
-        created_at: user.created_at,
-        avatar_url: user.user_metadata?.avatar_url || null,
-    });
+    return mapSessionToUser(user)
   }
 
   async register(data: RegisterData): Promise<string> { 
@@ -86,7 +76,7 @@ export class AuthApiRepository implements AuthRepository {
   }
 
   async loginWithGoogle(): Promise<void> {
-    const redirectUrl = Linking.createURL('/auth/callback'); 
+    const redirectUrl = Linking.createURL('auth/callback'); 
     
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -102,22 +92,13 @@ export class AuthApiRepository implements AuthRepository {
 
     if (error) throw new Error(error.message);
     if (data?.url) {
-      let authUrl = data.url;
-      
-      if (authUrl.includes('prompt=')) {
-        authUrl = authUrl.replace(/prompt=[^&]+/, 'prompt=select_account');
-      } else {
-        const separator = authUrl.includes('?') ? '&' : '?';
-        authUrl = `${authUrl}${separator}prompt=select_account`;
-      }
-    
-      await Linking.openURL(authUrl);
+      await Linking.openURL(data.url);
     }
   }
 
   onAuthStateChange(callback: (user: LoggedInUser | null) => void): () => void {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'TOKEN_REFRESHED') return;
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') return;
       if (session?.user) {
         callback(mapSessionToUser(session.user));
       } else {

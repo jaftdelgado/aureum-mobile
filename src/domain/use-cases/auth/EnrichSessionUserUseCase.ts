@@ -8,33 +8,32 @@ export class EnrichSessionUserUseCase {
     private profileRepository: ProfileRepository
   ) {}
 
-  async execute(currentUser?: LoggedInUser | null): Promise<LoggedInUser | null> {
-    const user = currentUser || await this.authRepository.getSession();
-    
+  async execute(authUser?: LoggedInUser): Promise<LoggedInUser | null> {
+    let user: LoggedInUser | null | undefined = authUser;
+
+    if (!user) {
+      user = await this.authRepository.getSession();
+    }
+
     if (!user) return null;
 
     try {
-      const hasProfile = await this.profileRepository.checkProfileExists(user.id);
-
-      if (hasProfile) {
-        const fullProfile = await this.profileRepository.getProfile(user.id);
-        
-        if (fullProfile) {
-          return {
-            ...user,
-            username: fullProfile.username,
-            role: fullProfile.role,
-            fullName: fullProfile.fullName,
-            avatarUrl: fullProfile.avatarUrl
-          };
-        }
+      const profile = await this.profileRepository.getProfile(user.id);
+      
+      if (profile) {
+        return {
+          ...user,
+          username: profile.username,
+          role: profile.role,
+          fullName: profile.fullName,
+          avatarUrl: profile.avatarUrl,
+          bio: profile.bio,
+        };
       }
-      
-      return user;
-      
     } catch (error) {
-      console.warn("Error enriching user session:", error);
-      return user; 
+      console.log("Perfil no encontrado o error, devolviendo usuario base:", error);
     }
+
+    return user; 
   }
 }

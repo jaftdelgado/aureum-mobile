@@ -22,7 +22,6 @@ export class ProfileApiRepository implements ProfileRepository {
           const blob = await client.getBlob(`/api/users/profiles/${authId}/avatar`);
           avatarBase64 = await blobToBase64(blob);
         } catch (imageError) {
-          console.warn("No se pudo descargar avatar:", imageError);
         }
       }
 
@@ -33,7 +32,11 @@ export class ProfileApiRepository implements ProfileRepository {
         avatarUrl: avatarBase64 
       };
 
-    } catch (error) {
+    } catch (error: any) {
+      if (error.status === 404 || error.response?.status === 404) {
+        return null;
+      }
+      
       console.error(`Error fetching profile for ${authId}`, error);
       return null;
     }
@@ -45,8 +48,11 @@ export class ProfileApiRepository implements ProfileRepository {
       
       return mapDTOToTeamMember(dto);
       
-    } catch (error) {
-      console.warn(`Public profile not found for ${userId}`);
+    } catch (error: any) {
+      if (error.status === 404 || error.response?.status === 404) {
+        return null;
+      }
+      console.warn(`Public profile error for ${userId}:`, error);
       return null;
     }
   }
