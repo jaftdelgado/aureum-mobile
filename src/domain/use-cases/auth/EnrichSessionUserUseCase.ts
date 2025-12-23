@@ -1,29 +1,40 @@
-import type { LoggedInUser } from "@domain/entities/LoggedInUser";
-import type { ProfileRepository } from "@domain/repositories/ProfileRepository";
+import { AuthRepository } from "../../repositories/AuthRepository";
+import { ProfileRepository } from "../../repositories/ProfileRepository";
+import { LoggedInUser } from "../../entities/LoggedInUser";
 
 export class EnrichSessionUserUseCase {
-  private readonly profileRepository;
-  constructor(profileRepository: ProfileRepository) {
-    this.profileRepository=profileRepository;
-  }
+  constructor(
+    private authRepository: AuthRepository,
+    private profileRepository: ProfileRepository
+  ) {}
 
-  async execute(baseUser: LoggedInUser): Promise<LoggedInUser> {
-    try {
-      const profile = await this.profileRepository.getPublicProfile(baseUser.id);
-
-      if (profile) {
-        return {
-          ...baseUser,
-          fullName: profile.name,
-          username: profile.name,
-          avatarUrl: profile.avatarUrl,
-          role: profile.role as "student" | "professor",
-        };
-      }
-    } catch (error) {
-      console.warn("Could not enrich user profile:", error);
-    }
+  async execute(currentUser?: LoggedInUser | null): Promise<LoggedInUser | null> {
+    const user = currentUser || await this.authRepository.getSession();
     
-    return baseUser;
+    if (!user) return null;
+
+    try {
+      const hasProfile = await this.profileRepository.checkProfileExists(user.id);
+
+      if (hasProfile) {
+        const fullProfile = await this.profileRepository.getProfile(user.id);
+        
+        if (fullProfile) {
+          return {
+            ...user,
+            username: fullProfile.username,
+            role: fullProfile.role,
+            fullName: fullProfile.fullName,
+            avatarUrl: fullProfile.avatarUrl
+          };
+        }
+      }
+      
+      return user;
+      
+    } catch (error) {
+      console.warn("Error enriching user session:", error);
+      return user; 
+    }
   }
 }

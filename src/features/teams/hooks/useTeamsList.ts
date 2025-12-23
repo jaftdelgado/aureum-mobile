@@ -1,73 +1,57 @@
-import { useState, useCallback } from 'react';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useAuth } from '@app/providers/AuthProvider'
-import { TeamsApiRepository } from '../../../infra/api/teams/TeamsApiRepository';
+import { useState, useEffect } from 'react';
+import { useAppNavigation } from '../../../app/hooks/useAppNavigation'; //
+import { useAuth } from '../../../app/providers/AuthProvider'; //
+import { getProfessorTeamsUseCase, getStudentTeamsUseCase } from '../../../app/di'; //
 import { Team } from '../../../domain/entities/Team';
-import { TeamsStackParamList } from '@app/navigation/teams/TeamsNavigator';
 
 export const useTeamsList = () => {
+  const navigation = useAppNavigation(); 
   const { user } = useAuth();
-  const navigation = useNavigation<NativeStackNavigationProp<TeamsStackParamList>>();
-  const teamsRepo = new TeamsApiRepository();
-
   const [teams, setTeams] = useState<Team[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchTeams = useCallback(async () => {
-    if (!user?.id || !user?.role) return;
-
+  const fetchTeams = async () => {
+    if (!user) return;
+    setIsLoading(true);
     try {
-      let data: Team[] = [];
-      
-      if (user.role === 'professor') {
-        data = await teamsRepo.getProfessorTeams(user.id);
-      } else {
-        data = await teamsRepo.getStudentTeams(user.id);
-      }
-      
+      const data = user.role === 'professor' 
+        ? await getProfessorTeamsUseCase.execute(user.id)
+        : await getStudentTeamsUseCase.execute(user.id);
       setTeams(data);
     } catch (error) {
-      console.error("Error cargando equipos", error);
+      console.error("Error fetching teams:", error);
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      setIsLoading(false);
     }
-  }, [user?.id, user?.role]);
+  };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchTeams();
-    }, [fetchTeams])
-  );
-
-  const handleRefresh = () => {
-    setRefreshing(true);
+  useEffect(() => {
     fetchTeams();
-  };
-
-  const handleTeamPress = (team: Team) => {
-    // @ts-ignore
-    
-  };
+  }, [user]);
 
   const handleCreateTeam = () => {
-    navigation.navigate('CreateTeam');
+    navigation.navigate('MainTabs', {
+    screen: 'Teams',
+    params: { screen: 'CreateTeam' }
+  });
   };
 
   const handleJoinTeam = () => {
-    navigation.navigate('JoinTeam');
+    navigation.navigate('MainTabs', {
+    screen: 'Teams',
+    params: { screen: 'JoinTeam' }
+  });
   };
 
-  return {
-    teams,
-    loading,
-    refreshing,
-    userRole: user?.role,
-    handleRefresh,
-    handleTeamPress,
-    handleCreateTeam,
-    handleJoinTeam
+  const handleSelectTeam = (team: Team) => {
+    navigation.navigate('MainTabs', {
+      screen: 'Teams',
+      params: { 
+        screen: 'SelectedTeam', 
+        params: { teamId: team.public_id, teamName: team.name } 
+      }
+    });
   };
+
+  return { teams, isLoading, handleCreateTeam, handleJoinTeam, handleSelectTeam, refetch: fetchTeams };
 };

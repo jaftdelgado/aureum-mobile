@@ -3,9 +3,8 @@ import { Alert, Animated } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-
 import { useAuth } from '@app/providers/AuthProvider';
-import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; // Usamos el Repo
+import { profileRepository } from '../../../app/di';
 import { UserProfile } from '../../../domain/entities/UserProfile';
 import { getInitials } from '@core/utils/profile';
 
@@ -15,7 +14,6 @@ export const useEditProfile = () => {
   const navigation = useNavigation();
 
   const scrollY = useRef(new Animated.Value(0)).current;
-  const profileRepo = new ProfileApiRepository();
   
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -29,7 +27,7 @@ export const useEditProfile = () => {
     const fetchProfileData = async () => {
       if (!user?.id) return;
       try {
-        const data = await profileRepo.getProfile(user.id);
+        const data = await profileRepository.getProfile(user.id);
         if (data) {
           setProfile(data);
           setFullName(data.fullName || '');
@@ -50,7 +48,7 @@ export const useEditProfile = () => {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, // Corrección de tipo
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, 
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
@@ -67,7 +65,7 @@ export const useEditProfile = () => {
 
     try {
       if (fullName !== profile.fullName || bio !== profile.bio) {
-        await profileRepo.updateProfile(user.id, {
+        await profileRepository.updateProfile(user.id, {
            bio: bio,
            full_name: fullName,
         } as any); 
@@ -77,10 +75,10 @@ export const useEditProfile = () => {
       if (selectedImage) {
         try {
           console.log("Subiendo imagen:", selectedImage.uri);
-          await profileRepo.uploadAvatar(user.id, {
+          await profileRepository.uploadAvatar(user.id, {
             uri: selectedImage.uri,
-            type: selectedImage.mimeType || 'image/jpeg', 
-            fileName: selectedImage.fileName || 'upload.jpg'
+            name: selectedImage.fileName || 'upload.jpg',
+            type: selectedImage.mimeType || 'image/jpeg' 
           });
         } catch (imgError) {
           console.error("Error detallado de imagen:", imgError);

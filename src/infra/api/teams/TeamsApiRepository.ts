@@ -1,9 +1,11 @@
 import { httpClient } from '../http/client'; 
 import { Team } from '../../../domain/entities/Team';
-import { TeamDTO } from './team.dto'; 
+import { TeamMember } from '../../../domain/entities/TeamMember';
+import { TeamsRepository } from '../../../domain/repositories/TeamsRepository'; 
+import { TeamDTO, CreateTeamRequestDTO, JoinTeamRequestDTO } from './team.dto';
 import { mapTeamDTOToEntity } from './team.mappers'; 
 
-export class TeamsApiRepository {
+export class TeamsApiRepository implements TeamsRepository {
   
   async getProfessorTeams(userId: string): Promise<Team[]> {
     const response = await httpClient.get<TeamDTO[]>(`/api/courses/professor/${userId}`);
@@ -15,34 +17,45 @@ export class TeamsApiRepository {
     return response.map(mapTeamDTOToEntity);
   }
 
-  async createTeam(data: { name: string; description?: string; professor_id: string; image?: { uri: string; type: string; name: string } }): Promise<Team> {
+  async getTeamMembers(teamId: string): Promise<TeamMember[]> {
+    const response = await httpClient.get<any[]>(`/api/teams/${teamId}/members`);
+    return response; 
+  }
+
+  async createTeam(request: CreateTeamRequestDTO): Promise<Team> {
     const formData = new FormData();
-    formData.append('professor_id', data.professor_id);
-    formData.append('name', data.name);
-    if (data.description) {
-      formData.append('description', data.description);
+    formData.append('professor_id', request.professor_id); 
+    formData.append('name', request.name);
+    if (request.description) formData.append('description', request.description);
+
+    if (request.image) {
+      formData.append('file', {
+        uri: request.image.uri,
+        type: request.image.type,
+        name: request.image.name,
+      } as any); 
     }
 
-    if (data.image) {
-      formData.append('file', {
-        uri: data.image.uri,
-        type: data.image.type,
-        name: data.image.name,
-      } as any);
-    }
-    
-    const response = await httpClient.post<TeamDTO>('/api/courses', formData, {
+    const response = await httpClient.post<TeamDTO>('/api/teams', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     });
-    
     return mapTeamDTOToEntity(response);
   }
 
-  async joinTeam(userId: string, code: string): Promise<Team> {
-    const response = await httpClient.post<TeamDTO>('/api/memberships/join', { 
-      access_code: code,
-      user_id: userId 
-    });
+  async joinTeam(request: JoinTeamRequestDTO): Promise<Team> {
+    const response = await httpClient.post<TeamDTO>('/api/teams/join', request);
     return mapTeamDTOToEntity(response);
+  }
+
+  async removeMember(teamId: string, userId: string): Promise<void> {
+    await httpClient.delete(`/api/teams/${teamId}/members/${userId}`);
+  }
+
+  async getTeamAvatar(teamId: string): Promise<Blob | null> {
+    try {
+      return await httpClient.getBlob(`/api/courses/${teamId}/image`);
+    } catch (error) {
+      return null;
+    }
   }
 }

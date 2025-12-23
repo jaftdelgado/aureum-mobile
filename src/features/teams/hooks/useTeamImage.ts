@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { httpClient } from '../../../infra/api/http/client';
 import { blobToBase64 } from '@core/utils/fileUtils';
+import { teamsRepository } from '../../../app/di';
 
 export const useTeamImage = (teamId: string, imageId?: string | null) => {
   const [imageSource, setImageSource] = useState<string | null>(null);
@@ -14,10 +14,12 @@ export const useTeamImage = (teamId: string, imageId?: string | null) => {
       
       setLoading(true);
       try {
-        const blob = await httpClient.getBlob(`/api/courses/${teamId}/image`);
-        const base64 = await blobToBase64(blob);
+        const blob = await teamsRepository.getTeamAvatar(teamId);
         
-        if (isActive) setImageSource(base64);
+        if (blob) {
+          const base64 = await blobToBase64(blob);
+          if (isActive) setImageSource(base64);
+        }
       } catch (error) {
         console.warn(`Error loading image for team ${teamId}`, error);
       } finally {

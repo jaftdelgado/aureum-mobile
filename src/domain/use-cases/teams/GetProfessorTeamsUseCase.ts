@@ -9,6 +9,6 @@ export class GetProfessorTeamsUseCase {
   }
 
   async execute(professorId: string): Promise<Team[]> {
-    return this.teamsRepository.getTeamsByProfessor(professorId);
+    return this.teamsRepository.getProfessorTeams(professorId);
   }
 }

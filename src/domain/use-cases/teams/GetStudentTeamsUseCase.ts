@@ -9,6 +9,6 @@ export class GetStudentTeamsUseCase {
   }
 
   async execute(studentId: string): Promise<Team[]> {
-    return this.teamsRepository.getTeamsByStudent(studentId);
+    return this.teamsRepository.getStudentTeams(studentId);
   }
 }

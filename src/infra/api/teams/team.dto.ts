@@ -1,3 +1,5 @@
+import { ReactNativeFile } from '../../types/http-types';
+
 export interface TeamMembershipDto {
   membershipid: number;
   publicid: string; 
@@ -21,4 +23,16 @@ export interface StudentDto {
   full_name: string;
   email: string;
   avatar_url?: string;
+}
+
+export interface CreateTeamRequestDTO {
+  name: string;
+  description?: string;
+  professor_id: string;
+  image?: ReactNativeFile;
+}
+
+export interface JoinTeamRequestDTO {
+  code: string;
+  userId: string;
 }

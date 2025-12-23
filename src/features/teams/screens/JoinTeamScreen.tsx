@@ -26,7 +26,7 @@ export const JoinTeamScreen = () => {
     
     setLoading(true);
     try {
-      await teamsRepo.joinTeam(user.id, code.trim());
+      await teamsRepo.joinTeam({ userId: user.id, code: code.trim() });
       
       Alert.alert(
         t('success', '¡Éxito!'),

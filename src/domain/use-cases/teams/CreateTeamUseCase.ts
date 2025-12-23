@@ -1,13 +1,11 @@
-import type { TeamsRepository, CreateTeamParams } from "../../repositories/TeamsRepository";
+import { TeamsRepository } from "../../repositories/TeamsRepository";
+import { Team } from "../../entities/Team";
+import { CreateTeamRequestDTO } from "../../../infra/api/teams/team.dto";
 
 export class CreateTeamUseCase {
-  private readonly teamsRepository: TeamsRepository;
-  
-  constructor(teamsRepository: TeamsRepository) {
-    this.teamsRepository = teamsRepository;
-  }
+  constructor(private teamsRepository: TeamsRepository) {}
 
-  async execute(params: CreateTeamParams): Promise<void> {
-    await this.teamsRepository.createTeam(params);
+  async execute(request: CreateTeamRequestDTO): Promise<Team> {
+    return this.teamsRepository.createTeam(request);
   }
 }

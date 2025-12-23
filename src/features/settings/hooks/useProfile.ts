@@ -1,20 +1,19 @@
 import { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '@app/providers/AuthProvider';
-import { AppStackParamList } from '@app/navigation/AppStack';
 import { ProfileApiRepository } from '../../../infra/api/users/ProfileApiRepository'; 
 import { UserProfile } from '../../../domain/entities/UserProfile'; 
 import { getInitials } from '@core/utils/profile';
 import { Animated } from 'react-native';
+import { useAppNavigation } from '@app/hooks/useAppNavigation';
 
 export const useProfile = () => {
   const { t } = useTranslation('settings');
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const navigation = useAppNavigation();
   
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
