@@ -3,9 +3,10 @@ import type { ProfileRepository } from "../../../domain/repositories/ProfileRepo
 import type { UserProfile } from "../../../domain/entities/UserProfile";
 import type { RegisterData } from "../../../domain/entities/RegisterData";
 import type { TeamMember } from "../../../domain/entities/TeamMember";
-import { mapDTOToUserProfile } from "./profile.mappers";
-import type { UserProfileDTO } from "./profile.dto";
+import { mapDTOToTeamMember, mapDTOToUserProfile } from "./profile.mappers";
+import type { UserProfileDTO, CreateProfileRequestDTO, UpdateProfileRequestDTO } from "./profile.dto";
 import { blobToBase64 } from "@core/utils/fileUtils";
+import { ReactNativeFile } from "../../types/http-types";
 
 export class ProfileApiRepository implements ProfileRepository {
   
@@ -13,12 +14,12 @@ export class ProfileApiRepository implements ProfileRepository {
     try {
       const dto = await client.get<UserProfileDTO>(`/api/users/profiles/${authId}`);
       if (!dto) return null;
+      
       let avatarBase64: string | undefined = undefined;
 
       if (dto.profile_pic_id) {
         try {
           const blob = await client.getBlob(`/api/users/profiles/${authId}/avatar`);
-          
           avatarBase64 = await blobToBase64(blob);
         } catch (imageError) {
           console.warn("No se pudo descargar avatar:", imageError);
@@ -40,15 +41,10 @@ export class ProfileApiRepository implements ProfileRepository {
 
   async getPublicProfile(userId: string): Promise<TeamMember | null> {
     try {
-      const response = await client.get<any>(`/api/users/profiles/${userId}`);
+      const dto = await client.get<UserProfileDTO>(`/api/users/profiles/${userId}`);
       
-      return {
-        id: response.data.auth_user_id || response.data.id, 
-        name: response.data.full_name,                     
-        email: response.data.email || "",                  
-        role: response.data.role,                          
-        avatarUrl: response.data.profile_pic_id,
-      } as TeamMember;
+      return mapDTOToTeamMember(dto);
+      
     } catch (error) {
       console.warn(`Public profile not found for ${userId}`);
       return null;
@@ -68,7 +64,7 @@ export class ProfileApiRepository implements ProfileRepository {
   }
 
   async createProfile(userId: string, data: RegisterData): Promise<void> {
-    const payload = {
+    const payload: CreateProfileRequestDTO = {
       auth_user_id: userId,
       username: data.username,
       full_name: `${data.firstName} ${data.lastName}`,
@@ -80,19 +76,18 @@ export class ProfileApiRepository implements ProfileRepository {
   }
 
   async updateProfile(authId: string, data: { bio?: string; full_name?: string }): Promise<void> {
-    await client.patch(`/api/users/profiles/${authId}`, data);
+    const payload: UpdateProfileRequestDTO = data;
+    await client.patch(`/api/users/profiles/${authId}`, payload);
   }
 
-  async uploadAvatar(authId: string, imageFile: { uri: string; type?: string; fileName?: string | null }): Promise<void> {
+  async uploadAvatar(authId: string, imageFile: ReactNativeFile): Promise<void> {
     const formData = new FormData();
     
-    const fileToUpload = {
+    formData.append('file', {
       uri: imageFile.uri,
-      name: imageFile.fileName || `avatar_${authId}.jpg`,
+      name: imageFile.name || `avatar_${authId}.jpg`,
       type: imageFile.type || 'image/jpeg',
-    } as any;
-
-    formData.append('file', fileToUpload);
+    } as any);
 
     await client.post(`/api/users/profiles/${authId}/avatar`, formData, {
       headers: {

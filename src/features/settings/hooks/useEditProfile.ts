@@ -79,8 +79,8 @@ export const useEditProfile = () => {
           console.log("Subiendo imagen:", selectedImage.uri);
           await profileRepo.uploadAvatar(user.id, {
             uri: selectedImage.uri,
-            type: selectedImage.mimeType || 'image/jpeg', 
-            fileName: selectedImage.fileName || 'upload.jpg'
+            name: selectedImage.fileName || 'upload.jpg',
+            type: selectedImage.mimeType || 'image/jpeg' 
           });
         } catch (imgError) {
           console.error("Error detallado de imagen:", imgError);

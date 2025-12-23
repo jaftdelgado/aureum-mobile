@@ -5,6 +5,16 @@ import { mapTeamDTOToEntity } from './team.mappers';
 
 export class TeamsApiRepository {
   
+  async getTeamAvatar(teamId: string): Promise<Blob | null> {
+    try {
+      const blob = await httpClient.getBlob(`/api/courses/${teamId}/image`);
+      return blob;
+    } catch (error) {
+      console.warn(`No se pudo descargar la imagen del equipo ${teamId}`, error);
+      return null;
+    }
+  }
+
   async getProfessorTeams(userId: string): Promise<Team[]> {
     const response = await httpClient.get<TeamDTO[]>(`/api/courses/professor/${userId}`);
     return response.map(mapTeamDTOToEntity);

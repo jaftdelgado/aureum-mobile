@@ -15,9 +15,16 @@ const ExpoSecureStoreAdapter = {
   },
 };
 
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error("❌ ERROR CRÍTICO: Faltan variables de entorno de Supabase.");
+}
+
 export const supabase = createClient(
-  process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
+  supabaseUrl || "", 
+  supabaseAnonKey || "",
   {
     auth: {
       storage: ExpoSecureStoreAdapter,
@@ -27,8 +34,6 @@ export const supabase = createClient(
     },
   }
 );
-
-
 AppState.addEventListener('change', (state) => {
   if (state === 'active') {
     supabase.auth.startAutoRefresh();
