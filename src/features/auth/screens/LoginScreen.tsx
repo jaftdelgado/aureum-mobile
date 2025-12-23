@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { SafeAreaView} from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LoginForm } from '../components/LoginForm';
 
-interface LoginScreenProps {
-  onNavigateToRegister: () => void;
-}
+import { useAppNavigation } from '../../../app/hooks/useAppNavigation';
 
-export const LoginScreen: React.FC<LoginScreenProps> = ({onNavigateToRegister}) => {
+export const LoginScreen = () => {
+  const navigation = useAppNavigation();
+
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <KeyboardAvoidingView 
@@ -17,9 +17,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({onNavigateToRegister}) 
         <ScrollView 
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
           className="px-4"
+          showsVerticalScrollIndicator={false}
         >
           <View className="w-full max-w-md mx-auto">
-            <LoginForm onShowRegister={onNavigateToRegister} />
+            <LoginForm onShowRegister={() => navigation.navigate('Auth', { screen: 'Register' })} />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

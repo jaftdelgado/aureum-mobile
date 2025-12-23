@@ -1,18 +1,22 @@
-import React, { ReactNode } from 'react';
-import { QueryProvider } from '@app/providers/QueryProvider';
-import { AuthProvider } from '@app/providers/AuthProvider';
-import { ThemeProvider } from '@app/providers/ThemeProvider';
+import React from 'react';
+import { AuthProvider } from './AuthProvider';
+import { QueryProvider } from './QueryProvider';
+import { ThemeProvider } from './ThemeProvider';
+import { FontProvider } from './FontProvider';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-interface AppProviderProps {
-  children: ReactNode;
-}
-
-export const AppProvider = ({ children }: AppProviderProps) => {
+export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <QueryProvider>{children}</QueryProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <FontProvider>
+        <ThemeProvider>
+          <QueryProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </QueryProvider>
+        </ThemeProvider>
+      </FontProvider>
+    </SafeAreaProvider>
   );
 };

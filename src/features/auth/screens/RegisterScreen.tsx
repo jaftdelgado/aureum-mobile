@@ -3,7 +3,7 @@ import { View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SignUpForm } from '../components/SignUpForm';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '@app/navigation/AuthStack'; 
+import { AuthStackParamList } from '../../../app/navigation/routes-types'; 
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
@@ -22,9 +22,7 @@ export const RegisterScreen: React.FC<Props> = ({ navigation }) => {
           <View className="w-full max-w-md mx-auto">
             <SignUpForm
                 isGoogleFlow={false}
-                onSuccess={() => {
-                    console.log("Registro exitoso desde Screen");
-                }}
+                onSuccess={() => console.log("Registro exitoso")}
                 onBack={() => navigation.replace('Login')}
             />
           </View>
