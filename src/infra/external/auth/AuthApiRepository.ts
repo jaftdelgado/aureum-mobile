@@ -13,12 +13,7 @@ export class AuthApiRepository implements AuthRepository {
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error("No se pudo iniciar sesión");
 
-    return mapUserDTOToLoggedInUser({
-      id: data.user.id,
-      email: data.user.email,
-      created_at: data.user.created_at,
-      avatar_url: data.user.user_metadata?.avatar_url || null,
-    }); 
+    return mapSessionToUser(data.user)
   }
 
   async logout(): Promise<void> {
@@ -35,12 +30,7 @@ export class AuthApiRepository implements AuthRepository {
     const user = data.session?.user;
     if (!user) return null;
 
-    return mapUserDTOToLoggedInUser({
-        id: user.id,
-        email: user.email,
-        created_at: user.created_at,
-        avatar_url: user.user_metadata?.avatar_url || null,
-    });
+    return mapSessionToUser(user)
   }
 
   async register(data: RegisterData): Promise<string> { 

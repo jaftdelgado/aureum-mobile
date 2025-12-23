@@ -9,7 +9,6 @@ import { AuthStack } from './AuthStack';
 import { BottomTabNavigator } from './BottomTabNavigator'; 
 import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
 import { EditProfileScreen } from '../../features/settings/screens/EditProfileScreen';
-import { GoogleRegisterScreen } from '../../features/auth/screens/GoogleRegisterScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();

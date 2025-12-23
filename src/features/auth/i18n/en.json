@@ -10,7 +10,11 @@
     "createAccount": "Sign Up",
     "continueWithGoogle": "Continue with Google",
     "loginError": "Login failed",
-    "invalidCredentials": "Invalid email or password"
+    "errors": {
+      "required": "Required",
+      "emailInvalid": "Invalid email address",
+      "invalidCredentials": "Invalid email or password"
+    }
   },
   "signup": {
     "createAccount": "Create Account",
@@ -33,21 +37,40 @@
     "next": "Next",
     "finish": "Finish",
     "back": "Back",
-    "goToLogin": "Back to Login"
-  },
-  "validation": {
-    "required": "Required",
-    "email": "Invalid email",
-    "minLength": "Minimum {{min}} characters",
-    "maxLength": "Maximum {{max}} characters",
-    "format": "Invalid format",
-    "passwordMatch": "Passwords do not match"
+    "goToLogin": "Back to Login",
+    "googleFlowMessage": "Confirm your details to continue",
+    "errors": {
+      "nameLength": "Between 2 and 50 characters",
+      "nameInvalid": "Only letters and spaces",
+      "emailInvalid": "Invalid email",
+      "emailLength": "Email too long",
+      "emailAlreadyRegistered": "Email already registered",
+      "usernameMin": "Minimum 4 characters",
+      "usernameMax": "Maximum 20 characters",
+      "usernameInvalid": "Only letters, numbers and _",
+      "usernameReserved": "Username not available",
+      "accountTypeRequired": "Select an account type",
+      "passwordMin": "Minimum 8 characters",
+      "passwordMax": "Maximum 64 characters",
+      "passwordSpaces": "No spaces at start/end",
+      "passwordComplexity": "Use uppercase, lowercase, number and symbol",
+      "passwordRepeating": "Avoid repeating characters",
+      "passwordCommon": "Password too common",
+      "passwordPwned": "Password found in data breach, choose another",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordSimilar": "Do not use your name in password",
+      "checkName": "Check your first and last name"
+    }
   },
   "common": {
     "loading": "Loading...",
     "error": "Error",
     "next": "Next",
     "success": "Success",
-    "finish": "Finish"
+    "finish": "Finish",
+    "back": "Back",
+    "attention": "Attention",
+    "noInternet": "No internet connection",
+    "genericLoginError": "Could not sign in"
   }
 }

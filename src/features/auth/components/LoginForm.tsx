@@ -53,7 +53,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
           onChangeText={(text) => handleChange('email', text)}
           autoCapitalize="none"
           keyboardType="email-address"
-          errorText={errors.email}
+          errorText={errors.email?.message}
           error={!!errors.email}
           disabled={loading}
         />
@@ -65,7 +65,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
             value={formData.password}
             onChangeText={(text) => handleChange('password', text)}
             secureTextEntry={!showPassword} 
-            errorText={errors.password}
+            errorText={errors.password?.message}
             error={!!errors.password}
             disabled={loading}
           />

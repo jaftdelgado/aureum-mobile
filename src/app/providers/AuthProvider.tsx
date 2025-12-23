@@ -13,6 +13,18 @@ import {
   enrichSessionUserUseCase 
 } from '../di';
 
+const extractParamsFromUrl = (url: string) => {
+  const params: Record<string, string> = {};
+  const queryString = url.split('#')[1] || url.split('?')[1];
+  if (queryString) {
+    queryString.split('&').forEach(param => {
+      const [key, value] = param.split('=');
+      if (key && value) params[key] = decodeURIComponent(value);
+    });
+  }
+  return params;
+};
+
 interface AuthContextType {
   user: LoggedInUser | null;
   isLoading: boolean;
@@ -43,49 +55,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    refreshSession();
-
     const unsubscribe = authRepository.onAuthStateChange(async (authUser) => {
       if (authUser) {
-        console.log("Supabase Auth Change: User found");
+        console.log("Supabase Auth Change: User detected");
         const enrichedUser = await enrichSessionUserUseCase.execute(authUser);
         setUser(enrichedUser);
-      } else {
-        // setUser(null);
       }
     });
 
-    const logoutListener = DeviceEventEmitter.addListener(AUTH_EVENTS.LOGOUT, () => {
-      handleLogout(); 
-      Alert.alert(t('auth.session_expired_title'), t('auth.session_expired_msg'));
-    });
-
-    const serverListener = DeviceEventEmitter.addListener(AUTH_EVENTS.SERVER_DISCONNECT, () => {
-      Alert.alert(t('auth.connection_error_title'), t('auth.connection_error_msg'));
-    });
-
-    const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') {
-        refreshSession();
-      }
-    });
-
-    return () => {
-      unsubscribe();
-      subscription.remove();
-      logoutListener.remove();
-      serverListener.remove();
-    };
-  }, [refreshSession, t]); 
-
-  useEffect(() => {
-    const handleDeepLink = (event: { url: string }) => {
+    const handleDeepLink = async (event: { url: string }) => {
       if (event.url.includes('auth/callback')) {
-        console.log("Deep link de Auth recibido!");
+        console.log("Deep link recibido!");
         setIsLoading(true);
+
+        const params = extractParamsFromUrl(event.url);
+        if (params.access_token && params.refresh_token) {
+          try {
+            console.log("Estableciendo sesión manualmente...");
+            await authRepository.setSession(params.access_token, params.refresh_token);
+          } catch (e) {
+            console.error("Error setting session:", e);
+          }
+        }
+
         setTimeout(() => {
-            refreshSession().then(() => setIsLoading(false));
-        }, 1000); 
+            refreshSession();
+        }, 500);
       }
     };
 
@@ -93,15 +88,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     Linking.getInitialURL().then((url) => {
       if (url && url.includes('auth/callback')) {
-         setIsLoading(true);
-         setTimeout(() => {
-            refreshSession().then(() => setIsLoading(false));
-         }, 1000);
+         handleDeepLink({ url });
+      } else {
+         refreshSession();
       }
     });
 
+    const appStateListener = AppState.addEventListener('change', (state) => {
+      if (state === 'active') refreshSession();
+    });
+
+    const logoutListener = DeviceEventEmitter.addListener(AUTH_EVENTS.LOGOUT, () => {
+      handleLogout();
+      Alert.alert(t('auth.session_expired_title'), t('auth.session_expired_msg'));
+    });
+
     return () => {
+      unsubscribe();
       subscription.remove();
+      appStateListener.remove();
+      logoutListener.remove();
     };
   }, [refreshSession]);
 
@@ -123,6 +129,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       await registerUseCase.execute(data);
+      await refreshSession();
     } catch (error: any) {
       console.error('Register error:', error);
       throw error;
@@ -153,15 +160,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        isLoading,
-        login,
-        register,
-        logout: handleLogout,
-        loginWithGoogle,
-        refreshSession,
-      }}
+      value={{ user, isLoading, login, register, logout: handleLogout, loginWithGoogle, refreshSession }}
     >
       {children}
     </AuthContext.Provider>

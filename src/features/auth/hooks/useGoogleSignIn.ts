@@ -17,14 +17,14 @@ export const useGoogleSignIn = () => {
     try {
       const networkState = await NetInfo.fetch();
       if (networkState.isConnected === false) {
-        throw new Error("No hay conexión a internet.");
+        throw new Error(t("common.noInternet")); 
       }
 
       await loginWithGoogle();
 
     } catch (error: any) {
       console.error("Error Google:", error);
-      Alert.alert(t("common.error"), error.message || "No se pudo iniciar sesión");
+      Alert.alert(t("common.error"), error.message || t("common.genericLoginError"));
     } finally {
       setLoading(false);
     }

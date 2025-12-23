@@ -10,7 +10,11 @@
     "createAccount": "Regístrate",
     "continueWithGoogle": "Continuar con Google",
     "loginError": "Error al iniciar sesión",
-    "invalidCredentials": "Correo o contraseña incorrectos"
+    "errors": {
+      "required": "Requerido",
+      "emailInvalid": "Correo electrónico inválido",
+      "invalidCredentials": "Correo o contraseña incorrectos"
+    }
   },
   "signup": {
     "createAccount": "Crear Cuenta",
@@ -32,19 +36,40 @@
     "confirmPasswordPlaceholder": "••••••••",
     "next": "Siguiente",
     "finish": "Finalizar",
-    "goToLogin": "Volver al Login"
-  },
-  "validation": {
-    "required": "Requerido",
-    "email": "Correo inválido",
-    "minLength": "Mínimo {{min}} caracteres",
-    "format": "Formato incorrecto"
+    "goToLogin": "Volver al Login",
+    "googleFlowMessage": "Confirma tus datos para continuar",
+    "errors": {
+      "nameLength": "Entre 2 y 50 caracteres",
+      "nameInvalid": "Solo letras y espacios",
+      "emailInvalid": "Correo inválido",
+      "emailLength": "Correo muy largo",
+      "emailAlreadyRegistered": "Este correo ya está registrado",
+      "usernameMin": "Mínimo 4 caracteres",
+      "usernameMax": "Máximo 20 caracteres",
+      "usernameInvalid": "Solo letras, números y _",
+      "usernameReserved": "Usuario no disponible",
+      "accountTypeRequired": "Selecciona un tipo de cuenta",
+      "passwordMin": "Mínimo 8 caracteres",
+      "passwordMax": "Máximo 64 caracteres",
+      "passwordSpaces": "Sin espacios al inicio/final",
+      "passwordComplexity": "Usa mayúscula, minúscula, número y símbolo",
+      "passwordRepeating": "Evita caracteres repetidos",
+      "passwordCommon": "Contraseña muy común",
+      "passwordPwned": "Contraseña filtrada en internet, elige otra",
+      "passwordsDoNotMatch": "Las contraseñas no coinciden",
+      "passwordSimilar": "No uses tu nombre o usuario en la clave",
+      "checkName": "Verifica tu nombre y apellido"
+    }
   },
   "common": {
     "loading": "Cargando...",
     "error": "Error",
     "success": "Éxito",
     "next": "Siguiente",
-    "finish": "Finalizar"
+    "finish": "Finalizar",
+    "back": "Atrás",
+    "attention": "Atención",
+    "noInternet": "No hay conexión a internet",
+    "genericLoginError": "No se pudo iniciar sesión"
   }
 }

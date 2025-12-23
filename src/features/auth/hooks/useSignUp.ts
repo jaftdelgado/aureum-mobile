@@ -70,8 +70,6 @@ export const useSignUp = ({ isGoogleFlow, onSuccess, onBack }: UseSignUpProps) =
         isGoogle: isGoogleFlow,
       });
 
-      await refreshSession();
-
       onSuccess(); 
       
     } catch (error: any) {
