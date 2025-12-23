@@ -1,5 +1,14 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 
+export type AssetsStackParamList = {
+  Assets: undefined;
+};
+
+export type SelectedTeamStackParamList = {
+  SelectedTeam: { teamId?: string; teamName?: string } | undefined;
+  AssetsRoot: NavigatorScreenParams<AssetsStackParamList>;
+};
+
 export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
@@ -9,7 +18,7 @@ export type TeamsStackParamList = {
   TeamsList: undefined;
   CreateTeam: undefined;
   JoinTeam: undefined;
-  SelectedTeam: { teamId: string; teamName: string };
+  SelectedTeam: NavigatorScreenParams<SelectedTeamStackParamList>;
 };
 
 export type TabParamList = {

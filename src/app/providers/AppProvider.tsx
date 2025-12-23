@@ -3,11 +3,9 @@ import { AuthProvider } from './AuthProvider';
 import { QueryProvider } from './QueryProvider';
 import { ThemeProvider } from './ThemeProvider';
 import { FontProvider } from './FontProvider';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SafeAreaProvider>
       <FontProvider>
         <ThemeProvider>
           <QueryProvider>
@@ -17,6 +15,5 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
           </QueryProvider>
         </ThemeProvider>
       </FontProvider>
-    </SafeAreaProvider>
   );
 };

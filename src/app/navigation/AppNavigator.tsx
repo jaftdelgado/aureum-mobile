@@ -5,7 +5,7 @@ import { useAuth } from '../providers/AuthProvider';
 
 import { RootStackParamList, AppStackParamList } from './routes-types';
 
-import AuthStack from './AuthStack'; 
+import { AuthStack } from './AuthStack'; 
 import { BottomTabNavigator } from './BottomTabNavigator'; 
 import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
 import { EditProfileScreen } from '../../features/settings/screens/EditProfileScreen';

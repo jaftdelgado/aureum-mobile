@@ -1,11 +1,9 @@
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SelectedTeamScreen from '@features/teams/screens/SelectedTeamScreen';
-import { AssetsNavigator } from '@features/assets/navigation/AssetsNavigator';
+import SelectedTeamScreen from '../../../features/teams/screens/SelectedTeamScreen';
+import { AssetsNavigator } from '../../../features/assets/navigation/AssetsNavigator';
 
-export type SelectedTeamStackParamList = {
-  SelectedTeam: { teamId?: string } | undefined;
-  AssetsRoot: undefined;
-};
+import { SelectedTeamStackParamList } from '../routes-types';
 
 const Stack = createNativeStackNavigator<SelectedTeamStackParamList>();
 

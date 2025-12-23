@@ -3,6 +3,7 @@ import { AppState, DeviceEventEmitter, Alert } from 'react-native';
 import { LoggedInUser } from '../../domain/entities/LoggedInUser';
 import { RegisterData } from '../../domain/entities/RegisterData';
 import { AUTH_EVENTS } from '../events/authEvents';
+import { useTranslation } from 'react-i18next';
 
 import { 
   authRepository, 
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<LoggedInUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useTranslation();
 
   const refreshSession = async () => {
     try {
@@ -55,11 +57,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logoutListener = DeviceEventEmitter.addListener(AUTH_EVENTS.LOGOUT, () => {
       handleLogout(); 
-      Alert.alert("Sesión Expirada", "Tu sesión ha caducado o se inició en otro dispositivo.");
+      Alert.alert(
+        t('auth.session_expired_title'), 
+        t('auth.session_expired_msg')
+      );
     });
 
     const serverListener = DeviceEventEmitter.addListener(AUTH_EVENTS.SERVER_DISCONNECT, () => {
-      Alert.alert("Conexión", "Problemas de conexión con el servidor.");
+      Alert.alert(
+        t('auth.connection_error_title'), 
+        t('auth.connection_error_msg')
+      );
     });
 
     const subscription = AppState.addEventListener('change', (state) => {

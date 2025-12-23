@@ -1,9 +1,7 @@
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AssetsScreen from '@features/assets/screens/AssetsScreen';
-
-export type AssetsStackParamList = {
-  Assets: undefined;
-};
+import AssetsScreen from '../screens/AssetsScreen';
+import { AssetsStackParamList } from '../../../app/navigation/routes-types';
 
 const Stack = createNativeStackNavigator<AssetsStackParamList>();
 
