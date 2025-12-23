@@ -2,13 +2,14 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../providers/AuthProvider';
-
+import { RegisterScreen } from '../../features/auth/screens/RegisterScreen';
 import { RootStackParamList, AppStackParamList } from './routes-types';
 import * as Linking from 'expo-linking';
 import { AuthStack } from './AuthStack'; 
 import { BottomTabNavigator } from './BottomTabNavigator'; 
 import { ProfileScreen } from '../../features/settings/screens/ProfileScreen';
 import { EditProfileScreen } from '../../features/settings/screens/EditProfileScreen';
+import { GoogleRegisterScreen } from '../../features/auth/screens/GoogleRegisterScreen';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();
@@ -20,8 +21,10 @@ const linking = {
       Auth: {
         screens: {
           Login: 'login',
-        }
+          Register: 'register' 
+        } 
       },
+      CompleteRegistration: 'auth/complete',
       App: {
         screens: {
           MainTabs: {
@@ -62,11 +65,22 @@ export const AppNavigator = () => {
   return (
     <NavigationContainer linking={linking as any}>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        
         {!user ? (
           <RootStack.Screen name="Auth" component={AuthStack} />
+        ) : 
+
+        (!user.fullName || !user.username) ? (
+          <RootStack.Screen 
+            name="CompleteRegistration" 
+            component={RegisterScreen} 
+            initialParams={{ isGoogleFlow: true }} // <--- AQUÍ LE DECIMOS QUE ES GOOGLE
+          />
         ) : (
+
           <RootStack.Screen name="App" component={AppStackScreen} />
         )}
+
       </RootStack.Navigator>
     </NavigationContainer>
   );

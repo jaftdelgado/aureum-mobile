@@ -29,7 +29,7 @@ export type TabParamList = {
 };
 
 export type AppStackParamList = {
-  MainTabs: NavigatorScreenParams<TabParamList>;
+  MainTabs: NavigatorScreenParams<any>;
   Profile: undefined;
   EditProfile: undefined;
   Details: { id: string };
@@ -38,4 +38,5 @@ export type AppStackParamList = {
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   App: NavigatorScreenParams<AppStackParamList>;
+  CompleteRegistration: { isGoogleFlow: boolean };
 };
