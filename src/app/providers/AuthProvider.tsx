@@ -1,27 +1,21 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { AppState, DeviceEventEmitter, Alert } from 'react-native';
-import { AuthApiRepository } from '../../infra/external/auth/AuthApiRepository';
-import { ProfileApiRepository } from '../../infra/api/users/ProfileApiRepository';
-import { LoginUseCase } from '../../domain/use-cases/auth/LoginUseCase';
-import { RegisterUseCase } from '../../domain/use-cases/auth/RegisterUseCase';
-import { LogoutUseCase } from '../../domain/use-cases/auth/LogoutUseCase';
-import { GetSessionUseCase } from '../../domain/use-cases/auth/GetSessionUseCase';
 import { LoggedInUser } from '../../domain/entities/LoggedInUser';
 import { RegisterData } from '../../domain/entities/RegisterData';
+import { AUTH_EVENTS } from '../events/authEvents';
 
-const authRepository = new AuthApiRepository();
-const profileRepository = new ProfileApiRepository();
-const AUTH_LOGOUT_EVENT = 'auth:logout';
-const SERVER_DISCONNECT_EVENT = 'server-disconnect';
-const loginUseCase = new LoginUseCase(authRepository, profileRepository);
-const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
-const logoutUseCase = new LogoutUseCase(authRepository);
-const getSessionUseCase = new GetSessionUseCase(authRepository, profileRepository);
+import { 
+  authRepository, 
+  loginUseCase, 
+  registerUseCase, 
+  logoutUseCase, 
+  enrichSessionUserUseCase 
+} from '../di';
 
 interface AuthContextType {
   user: LoggedInUser | null;
   isLoading: boolean;
-  login: (data: any) => Promise<void>; 
+  login: (data: { email: string, password: string }) => Promise<void>; // Tipado estricto
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -34,35 +28,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<LoggedInUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const checkCurrentSession = async () => {
+  const refreshSession = async () => {
     try {
-      const currentUser = await getSessionUseCase.execute();
-      
-      if (currentUser) {
-        const hasProfile = await profileRepository.checkProfileExists(currentUser.id);
-        
-        if (hasProfile) {
-          const fullProfile = await profileRepository.getProfile(currentUser.id);
-          
-          if (fullProfile) {
-              setUser({
-                  ...currentUser,
-                  username: fullProfile.username,
-                  role: fullProfile.role,
-                  fullName: fullProfile.fullName,
-              });
-          } else {
-              setUser(currentUser); 
-          }
-
-        } else {
-          setUser(currentUser); 
-        }
-      } else {
-        setUser(null);
-      }
+      const enrichedUser = await enrichSessionUserUseCase.execute();
+      setUser(enrichedUser);
     } catch (error) {
-      console.log('No session found or error:', error);
+      console.log('Session refresh error:', error);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -70,53 +41,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    checkCurrentSession();
+    refreshSession();
 
-    const unsubscribe = authRepository.onAuthStateChange(async (changedUser) => {
-        if (changedUser) {
-           let hasProfile = await profileRepository.checkProfileExists(changedUser.id);
-           
-           if (!hasProfile) {
-               await new Promise(resolve => setTimeout(resolve, 1500));
-               hasProfile = await profileRepository.checkProfileExists(changedUser.id);
-           }
-
-           if (hasProfile) {
-               const fullProfile = await profileRepository.getProfile(changedUser.id);
-               if (fullProfile) {
-                   setUser({ 
-                    ...changedUser, 
-                    username: fullProfile.username, 
-                    role: fullProfile.role,
-                    fullName: fullProfile.fullName
-                  });
-               } else {
-                   setUser(changedUser);
-               }
-           } else {
-               setUser(changedUser);
-           }
-        } else {
-           setUser(null);
-        }
-        setIsLoading(false);
+    const unsubscribe = authRepository.onAuthStateChange(async (authUser) => {
+      if (authUser) {
+        const enrichedUser = await enrichSessionUserUseCase.execute(authUser);
+        setUser(enrichedUser);
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
     });
 
-    const logoutListener = DeviceEventEmitter.addListener(AUTH_LOGOUT_EVENT, () => {
-      logout();
+    const logoutListener = DeviceEventEmitter.addListener(AUTH_EVENTS.LOGOUT, () => {
+      handleLogout(); 
       Alert.alert("Sesión Expirada", "Tu sesión ha caducado o se inició en otro dispositivo.");
     });
 
-    const serverListener = DeviceEventEmitter.addListener(SERVER_DISCONNECT_EVENT, () => {
-      Alert.alert(
-        "Error de Conexión", 
-        "No pudimos conectar con el servidor. Por favor intenta más tarde."
-      );
+    const serverListener = DeviceEventEmitter.addListener(AUTH_EVENTS.SERVER_DISCONNECT, () => {
+      Alert.alert("Conexión", "Problemas de conexión con el servidor.");
     });
 
     const subscription = AppState.addEventListener('change', (state) => {
       if (state === 'active') {
-        checkCurrentSession();
+        refreshSession();
       }
     });
 
@@ -128,11 +76,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const login = async (data: any) => {
+  const login = async (data: { email: string, password: string }) => {
     setIsLoading(true);
     try {
       const loggedUser = await loginUseCase.execute(data.email, data.password);
-      setUser(loggedUser);
+      const enrichedUser = await enrichSessionUserUseCase.execute(loggedUser);
+      setUser(enrichedUser);
     } catch (error: any) {
       console.error('Login error:', error);
       throw error;
@@ -153,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const logout = async () => {
+  const handleLogout = async () => {
     setIsLoading(true);
     try {
       await logoutUseCase.execute();
@@ -180,9 +129,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         login,
         register,
-        logout,
+        logout: handleLogout,
         loginWithGoogle,
-        refreshSession: checkCurrentSession,
+        refreshSession,
       }}
     >
       {children}

@@ -1,18 +1,13 @@
-import type { Team } from "@domain/entities/Team";
-import type { TeamMember } from "@domain/entities/TeamMember";
-
-export interface CreateTeamParams {
-  professorId: string;
-  name: string;
-  description: string;
-  image: any | null;
-}
+import { Team } from "../entities/Team";
+import { TeamMember } from "../entities/TeamMember";
+import { CreateTeamRequestDTO, JoinTeamRequestDTO } from "../../infra/api/teams/team.dto";
 
 export interface TeamsRepository {
-  getTeamsByProfessor(professorId: string): Promise<Team[]>;
-  getTeamsByStudent(studentId: string): Promise<Team[]>;
-  joinTeam(accessCode: string, studentId: string): Promise<void>;
-  getTeamStudents(teamId: string): Promise<TeamMember[]>;
+  getProfessorTeams(userId: string): Promise<Team[]>;
+  getStudentTeams(userId: string): Promise<Team[]>;
+  getTeamMembers(teamId: string): Promise<TeamMember[]>; 
+  createTeam(request: CreateTeamRequestDTO): Promise<Team>;
+  joinTeam(request: JoinTeamRequestDTO): Promise<Team>;
   removeMember(teamId: string, userId: string): Promise<void>;
-  createTeam(params: CreateTeamParams): Promise<void>;
+  getTeamAvatar(teamId: string): Promise<Blob | null>;
 }

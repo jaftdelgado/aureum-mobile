@@ -8,6 +8,6 @@ export class GetTeamMembersUseCase {
   }
 
   async execute(teamId: string): Promise<TeamMember[]> {
-    return await this.teamsRepository.getTeamStudents(teamId);
+    return await this.teamsRepository.getTeamMembers(teamId);
   }
 }

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
-import { DeviceEventEmitter } from 'react-native';
+import { emitLogout, emitServerDisconnect } from '../../../app/events/authEvents';
 import { supabase } from '../../external/supabase';
 
 const GATEWAY_URL = process.env.EXPO_PUBLIC_API_GATEWAY_URL;
@@ -21,7 +21,7 @@ export class HttpError extends Error {
 }
 
 const triggerServerDisconnect = () => {
-  DeviceEventEmitter.emit('server-disconnect');
+  emitServerDisconnect(); 
 };
 
 export const axiosInstance: AxiosInstance = axios.create({
@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      DeviceEventEmitter.emit(AUTH_LOGOUT_EVENT);
+      emitLogout(); 
     }
     return Promise.reject(error);
   }
