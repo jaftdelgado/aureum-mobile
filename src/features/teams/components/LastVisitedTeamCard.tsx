@@ -1,66 +1,57 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { cn } from '@core/utils/cn';
-import { ImageView } from '@core/ui/ImageView';
+import { View, TouchableOpacity, Image } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Team } from '../../../domain/entities/Team';
 import { Text } from '@core/ui/Text';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { useNavigation } from '@react-navigation/native';
-import type { TeamsStackParamList } from '@app/navigation/teams/TeamsNavigator';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useTeamImage } from '../hooks/useTeamImage';
 
-// --- Styles ---
-const cardStyles = cva('rounded-2xl overflow-hidden bg-card', {
-  variants: {
-    size: {
-      sm: 'w-40',
-      md: 'w-52',
-      lg: 'w-64',
-      full: 'w-full',
-    },
-  },
-  defaultVariants: {
-    size: 'sm',
-  },
-});
-
-interface LastVisitedTeamCardProps extends VariantProps<typeof cardStyles> {
-  image: string;
-  name: string;
-  onPress?: () => void;
-  className?: string;
+interface LastVisitedTeamCardProps {
+  team: Team;
+  onPress: (team: Team) => void;
 }
 
-export function LastVisitedTeamCard({
-  image,
-  name,
-  size,
-  className,
-  onPress,
-}: LastVisitedTeamCardProps) {
-  const navigation = useNavigation<NativeStackNavigationProp<TeamsStackParamList>>();
+export const LastVisitedTeamCard: React.FC<LastVisitedTeamCardProps> = ({ team, onPress }) => {
+  const { t } = useTranslation('teams');
 
-  const handlePress = () => {
-    if (onPress) return onPress();
-
-    // Navega sin parametros por ahora
-    navigation.navigate('SelectedTeamRoot' as never);
-  };
+  const { imageSource } = useTeamImage(team.public_id, team.team_pic);
+  
+  const defaultImage = `https://source.unsplash.com/random/800x600?technology,code&sig=${team.public_id}`;
+  const finalSource = imageSource ? { uri: imageSource } : { uri: defaultImage };
 
   return (
-    <TouchableOpacity
+    <TouchableOpacity 
+      onPress={() => onPress(team)}
+      className="bg-white rounded-xl mb-5 shadow-sm border border-gray-200 overflow-hidden elevation-2"
       activeOpacity={0.9}
-      onPress={handlePress}
-      className={cn(cardStyles({ size }), className)}>
-      <ImageView source={{ uri: image }} ratio="fourThree" className="rounded-none" />
+    >
+      <View className="h-36 bg-gray-200 relative">
+        <Image 
+          source={finalSource} 
+          className="w-full h-full absolute"
+          resizeMode="cover"
+        />
+        <View className="w-full h-full bg-black/20 absolute" />
+        
+        <View className="absolute top-3 right-3 bg-blue-600 px-2 py-1 rounded-md shadow-sm">
+          <Text type="caption2" weight="bold" className="text-white uppercase">
+            {t('card.last_visited')}
+          </Text>
+        </View>
+      </View>
 
-      <View className="gap-1 p-3">
-        <Text type="headline" weight="semibold">
-          {name}
-        </Text>
-        <Text type="subhead" color="secondary">
-          Last visited team
-        </Text>
+      <View className="p-4">
+        <View className="mb-2">
+          <Text type="title3" weight="bold" numberOfLines={1} className="text-gray-900">
+            {team.name}
+          </Text>
+          
+          {team.description && (
+            <Text type="caption1" color="secondary" numberOfLines={2} className="mt-1">
+              {team.description}
+            </Text>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
-}
+};

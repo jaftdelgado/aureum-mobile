@@ -41,5 +41,19 @@
     "error_title": "Verifica el código",
     "error_msg": "Ocurrió un error al intentar unirse.",
     "code_required": "El código es obligatorio."
+  },
+  "team": {
+    "untitled": "Sin Título",
+    "overview": "Resumen",
+    "members": "Miembros",
+    "market": "Mercado",
+    "assets": "Activos",
+    "portfolio": "Portafolio",
+    "settings": "Configuración"
+  },
+  "card": {
+    "professor": "Profesor",
+    "student": "Estudiante",
+    "last_visited": "Último visto"
   }
 }

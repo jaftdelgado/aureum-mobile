@@ -5,11 +5,12 @@ import { useAuth } from '@app/providers/AuthProvider';
 import { getStudentTeamsUseCase, getProfessorTeamsUseCase } from '../../../app/di';
 import { Team } from '../../../domain/entities/Team';
 import { AppStackParamList, TeamsStackParamList } from '../../../app/navigation/routes-types';
+import { useLastVisitedTeam } from './useLastVisitedTeam';
 
 export const useTeamsList = () => {
   const { user } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<TeamsStackParamList & AppStackParamList>>();
-  
+  const { saveLastTeam } = useLastVisitedTeam();
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -50,8 +51,10 @@ export const useTeamsList = () => {
   const handleJoinTeam = () => navigation.navigate('JoinTeam');
   
   const handleSelectTeam = (team: Team) => {
+    saveLastTeam(team);
+
     /*navigation.navigate('SelectedTeam', { 
-      teamId: team.id,  
+      team_id: team.id, 
       teamName: team.name 
     });*/
   };

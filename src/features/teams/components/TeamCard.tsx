@@ -2,8 +2,8 @@ import React from 'react';
 import { View, TouchableOpacity, Image } from 'react-native';
 import { Team } from '../../../domain/entities/Team';
 import { Text } from '@core/ui/Text';
-import { Icon } from '@core/ui/Icon';
 import { useTeamImage } from '../hooks/useTeamImage';
+import { useTranslation } from 'react-i18next';
 
 interface TeamCardProps {
   team: Team;
@@ -12,6 +12,7 @@ interface TeamCardProps {
 }
 
 export const TeamCard: React.FC<TeamCardProps> = ({ team, onPress, role }) => {
+  const { t } = useTranslation('teams');
   const isProfessor = role === 'professor';
 
   const { imageSource, loading } = useTeamImage(team.public_id, team.team_pic);
@@ -36,7 +37,7 @@ export const TeamCard: React.FC<TeamCardProps> = ({ team, onPress, role }) => {
         
         <View className="absolute top-3 right-3 bg-white/90 px-2 py-1 rounded-md shadow-sm">
           <Text type="caption2" weight="bold" className="text-primary uppercase">
-            {isProfessor ? 'PROFESOR' : 'ESTUDIANTE'}
+            {isProfessor ? t('card.professor') : t('card.student')}
           </Text>
         </View>
       </View>
