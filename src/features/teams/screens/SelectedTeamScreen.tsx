@@ -1,29 +1,28 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { View, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
+import { Text } from '@core/ui/Text';
 import FixedHeader from '@app/components/screen-header/FixedHeader';
 import DisplayTitle from '@app/components/screen-header/DisplayTitle';
 import { TeamModules } from '@features/teams/components/TeamModules';
-
-import { SelectedTeamStackParamList } from '../../../app/navigation/routes-types';
+import { useSelectedTeam } from '../hooks/useSelectedTeam';
 
 export default function SelectedTeamScreen() {
-  const { t } = useTranslation('teams');
   const insets = useSafeAreaInsets();
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  const route = useRoute<RouteProp<SelectedTeamStackParamList, 'SelectedTeam'>>();
-  const teamId = route?.params?.teamId ?? t('team.untitled');
-
-  const navigation = useNavigation<NativeStackNavigationProp<SelectedTeamStackParamList>>();
+  
+  const { 
+    scrollY, 
+    teamName, 
+    teamDescription,
+    handleOverview, 
+    handleMembers, 
+    handleAssets, 
+    handleSettings 
+  } = useSelectedTeam();
 
   return (
-    <View className="flex-1">
-      <FixedHeader title={teamId} scrollY={scrollY} />
+    <View className="flex-1 bg-bg">
+      <FixedHeader title={teamName} scrollY={scrollY} />
 
       <Animated.ScrollView
         scrollEventThrottle={16}
@@ -31,17 +30,26 @@ export default function SelectedTeamScreen() {
           useNativeDriver: true,
         })}
         contentContainerStyle={{
-          paddingTop: 50 + insets.top,
+          paddingTop: 50 + insets.top, 
           paddingHorizontal: 16,
         }}
         className="flex-1">
-        <DisplayTitle title={teamId} scrollY={scrollY} />
+        
+        <DisplayTitle title={teamName} scrollY={scrollY} />
+
+        {teamDescription && (
+          <View className="mb-6 px-1">
+            <Text type="body" color="secondary">
+              {teamDescription}
+            </Text>
+          </View>
+        )}
 
         <TeamModules
-          onOverview={() => console.log('Overview')}
-          onMembers={() => console.log('Members')}
-          onAssets={() => navigation.navigate('AssetsRoot', { screen: 'Assets' })} 
-          onSettings={() => console.log('Team Settings')}
+          onOverview={handleOverview}
+          onMembers={handleMembers}
+          onAssets={handleAssets}
+          onSettings={handleSettings}
         />
       </Animated.ScrollView>
     </View>

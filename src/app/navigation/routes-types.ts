@@ -1,12 +1,13 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { UserProfile } from '../../domain/entities/UserProfile';
+import { Team } from '@domain/entities/Team';
 
 export type AssetsStackParamList = {
   Assets: undefined;
 };
 
 export type SelectedTeamStackParamList = {
-  SelectedTeam: { teamId?: string; teamName?: string } | undefined;
+  SelectedTeam: { team: Team };
   AssetsRoot: NavigatorScreenParams<AssetsStackParamList>;
 };
 
@@ -16,10 +17,12 @@ export type AuthStackParamList = {
 };
 
 export type TeamsStackParamList = {
-  TeamsList: undefined;
-  CreateTeam: undefined;
+  Teams: undefined;
+  SelectedTeamRoot: {
+    team: Team;
+  };
   JoinTeam: undefined;
-  SelectedTeam: NavigatorScreenParams<SelectedTeamStackParamList>;
+  CreateTeam: undefined;
 };
 
 export type TabParamList = {
@@ -30,7 +33,7 @@ export type TabParamList = {
 };
 
 export type AppStackParamList = {
-  MainTabs: NavigatorScreenParams<any>;
+  MainTabs: NavigatorScreenParams<TabParamList>;
   Profile: undefined;
   EditProfile: { profile: UserProfile };
 };

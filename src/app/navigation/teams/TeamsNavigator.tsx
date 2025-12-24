@@ -18,25 +18,16 @@ export const TeamsNavigator = () => {
   }
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="TeamsList" component={TeamsScreen} />
-      <Stack.Screen name="SelectedTeam" component={SelectedTeamNavigator} />
-      
-      <Stack.Screen 
-        name="JoinTeam" 
-        component={JoinTeamScreen} 
-        options={{ presentation: 'modal' }} 
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Teams" component={TeamsScreen} />
+
+      <Stack.Screen
+        name="SelectedTeamRoot"
+        component={SelectedTeamNavigator}
       />
-      
-      <Stack.Screen 
-        name="CreateTeam" 
-        component={CreateTeamScreen} 
-        options={{ presentation: 'modal' }} 
-      />
+
+      <Stack.Screen name="JoinTeam" component={JoinTeamScreen} />
+      <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />
     </Stack.Navigator>
   );
 };

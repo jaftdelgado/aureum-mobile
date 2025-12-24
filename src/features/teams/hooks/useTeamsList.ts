@@ -9,7 +9,7 @@ import { useLastVisitedTeam } from './useLastVisitedTeam';
 
 export const useTeamsList = () => {
   const { user } = useAuth();
-  const navigation = useNavigation<NativeStackNavigationProp<TeamsStackParamList & AppStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<TeamsStackParamList>>();
   const { saveLastTeam } = useLastVisitedTeam();
   const [teams, setTeams] = useState<Team[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,10 +53,7 @@ export const useTeamsList = () => {
   const handleSelectTeam = (team: Team) => {
     saveLastTeam(team);
 
-    /*navigation.navigate('SelectedTeam', { 
-      team_id: team.id, 
-      teamName: team.name 
-    });*/
+    navigation.navigate('SelectedTeamRoot', { team });
   };
 
   return {

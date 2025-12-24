@@ -9,10 +9,10 @@ import { Text } from '@core/ui/Text';
 import { useAuth } from '@app/providers/AuthProvider';
 import { useLastVisitedTeam } from '../../teams/hooks/useLastVisitedTeam';
 import { LastVisitedTeamCard } from '../../teams/components/LastVisitedTeamCard';
-import { AppStackParamList, SelectedTeamStackParamList } from '../../../app/navigation/routes-types';
+import { TabParamList } from '../../../app/navigation/routes-types';
 import { Team } from '../../../domain/entities/Team';
 
-type NavigationProp = NativeStackNavigationProp<AppStackParamList & SelectedTeamStackParamList>;
+type NavigationProp = NativeStackNavigationProp<TabParamList>;
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -23,9 +23,9 @@ export default function HomeScreen() {
   const { lastTeam } = useLastVisitedTeam();
 
   const handleTeamPress = (team: Team) => {
-    navigation.navigate('SelectedTeam', { 
-      teamId: team.public_id,
-      teamName: team.name
+    navigation.navigate('Teams', {
+      screen: 'SelectedTeamRoot',
+      params: { team },
     });
   };
 
