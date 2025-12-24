@@ -16,6 +16,12 @@
       "invalidCredentials": "Correo o contraseña incorrectos"
     }
   },
+  "validation": {
+    "required": "Campo requerido",
+    "email": "Correo inválido",
+    "min": "Mínimo {{min}} caracteres", 
+    "password_min": "La contraseña debe tener al menos 6 caracteres"
+  },
   "signup": {
     "createAccount": "Crear Cuenta",
     "completeRegistration": "Completa tu Registro",

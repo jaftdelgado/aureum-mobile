@@ -16,6 +16,12 @@
       "invalidCredentials": "Invalid email or password"
     }
   },
+  "validation": {
+    "required": "Field required",
+    "email": "Invalid email",
+    "min": "Minimum {{min}} characters",
+    "password_min": "Password must be at least 6 characters" 
+  },
   "signup": {
     "createAccount": "Create Account",
     "completeRegistration": "Complete Registration",

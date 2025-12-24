@@ -112,13 +112,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [refreshSession]);
 
   const login = async (data: { email: string, password: string }) => {
-    setIsLoading(true);
     try {
       const loggedUser = await loginUseCase.execute(data.email, data.password);
       const enrichedUser = await enrichSessionUserUseCase.execute(loggedUser);
       setUser(enrichedUser);
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.log('Login failed (expected if credentials are wrong):', error.message);
       throw error;
     } finally {
       setIsLoading(false);

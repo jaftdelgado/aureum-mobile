@@ -1,57 +1,69 @@
-import { useState, useEffect } from 'react';
-import { useAppNavigation } from '../../../app/hooks/useAppNavigation'; //
-import { useAuth } from '../../../app/providers/AuthProvider'; //
-import { getProfessorTeamsUseCase, getStudentTeamsUseCase } from '../../../app/di'; //
+import { useState, useCallback } from 'react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAuth } from '@app/providers/AuthProvider';
+import { getStudentTeamsUseCase, getProfessorTeamsUseCase } from '../../../app/di';
 import { Team } from '../../../domain/entities/Team';
+import { AppStackParamList, TeamsStackParamList } from '../../../app/navigation/routes-types';
 
 export const useTeamsList = () => {
-  const navigation = useAppNavigation(); 
   const { user } = useAuth();
+  const navigation = useNavigation<NativeStackNavigationProp<TeamsStackParamList & AppStackParamList>>();
+  
   const [teams, setTeams] = useState<Team[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchTeams = async () => {
+  const fetchTeams = useCallback(async () => {
     if (!user) return;
-    setIsLoading(true);
     try {
       const data = user.role === 'professor' 
         ? await getProfessorTeamsUseCase.execute(user.id)
         : await getStudentTeamsUseCase.execute(user.id);
+      
       setTeams(data);
     } catch (error) {
-      console.error("Error fetching teams:", error);
-    } finally {
-      setIsLoading(false);
+      console.error('Error fetching teams:', error);
     }
-  };
-
-  useEffect(() => {
-    fetchTeams();
   }, [user]);
 
-  const handleCreateTeam = () => {
-    navigation.navigate('MainTabs', {
-    screen: 'Teams',
-    params: { screen: 'CreateTeam' }
-  });
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+      const load = async () => {
+        if(isActive) setLoading(true);
+        await fetchTeams();
+        if(isActive) setLoading(false);
+      };
+      load();
+      return () => { isActive = false; };
+    }, [fetchTeams])
+  );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchTeams();
+    setRefreshing(false);
   };
 
-  const handleJoinTeam = () => {
-    navigation.navigate('MainTabs', {
-    screen: 'Teams',
-    params: { screen: 'JoinTeam' }
-  });
-  };
-
+  const handleCreateTeam = () => navigation.navigate('CreateTeam');
+  const handleJoinTeam = () => navigation.navigate('JoinTeam');
+  
   const handleSelectTeam = (team: Team) => {
-    navigation.navigate('MainTabs', {
-      screen: 'Teams',
-      params: { 
-        screen: 'SelectedTeam', 
-        params: { teamId: team.public_id, teamName: team.name } 
-      }
-    });
+    /*navigation.navigate('SelectedTeam', { 
+      teamId: team.id,  
+      teamName: team.name 
+    });*/
   };
 
-  return { teams, isLoading, handleCreateTeam, handleJoinTeam, handleSelectTeam, refetch: fetchTeams };
+  return {
+    teams,
+    loading,
+    refreshing,
+    onRefresh,
+    userRole: user?.role, 
+    handleCreateTeam,
+    handleJoinTeam,
+    handleSelectTeam
+  };
 };

@@ -6,9 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { Text } from '@core/ui/Text';
 import { Button } from '@core/ui/Button';
 import { TeamCard } from '../components/TeamCard';
-import { useTeamsList } from '../hooks/useTeamsList';
 import FixedHeader from '@app/components/screen-header/FixedHeader';
-import { useAuth } from '@app/providers/AuthProvider';
+import { useTeamsList } from '../hooks/useTeamsList';
+import { Team } from '../../../domain/entities/Team'; 
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -16,12 +16,13 @@ export const TeamsScreen = () => {
   const { t } = useTranslation('teams');
   const insets = useSafeAreaInsets();
   const scrollY = useRef(new Animated.Value(0)).current;
-  const {user} = useAuth();
-  const userRole=user?.role;
 
   const { 
     teams, 
-    isLoading, 
+    loading, 
+    refreshing, 
+    onRefresh,
+    userRole,
     handleSelectTeam, 
     handleCreateTeam,
     handleJoinTeam
@@ -41,7 +42,7 @@ export const TeamsScreen = () => {
   );
 
   const renderEmpty = () => {
-    if (isLoading) return null;
+    if (loading) return null;
 
     return (
       <View className="flex-1 justify-center items-center py-20 px-6">
@@ -62,7 +63,7 @@ export const TeamsScreen = () => {
     <View className="flex-1 bg-gray-50">
       <FixedHeader title={t('title')} scrollY={scrollY} />
     
-      {isLoading && teams.length === 0 && (
+      {loading && teams.length === 0 && (
         <View className="absolute inset-0 z-50 justify-center items-center bg-gray-50/80">
           <ActivityIndicator size="large" color="#0000ff" />
           <Text type="body" color="secondary" className="mt-4">
@@ -73,34 +74,34 @@ export const TeamsScreen = () => {
 
       <AnimatedFlatList
         data={teams}
-        keyExtractor={(item: any) => item.public_id} 
-        renderItem={({ item }: any) => (
+        keyExtractor={(item: any) => item.publicId} 
+        renderItem={({ item }: { item: any }) => ( 
           <TeamCard 
-            team={item} 
-            onPress={() => handleSelectTeam(item)} 
+            team={item as Team} 
+            onPress={() => handleSelectTeam(item as Team)} 
             role={userRole}
           />
         )}
-
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false } 
         )}
         scrollEventThrottle={16}
-        
         contentContainerStyle={{
           paddingTop: 80 + insets.top, 
           paddingHorizontal: 16,
           paddingBottom: 120, 
           flexGrow: 1,
         }}
-        
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={renderEmpty}       
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
 
-      {!isLoading && teams.length > 0 && (
+      {!loading && teams.length > 0 && (
         <View 
           className="absolute right-4 left-4"
           style={{ bottom: insets.bottom + 20 }}

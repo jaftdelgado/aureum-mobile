@@ -11,10 +11,13 @@ import { EnrichSessionUserUseCase } from '../domain/use-cases/auth/EnrichSession
 import { CheckProfileExistsUseCase } from '../domain/use-cases/auth/CheckProfileExistsUseCase';
 import { GetSocialUserUseCase } from '../domain/use-cases/auth/GetSocialUserUseCase';
 import { DeleteAccountUseCase } from '../domain/use-cases/profile/DeleteAccountUseCase';
+
+import { CreateTeamUseCase } from '../domain/use-cases/teams/CreateTeamUseCase';
 import { GetProfessorTeamsUseCase } from '../domain/use-cases/teams/GetProfessorTeamsUseCase';
 import { GetStudentTeamsUseCase } from '../domain/use-cases/teams/GetStudentTeamsUseCase';
-import { CreateTeamUseCase } from '../domain/use-cases/teams/CreateTeamUseCase';
 import { JoinTeamUseCase } from '../domain/use-cases/teams/JoinTeamUseCase';
+import { GetTeamMembersUseCase } from '../domain/use-cases/teams/GetTeamMembersUseCase';
+import { RemoveMemberUseCase } from '../domain/use-cases/teams/RemoveMemberUseCase';
 import { UpdateProfileUseCase } from '../domain/use-cases/profile/UpdateProfileUseCase';
 
 export const authRepository = new AuthApiRepository();
@@ -26,13 +29,16 @@ export const loginUseCase = new LoginUseCase(authRepository, profileRepository);
 export const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
 export const logoutUseCase = new LogoutUseCase(authRepository);
 export const getSessionUseCase = new GetSessionUseCase(authRepository, profileRepository);
+
 export const checkProfileExistsUseCase = new CheckProfileExistsUseCase(profileRepository);
 export const getSocialUserUseCase = new GetSocialUserUseCase(authRepository);
 export const enrichSessionUserUseCase = new EnrichSessionUserUseCase(authRepository, profileRepository);
 export const deleteAccountUseCase = new DeleteAccountUseCase(profileRepository);
 export const updateProfileUseCase = new UpdateProfileUseCase(profileRepository);
 
+export const createTeamUseCase = new CreateTeamUseCase(teamsRepository);
 export const getProfessorTeamsUseCase = new GetProfessorTeamsUseCase(teamsRepository);
 export const getStudentTeamsUseCase = new GetStudentTeamsUseCase(teamsRepository);
-export const createTeamUseCase = new CreateTeamUseCase(teamsRepository);
 export const joinTeamUseCase = new JoinTeamUseCase(teamsRepository);
+export const getTeamMembersUseCase = new GetTeamMembersUseCase(teamsRepository);
+export const removeMemberUseCase = new RemoveMemberUseCase(teamsRepository);

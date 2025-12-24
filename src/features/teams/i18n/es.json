@@ -1,24 +1,45 @@
 {
-  "title": "Equipos",
-  "subtitle": "Administra y organiza tus grupos",
-
-  "lastVisited": "Últimos equipos visitados",
-  "lastVisited_sub": "Continúa donde lo dejaste",
-
-  "list": {
-    "create": "Crear un nuevo equipo",
-    "invites": "Invitaciones a equipos",
-    "myTeams": "Mis equipos",
-    "archived": "Archivados"
+  "title": "Mis Cursos",
+  "subtitle_prof": "Gestiona tus grupos académicos",
+  "subtitle_student": "Aprende y compite en tus grupos",
+  "no_teams": "No tienes cursos activos",
+  "create_first": "Crear mi primer curso",
+  "join_first": "Unirme a un curso",
+  "create_team": "Crear Nuevo Curso",
+  "join_team": "Unirse a Curso",
+  "loading_teams": "Cargando cursos...",
+  "common": {
+    "error": "Error",
+    "success": "¡Éxito!",
+    "attention": "Atención",
+    "cancel": "Cancelar"
   },
-
-  "team": {
-    "untitled": "Equipo sin nombre",
-    "overview": "Resumen",
-    "members": "Miembros",
-    "market": "Mercado",
-    "assets": "Activos Financieros",
-    "portfolio": "Portafolio",
-    "settings": "Ajustes de Equipo"
+  "create": {
+    "title": "Crear Nuevo Curso",
+    "upload_cover": "Subir portada",
+    "team_name": "Nombre del Curso",
+    "name_placeholder": "Ej. Matemáticas Avanzadas",
+    "description": "Descripción",
+    "desc_placeholder": "Breve descripción de los objetivos...",
+    "creating": "Creando...",
+    "action": "Crear Curso",
+    "req_image": "La imagen de portada es obligatoria.",
+    "req_name": "El nombre del curso es obligatorio.",
+    "req_desc": "La descripción es obligatoria.",
+    "success_title": "¡Curso Creado!",
+    "success_msg": "Tu nuevo curso está listo.",
+    "error_msg": "No se pudo crear el curso."
+  },
+  "join": {
+    "title": "Unirse a un Curso",
+    "subtitle": "Pídele el código de acceso a tu profesor e ingrésalo aquí.",
+    "code_label": "Código de acceso",
+    "code_placeholder": "Ej. AB12-CD34",
+    "joining": "Uniéndome...",
+    "action": "Unirse al Curso",
+    "success_msg": "Te has unido al curso correctamente.",
+    "error_title": "Verifica el código",
+    "error_msg": "Ocurrió un error al intentar unirse.",
+    "code_required": "El código es obligatorio."
   }
 }
