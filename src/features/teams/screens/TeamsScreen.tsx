@@ -7,6 +7,7 @@ import { Text } from '@core/ui/Text';
 import { Button } from '@core/ui/Button';
 import { TeamCard } from '../components/TeamCard';
 import FixedHeader from '@app/components/screen-header/FixedHeader';
+import DisplayTitle from '@app/components/screen-header/DisplayTitle'; 
 import { useTeamsList } from '../hooks/useTeamsList';
 import { Team } from '../../../domain/entities/Team'; 
 
@@ -29,15 +30,16 @@ export const TeamsScreen = () => {
   } = useTeamsList();
 
   const renderHeader = () => (
-    <View className="mb-6">
-      <Text type="display" weight="bold" className="mb-2">
-        {t('title', 'Mis Cursos')}
-      </Text>
-      <Text type="body" color="secondary">
-        {userRole === 'professor' 
-          ? t('subtitle_prof', 'Gestiona tus grupos académicos')
-          : t('subtitle_student', 'Aprende y compite en tus grupos')}
-      </Text>
+    <View className="mb-4">
+      <DisplayTitle title={t('title')} scrollY={scrollY} />
+
+      <View className="px-1 mt-6"> 
+        <Text type="title3" weight="semibold">
+          {userRole === 'professor' 
+            ? t('subtitle_prof', 'Gestiona tus grupos académicos')
+            : t('subtitle_student', 'Aprende y compite en tus grupos')}
+        </Text>
+      </View>
     </View>
   );
 
@@ -60,7 +62,7 @@ export const TeamsScreen = () => {
   };
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-bg">
       <FixedHeader title={t('title')} scrollY={scrollY} />
     
       {loading && teams.length === 0 && (
@@ -74,7 +76,7 @@ export const TeamsScreen = () => {
 
       <AnimatedFlatList
         data={teams}
-        keyExtractor={(item: any) => item.publicId} 
+        keyExtractor={(item: any) => item.public_id} 
         renderItem={({ item }: { item: any }) => ( 
           <TeamCard 
             team={item as Team} 
@@ -88,7 +90,7 @@ export const TeamsScreen = () => {
         )}
         scrollEventThrottle={16}
         contentContainerStyle={{
-          paddingTop: 80 + insets.top, 
+          paddingTop: 50 + insets.top, 
           paddingHorizontal: 16,
           paddingBottom: 120, 
           flexGrow: 1,
@@ -107,7 +109,7 @@ export const TeamsScreen = () => {
           style={{ bottom: insets.bottom + 20 }}
         >
           <Button
-            title={userRole === 'professor' ? t('create_team', 'Crear Nuevo Curso') : t('join_team', 'Unirse a Curso')}
+            title={userRole === 'professor' ? t('create_team') : t('join_team')}
             onPress={userRole === 'professor' ? handleCreateTeam : handleJoinTeam}
             className="shadow-xl"
           />

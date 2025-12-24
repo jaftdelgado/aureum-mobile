@@ -42,7 +42,7 @@ export default function SettingsScreen() {
           <DisplayTitle title={t('title')} scrollY={scrollY} />
 
           {user && (
-            <View className="mb-3">
+            <View className="mb-3 mt-6">
               <Text type="title3" weight="semibold" className="mb-3">
                 {t('sections.account')}
               </Text>

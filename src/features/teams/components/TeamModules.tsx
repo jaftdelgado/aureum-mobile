@@ -7,6 +7,8 @@ import {
   SettingsIcon,
   PortfolioIcon,
   MarketIcon,
+  OverviewIcon, 
+  MembersIcon,
 } from '@features/teams/resources/svg/index';
 
 interface TeamModulesProps {
@@ -26,9 +28,23 @@ export const TeamModules: React.FC<TeamModulesProps> = ({
 
   return (
     <ListContainer>
-      <ListOption text={t('team.overview')} onPress={onOverview} />
-      <ListOption text={t('team.members')} onPress={onMembers} />
-      <ListOption text={t('team.market')} icon={MarketIcon} iconVariant="blue" />
+      <ListOption 
+        text={t('team.overview')} 
+        onPress={onOverview}
+        icon={OverviewIcon}
+        iconVariant="orange" 
+      />
+      <ListOption 
+        text={t('team.members')} 
+        onPress={onMembers}
+        icon={MembersIcon}
+        iconVariant="purple" 
+      />
+      <ListOption 
+        text={t('team.market')} 
+        icon={MarketIcon} 
+        iconVariant="blue" 
+      />
       <ListOption
         text={t('team.assets')}
         onPress={onAssets}

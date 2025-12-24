@@ -1,0 +1,6 @@
+{
+    "title": "Home",
+    "welcome": "Hello, {{name}}",
+    "continue_learning": "Continue learning",
+    "widgets_placeholder": "More widgets coming soon..."
+}

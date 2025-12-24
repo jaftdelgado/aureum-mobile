@@ -7,10 +7,16 @@ import { SelectedTeamStackParamList } from '../routes-types';
 
 const Stack = createNativeStackNavigator<SelectedTeamStackParamList>();
 
-export function SelectedTeamNavigator() {
+export function SelectedTeamNavigator({ route }: any) {
+  const { team } = route.params;
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="SelectedTeam" component={SelectedTeamScreen} />
+      <Stack.Screen
+        name="SelectedTeam"
+        component={SelectedTeamScreen}
+        initialParams={{ team }}
+      />
       <Stack.Screen name="AssetsRoot" component={AssetsNavigator} />
     </Stack.Navigator>
   );

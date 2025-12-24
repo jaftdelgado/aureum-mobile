@@ -12,7 +12,8 @@
     "error": "Error",
     "success": "Success!",
     "attention": "Attention",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "back": "Back"
   },
   "create": {
     "title": "Create New Course",
@@ -41,5 +42,19 @@
     "error_title": "Check the code",
     "error_msg": "An error occurred while trying to join.",
     "code_required": "Code is required."
+  },
+  "team": {
+    "untitled": "Untitled",
+    "overview": "Overview",
+    "members": "Members",
+    "market": "Market",
+    "assets": "Assets",
+    "portfolio": "Portfolio",
+    "settings": "Settings"
+  },
+  "card": {
+    "professor": "Professor",
+    "student": "Student",
+    "last_visited": "Last visited team"
   }
 }
