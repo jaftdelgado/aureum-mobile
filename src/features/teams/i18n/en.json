@@ -12,7 +12,8 @@
     "error": "Error",
     "success": "Success!",
     "attention": "Attention",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "back": "Back"
   },
   "create": {
     "title": "Create New Course",

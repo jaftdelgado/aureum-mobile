@@ -55,7 +55,6 @@ export const TeamCard: React.FC<TeamCardProps> = ({ team, onPress, role }) => {
           )}
         </View>
 
-        <View className="h-[1px] bg-gray-100 my-3" />
       </View>
     </TouchableOpacity>
   );

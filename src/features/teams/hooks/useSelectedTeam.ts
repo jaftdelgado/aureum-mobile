@@ -17,6 +17,8 @@ export const useSelectedTeam = () => {
   const teamDescription = team?.description;
   const teamId = team?.public_id;
 
+  const handleBack = () => navigation.goBack();
+
   const handleAssets = () => {
     navigation.navigate('AssetsRoot' as any, { 
       screen: 'Assets', 
@@ -38,5 +40,6 @@ export const useSelectedTeam = () => {
     handleMembers,
     handleAssets,
     handleSettings,
+    handleBack
   };
 };

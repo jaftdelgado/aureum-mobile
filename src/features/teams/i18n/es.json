@@ -12,7 +12,8 @@
     "error": "Error",
     "success": "¡Éxito!",
     "attention": "Atención",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "back": "Volver"
   },
   "create": {
     "title": "Crear Nuevo Curso",
