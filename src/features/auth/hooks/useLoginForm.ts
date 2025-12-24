@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-
+import { Alert } from 'react-native';
 import { useAuth } from '../../../app/providers/AuthProvider'; 
 import { loginSchema, LoginFormData } from '../schemas/loginSchema'; 
 
@@ -35,12 +35,15 @@ export const useLoginForm = (onShowRegister?: () => void) => {
     try {
       await login({ email: data.email, password: data.password });
     } catch (error: any) {
-      console.error("Login hook error:", error);
-      if (error.message?.includes("Invalid login")) {
-        setErrorMsg(t('signin.errors.invalidCredentials'));
-      } else {
-        setErrorMsg(t('common.error'));
+      console.log("Login attempt result:", error.message); 
+      
+      let message = t('common.genericLoginError');
+
+      if (error.message?.includes("Invalid login") || error.message?.includes("invalid_credentials")) {
+        message = t('signin.errors.invalidCredentials');
       }
+
+      setErrorMsg(message);
     } finally {
       setLoading(false);
     }

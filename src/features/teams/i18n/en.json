@@ -1,22 +1,45 @@
 {
-  "title": "Teams",
-  "subtitle": "Manage and organize your groups",
-
-  "lastVisited": "Last visited teams",
-  "lastVisited_sub": "Continue where you left off",
-
-  "list": {
-    "create": "Create a new team",
-    "invites": "Team invitations",
-    "myTeams": "My teams",
-    "archived": "Archived teams"
+  "title": "My Courses",
+  "subtitle_prof": "Manage your academic groups",
+  "subtitle_student": "Learn and compete in your groups",
+  "no_teams": "No active courses",
+  "create_first": "Create my first course",
+  "join_first": "Join a course",
+  "create_team": "Create New Course",
+  "join_team": "Join Course",
+  "loading_teams": "Loading courses...",
+  "common": {
+    "error": "Error",
+    "success": "Success!",
+    "attention": "Attention",
+    "cancel": "Cancel"
   },
-
-  "team": {
-    "untitled": "Untitled team",
-    "overview": "Overview",
-    "members": "Members",
-    "assets": "Assets",
-    "settings": "Settings"
+  "create": {
+    "title": "Create New Course",
+    "upload_cover": "Upload cover",
+    "team_name": "Course Name",
+    "name_placeholder": "E.g. Advanced Math",
+    "description": "Description",
+    "desc_placeholder": "Brief description of goals...",
+    "creating": "Creating...",
+    "action": "Create Course",
+    "req_image": "Cover image is required.",
+    "req_name": "Course name is required.",
+    "req_desc": "Description is required.",
+    "success_title": "Course Created!",
+    "success_msg": "Your new course is ready.",
+    "error_msg": "Could not create the course."
+  },
+  "join": {
+    "title": "Join a Course",
+    "subtitle": "Ask your professor for the access code and enter it here.",
+    "code_label": "Access Code",
+    "code_placeholder": "E.g. AB12-CD34",
+    "joining": "Joining...",
+    "action": "Join Course",
+    "success_msg": "You have joined the course successfully.",
+    "error_title": "Check the code",
+    "error_msg": "An error occurred while trying to join.",
+    "code_required": "Code is required."
   }
 }
