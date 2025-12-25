@@ -8,7 +8,16 @@
     "experiments": {
       "tsconfigPaths": true
     },
-    "plugins": ["expo-font"],
+    "plugins": [
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "La aplicación necesita acceso a tus fotos para subir la imagen del curso o perfil.",
+          "cameraPermission": "La aplicación necesita acceso a la cámara para tomar fotos de perfil."
+        }
+      ]
+    ],
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -24,6 +33,7 @@
       }
     },
     "android": {
+      "package": "com.jaftdelgado.aureum",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       }
