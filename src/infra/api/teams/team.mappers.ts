@@ -1,4 +1,4 @@
-import type { StudentDto, TeamDTO } from "@infra/api/teams/team.dto";
+import type { TeamDTO } from "@infra/api/teams/team.dto";
 import type { Team } from "@domain/entities/Team";
 import { ENV } from "@app/config/env";
 import type { TeamMember } from "@domain/entities/TeamMember";
@@ -24,15 +24,5 @@ export const mapTeamDTOToEntity = (dto: TeamDTO): Team => {
     team_pic: imageUrl, 
     access_code: dto.access_code,
     created_at: dto.created_at,
-  };
-};
-
-export const mapStudentDtoToDomain = (dto: StudentDto): TeamMember => {
-  return {
-    id: dto.id,
-    name: dto.full_name || dto.email, 
-    email: dto.email,
-    avatarUrl: dto.avatar_url,
-    role: "student",
   };
 };

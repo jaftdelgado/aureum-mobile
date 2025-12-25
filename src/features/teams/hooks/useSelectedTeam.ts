@@ -27,7 +27,14 @@ export const useSelectedTeam = () => {
   };
 
   const handleOverview = () => console.log('Overview for:', teamId);
-  const handleMembers = () => console.log('Members for:', teamId);
+  const handleMembers = () => {
+    if (teamId) {
+      navigation.navigate('Members' as any, { 
+        teamId: teamId,
+        teamName: teamName 
+      });
+    }
+  };
   const handleSettings = () => console.log('Settings for:', teamId);
 
   return {

@@ -65,7 +65,7 @@ export default function SelectedTeamScreen() {
             title={t('common.back')} 
             onPress={handleBack}
           />
-        </View>
+      </View>
     </View>
   );
 }

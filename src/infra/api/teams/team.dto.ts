@@ -10,19 +10,12 @@ export interface TeamMembershipDto {
 
 export interface TeamDTO {
   public_id: string;
-  professor_id: string | null;
+  professor_id: string | undefined;
   name: string;
   description?: string | null;
   team_pic?: string | null;
   access_code: string;
   created_at: string;
-}
-
-export interface StudentDto {
-  id: string;
-  full_name: string;
-  email: string;
-  avatar_url?: string;
 }
 
 export interface CreateTeamRequestDTO {

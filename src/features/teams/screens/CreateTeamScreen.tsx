@@ -1,9 +1,12 @@
-import React from 'react';
-import { View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Image } from 'react-native';
+import React, { useRef } from 'react';
+import { View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, TouchableOpacity, Image, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import { Text } from '@core/ui/Text';
 import { Button } from '@core/ui/Button';
 import { TextField } from '@core/ui/TextField';
+import FixedHeader from '@app/components/screen-header/FixedHeader';
+import DisplayTitle from '@app/components/screen-header/DisplayTitle';
 import { useCreateTeam } from '../hooks/useCreateTeam'; 
 
 export const CreateTeamScreen = () => {
@@ -16,81 +19,107 @@ export const CreateTeamScreen = () => {
   } = useCreateTeam();
   
   const insets = useSafeAreaInsets();
+  const scrollY = useRef(new Animated.Value(0)).current;
   const MAX_DESC_LENGTH = 160;
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View className="flex-1 bg-white px-6" style={{ paddingTop: insets.top + 60 }}>
-        
-        <View className="flex-row justify-center items-center mb-6">
-          <Text type="title2" weight="bold">{t('create.title')}</Text>
-        </View>
+    <View className="flex-1 bg-bg">
+      <FixedHeader title={t('create.title')} scrollY={scrollY} />
 
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1"
-        >
-          <TouchableOpacity 
-            onPress={pickImage}
-            activeOpacity={0.8}
-            className={`w-full h-44 rounded-xl mb-6 justify-center items-center overflow-hidden border-2 border-dashed ${
-              selectedImage ? 'border-primary bg-white' : 'border-gray-300 bg-gray-50'
-            }`}
-          >
-            {selectedImage ? (
-              <Image source={{ uri: selectedImage.uri }} className="w-full h-full" resizeMode="cover" />
-            ) : (
-              <View className="items-center">
-                <Text type="caption1" color="secondary">{t('create.upload_cover')}</Text>
-              </View>
-            )}
-          </TouchableOpacity>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View className="flex-1">
 
-          <TextField
-            label={t('create.team_name')}
-            placeholder={t('create.name_placeholder')}
-            value={name}
-            onChangeText={setName}
-            className="mb-4"
-          />
-
-          <View className="mb-2">
-            <TextField
-              label={t('create.description')}
-              placeholder={t('create.desc_placeholder')}
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              numberOfLines={3}
-              maxLength={MAX_DESC_LENGTH} 
-              className="h-24 py-3" 
-              textAlignVertical="top"
-            />
-            <Text 
-              type="caption2" 
-              className={`text-right ${description.length === MAX_DESC_LENGTH ? 'text-red-500 font-bold' : 'text-gray-400'}`}
+            <Animated.ScrollView
+              scrollEventThrottle={16}
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollY } } }], 
+                { useNativeDriver: false }
+              )}
+              contentContainerStyle={{
+                paddingTop: 50 + insets.top,
+                paddingHorizontal: 16,
+                paddingBottom: 60
+              }}
+              keyboardShouldPersistTaps="handled"
+              className="flex-1"
             >
-              {description.length}/{MAX_DESC_LENGTH}
-            </Text>
-          </View>
+              <DisplayTitle title={t('create.title')} scrollY={scrollY} />
 
-          <Button
-            title={loading ? t('create.creating') : t('create.action')}
-            onPress={handleCreate}
-            loading={loading}
-            disabled={loading} 
-            className="mt-6"
-          />
-          
-          <Button 
-            title={t('common.cancel')} 
-            variant="outline" 
-            onPress={goBack} 
-            className="mt-2"
-            textClassName="text-secondary"
-          />
-        </KeyboardAvoidingView>
-      </View>
-    </TouchableWithoutFeedback>
+              <TouchableOpacity 
+                onPress={pickImage}
+                activeOpacity={0.8}
+                className={`w-full h-48 rounded-2xl mb-6 justify-center items-center overflow-hidden border-2 border-dashed mt-8 ${
+                  selectedImage ? 'border-primary bg-white' : 'border-gray-300 bg-gray-50'
+                }`}
+              >
+                {selectedImage ? (
+                  <Image source={{ uri: selectedImage.uri }} className="w-full h-full" resizeMode="cover" />
+                ) : (
+                  <View className="items-center p-4">
+                    <Text type="caption1" color="secondary" align="center">
+                      {t('create.upload_cover')}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+
+              <View className="gap-4">
+                <TextField
+                  label={t('create.team_name')}
+                  placeholder={t('create.name_placeholder')}
+                  value={name}
+                  onChangeText={setName}
+                />
+
+                <View>
+                  <TextField
+                    label={t('create.description')}
+                    placeholder={t('create.desc_placeholder')}
+                    value={description}
+                    onChangeText={setDescription}
+                    multiline
+                    numberOfLines={3}
+                    maxLength={MAX_DESC_LENGTH} 
+                    className="h-28 py-3 leading-6" 
+                    textAlignVertical="top"
+                  />
+                  <Text 
+                    type="caption2" 
+                    className={`text-right mt-1 ${description.length === MAX_DESC_LENGTH ? 'text-red-500 font-bold' : 'text-gray-400'}`}
+                  >
+                    {description.length}/{MAX_DESC_LENGTH}
+                  </Text>
+                </View>
+              </View>
+            </Animated.ScrollView>
+
+            <View 
+              className="px-4 pt-4 border-t border-gray-100 bg-bg"
+              style={{ paddingBottom: Platform.OS === 'ios' ? insets.bottom : 20 }}
+            >
+              <Button
+                title={loading ? t('create.creating') : t('create.action')}
+                onPress={handleCreate}
+                loading={loading}
+                disabled={loading}
+                className="mb-3"
+              />
+              
+              <Button 
+                title={t('common.cancel')} 
+                variant="outline" 
+                onPress={goBack} 
+              />
+            </View>
+
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
