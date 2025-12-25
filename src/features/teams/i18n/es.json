@@ -56,5 +56,15 @@
     "professor": "Profesor",
     "student": "Estudiante",
     "last_visited": "Último visto"
+  },
+  "members": {
+    "title": "Miembros del equipo",
+    "since": "Miembro desde {{date}}",
+    "remove_confirm_title": "Eliminar miembro",
+    "remove_confirm_desc": "¿Estás seguro de que deseas eliminar a {{name}} de este curso?",
+    "remove_success": "Miembro eliminado correctamente",
+    "empty": "No hay miembros en este equipo aún",
+    "professor": "Profesor",
+    "student": "Estudiante"
   }
 }

@@ -4,4 +4,5 @@ export interface TeamMember {
   email: string;
   role: "student" | "professor" | "Administrador" | "Miembro";
   avatarUrl?: string;
+  joinedAt?: string;
 }

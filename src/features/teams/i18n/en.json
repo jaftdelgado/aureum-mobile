@@ -56,5 +56,15 @@
     "professor": "Professor",
     "student": "Student",
     "last_visited": "Last visited team"
+  },
+  "members": {
+    "title": "Team Members",
+    "since": "Member since {{date}}",
+    "remove_confirm_title": "Remove member",
+    "remove_confirm_desc": "Are you sure you want to remove {{name}} from this course?",
+    "remove_success": "Member removed successfully",
+    "empty": "No members in this team yet",
+    "professor": "Professor",
+    "student": "Student"
   }
 }

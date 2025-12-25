@@ -1,62 +1,88 @@
-import React from 'react';
-import { View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useRef } from 'react';
+import { View, KeyboardAvoidingView, Platform, Animated, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@core/ui/Text';
 import { Button } from '@core/ui/Button';
 import { TextField } from '@core/ui/TextField';
+import FixedHeader from '@app/components/screen-header/FixedHeader';
+import DisplayTitle from '@app/components/screen-header/DisplayTitle';
 import { useJoinTeam } from '../hooks/useJoinTeam'; 
 
 export const JoinTeamScreen = () => {
   const insets = useSafeAreaInsets();
   const { t, code, setCode, loading, handleJoin, goBack } = useJoinTeam();
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View className="flex-1 bg-white px-6" style={{ paddingTop: insets.top + 20 }}>
+    <View className="flex-1 bg-bg">
+      <FixedHeader title={t('join.title')} scrollY={scrollY} />
 
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          className="flex-1"
-        >
-          <View className="flex-1 justify-center -mt-20">
-            <Text type="display" align="center" weight="bold" className="mb-2 text-primary">
-              {t('join.title')}
-            </Text>
-            <Text type="body" align="center" color="secondary" className="mb-8 px-4">
-              {t('join.subtitle')}
-            </Text>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View className="flex-1">
+            
+            <Animated.ScrollView
+              scrollEventThrottle={16}
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollY } } }], 
+                { useNativeDriver: false }
+              )}
+              contentContainerStyle={{
+                paddingTop: 50 + insets.top,
+                paddingHorizontal: 16,
+                paddingBottom: 20
+              }}
+              keyboardShouldPersistTaps="handled"
+              className="flex-1"
+            >
+              <DisplayTitle title={t('join.title')} scrollY={scrollY} />
 
-            <TextField
-              placeholder={t('join.code_placeholder')}
-              value={code}
-              onChangeText={setCode}
-              autoCapitalize="characters"
-              autoCorrect={false}
-              className="text-center text-2xl tracking-widest font-bold h-16"
-              maxLength={10}
-            />
+              <View className="mt-10 mb-8">
+                <Text type="body" color="secondary">
+                  {t('join.subtitle')}
+                </Text>
+              </View>
 
-            <Button
-              title={loading ? t('join.joining') : t('join.action')}
-              onPress={handleJoin}
-              loading={loading}
-              disabled={code.length < 3 || loading}
-              className="mt-6"
-            />
+              <View className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
+                <TextField
+                  placeholder={t('join.code_placeholder')}
+                  value={code}
+                  onChangeText={setCode}
+                  autoCapitalize="characters"
+                  autoCorrect={false}
+                  className="text-center text-3xl tracking-[0.2em] font-bold h-20 text-primary"
+                  maxLength={10}
+                />
+              </View>
+            </Animated.ScrollView>
+
+            <View 
+              className="px-4 pt-4 border-t border-gray-100 bg-bg"
+              style={{ paddingBottom: Platform.OS === 'ios' ? insets.bottom : 20 }}
+            >
+              <Button
+                title={loading ? t('join.joining') : t('join.action')}
+                onPress={handleJoin}
+                loading={loading}
+                disabled={code.length < 3 || loading}
+                className="mb-3"
+              />
+
+              <Button 
+                title={t('common.cancel')}
+                variant="outline" 
+                onPress={goBack} 
+              />
+            </View>
+
           </View>
-        </KeyboardAvoidingView>
-
-        <View className="flex-row justify-between items-center mb-10">
-          <Button 
-            title={t('common.cancel')}
-            variant="outline" 
-            onPress={goBack} 
-            className="px-0"
-            textClassName="text-secondary"
-          />
-        </View>
-      </View>
-    </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </View>
   );
 };

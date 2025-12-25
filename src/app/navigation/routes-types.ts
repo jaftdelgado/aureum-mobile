@@ -23,6 +23,7 @@ export type TeamsStackParamList = {
   };
   JoinTeam: undefined;
   CreateTeam: undefined;
+  Members: { teamId: string; teamName: string };
 };
 
 export type TabParamList = {

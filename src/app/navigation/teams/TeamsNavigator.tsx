@@ -7,6 +7,7 @@ import { TeamsScreen } from '../../../features/teams/screens/TeamsScreen';
 import { SelectedTeamNavigator } from './SelectedTeamNavigator';
 import { JoinTeamScreen } from '../../../features/teams/screens/JoinTeamScreen';
 import { CreateTeamScreen } from '../../../features/teams/screens/CreateTeamScreen';
+import MembersScreen from '../../../features/teams/screens/MembersScreen';
 
 const Stack = createNativeStackNavigator<TeamsStackParamList>();
 
@@ -25,6 +26,7 @@ export const TeamsNavigator = () => {
         name="SelectedTeamRoot"
         component={SelectedTeamNavigator}
       />
+      <Stack.Screen name="Members" component={MembersScreen} />
 
       <Stack.Screen name="JoinTeam" component={JoinTeamScreen} />
       <Stack.Screen name="CreateTeam" component={CreateTeamScreen} />

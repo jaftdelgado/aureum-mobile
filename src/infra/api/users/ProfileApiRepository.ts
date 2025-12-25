@@ -46,7 +46,23 @@ export class ProfileApiRepository implements ProfileRepository {
     try {
       const dto = await client.get<UserProfileDTO>(`/api/users/profiles/${userId}`);
       
-      return mapDTOToTeamMember(dto);
+      let avatarBase64: string | undefined = undefined;
+
+      if (dto.profile_pic_id) {
+        try {
+          const blob = await client.getBlob(`/api/users/profiles/${userId}/avatar`);
+          avatarBase64 = await blobToBase64(blob);
+        } catch (imageError) {
+          console.warn(`Error loading avatar for user ${userId}`, imageError);
+        }
+      }
+
+      const member = mapDTOToTeamMember(dto);
+      
+      return {
+        ...member,
+        avatarUrl: avatarBase64 
+      };
       
     } catch (error: any) {
       if (error.status === 404 || error.response?.status === 404) {
