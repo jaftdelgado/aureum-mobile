@@ -14,7 +14,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   plugins: [
     ...(config.plugins || []), 
     'expo-web-browser',
-    "expo-secure-store"
+    'expo-secure-store',
+    'expo-font',         
+    'expo-localization', 
+    [
+      'expo-image-picker',
+      {
+        photosPermission: "Permitir acceso a fotos para subir imágenes.",
+        cameraPermission: "Permitir acceso a la cámara para tomar fotos."
+      },
+    ],
   ],
 
   ios: {
