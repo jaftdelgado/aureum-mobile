@@ -13,7 +13,6 @@ import {
 } from '@features/teams/resources/svg/index';
 
 interface TeamModulesProps {
-  onOverview?: () => void;
   onMembers?: () => void;
   onMarket?: () => void;
   onAssets?: () => void;
@@ -22,7 +21,6 @@ interface TeamModulesProps {
 }
 
 export const TeamModules: React.FC<TeamModulesProps> = ({
-  onOverview,
   onMembers,
   onMarket,
   onAssets,
@@ -33,12 +31,6 @@ export const TeamModules: React.FC<TeamModulesProps> = ({
 
   return (
     <ListContainer>
-      <ListOption
-        text={t('team.overview')}
-        onPress={onOverview}
-        icon={OverviewIcon}
-        iconVariant="orange"
-      />
       <ListOption
         text={t('team.members')}
         onPress={onMembers}

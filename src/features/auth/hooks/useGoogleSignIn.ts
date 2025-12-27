@@ -1,69 +1,60 @@
-import { useEffect, useState } from 'react';
-import { Alert, Platform } from 'react-native';
-import {
-  GoogleSignin,
-  statusCodes,
-  isErrorWithCode,
-} from '@react-native-google-signin/google-signin';
-import { useAuth } from '@app/providers/AuthProvider';
-import { set } from 'zod';
+import { useState } from 'react';
+import { Alert } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import { supabase } from '@infra/external/supabase';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export const useGoogleSignIn = () => {
   const [loading, setLoading] = useState(false);
-  const { googleLogin } = useAuth(); 
-
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-      
-      iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-      
-      offlineAccess: true, 
-      
-      forceCodeForRefreshToken: true,
-    });
-  }, []);
 
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
 
-      if (Platform.OS === 'android') {
-        await GoogleSignin.hasPlayServices();
-      }
+      const redirectTo = 'aureum://google-auth';
 
-      const userInfo = await GoogleSignin.signIn();
-      
-      const token = userInfo.data?.idToken;
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo,
+          skipBrowserRedirect: true,
+        },
+      });
 
-      if (token) {
-        await googleLogin(token);
-      } else {
-        throw new Error('No se pudo obtener el token de Google');
-      }
+      if (error) throw error;
 
-    } catch (error: any) {
-      setLoading(false);
-      if (isErrorWithCode(error)) {
-        switch (error.code) {
-          case statusCodes.SIGN_IN_CANCELLED:
-            console.log('Login cancelado por el usuario');
-            break;
-          case statusCodes.IN_PROGRESS:
-            console.log('Login ya en curso');
-            break;
-          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-            Alert.alert('Error', 'Google Play Services no está disponible');
-            break;
-          default:
-            console.error('Error nativo:', error);
-            Alert.alert('Error', 'No se pudo conectar con Google');
+      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+
+      if (result.type === 'success' && result.url) {
+        const getParam = (key: string) => {
+          const regex = new RegExp(`[#?&]${key}=([^&]*)`);
+          const match = result.url.match(regex);
+          return match ? match[1] : undefined;
+        };
+
+        const accessToken = getParam('access_token');
+        const refreshToken = getParam('refresh_token');
+
+        if (accessToken && refreshToken) {
+          const { error: sessionError } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (sessionError) throw sessionError;
+        } else {
+          Alert.alert('Error', 'No se pudieron obtener las credenciales de la sesión.');
         }
-      } else {
-        console.error('Error general:', error);
-        Alert.alert('Error', 'Error de autenticación');
       }
-    } 
+    } catch (error: any) {
+      Alert.alert(
+        'Error de Autenticación',
+        error.message || 'No se pudo completar el inicio de sesión.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {

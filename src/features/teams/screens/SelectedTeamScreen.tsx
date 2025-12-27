@@ -16,7 +16,6 @@ export default function SelectedTeamScreen() {
     scrollY,
     teamName,
     teamDescription,
-    handleOverview,
     handleMembers,
     handleAssets,
     handleSettings,
@@ -24,7 +23,7 @@ export default function SelectedTeamScreen() {
   } = useSelectedTeam();
 
   return (
-    <View className="flex-1 bg-bg">
+    <View className="flex-1">
       <FixedHeader title={teamName} scrollY={scrollY} />
 
       <Animated.ScrollView
@@ -49,14 +48,13 @@ export default function SelectedTeamScreen() {
         )}
 
         <TeamModules
-          onOverview={handleOverview}
           onMembers={handleMembers}
           onAssets={handleAssets}
           onSettings={handleSettings}
         />
       </Animated.ScrollView>
 
-      <View className="absolute left-4 right-4" style={{ bottom: insets.bottom + 20 }}>
+      <View className="absolute left-3 right-3" style={{ bottom: insets.bottom + 20 }}>
         <Button variant="outline" title={t('common.back')} onPress={handleBack} />
       </View>
     </View>
