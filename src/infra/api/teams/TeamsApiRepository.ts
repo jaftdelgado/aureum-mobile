@@ -83,7 +83,7 @@ export class TeamsApiRepository implements TeamsRepository {
   }
 
   async removeMember(teamId: string, userId: string): Promise<void> {
-    await httpClient.delete(`/api/courses/${teamId}/students/${userId}`);
+    await httpClient.delete(`/api/courses/${teamId}/members/${userId}`);
   }
 
   async getTeamAvatar(teamId: string): Promise<Blob | null> {

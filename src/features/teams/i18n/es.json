@@ -13,7 +13,8 @@
     "success": "¡Éxito!",
     "attention": "Atención",
     "cancel": "Cancelar",
-    "back": "Volver"
+    "back": "Volver",
+    "delete": "Eliminar"
   },
   "create": {
     "title": "Crear Nuevo Curso",

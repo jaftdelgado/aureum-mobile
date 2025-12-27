@@ -2,7 +2,6 @@
   "expo": {
     "name": "aureum-mobile",
     "slug": "aureum-mobile",
-    "owner": "jaftdelgado",
     "scheme": "aureum",
     "version": "1.0.0",
     "experiments": {
@@ -24,23 +23,25 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jaftdelgado.aureum",
+      "bundleIdentifier": "com.cesar.aureum",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "com.jaftdelgado.aureum",
+      "package": "com.cesar.aureum",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       }
     },
     "extra": {
       "eas": {
-        "projectId": "6ee985c4-cbdf-4b13-acf1-fa8116388523"
+        "projectId": "41a117aa-682c-4aaa-b0fc-59ae96e48b8f"
       }
     }
   }

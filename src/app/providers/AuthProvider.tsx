@@ -31,8 +31,8 @@ interface AuthContextType {
   login: (data: { email: string, password: string }) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
   refreshSession: () => Promise<void>;
+  googleLogin: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -149,17 +149,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const loginWithGoogle = async () => {
-      try {
-          await authRepository.loginWithGoogle();
-      } catch (error) {
-          console.error("Google login error:", error);
-      }
+  const googleLogin = async (token: string) => {
+    setIsLoading(true);
+    try {
+      await authRepository.signInWithIdToken(token);
+      
+      await refreshSession();
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      Alert.alert("Error", "No se pudo iniciar sesión con Google");
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, register, logout: handleLogout, loginWithGoogle, refreshSession }}
+      value={{ user, isLoading, login, register, logout: handleLogout, refreshSession, googleLogin}}
     >
       {children}
     </AuthContext.Provider>

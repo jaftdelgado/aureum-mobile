@@ -75,27 +75,6 @@ export class AuthApiRepository implements AuthRepository {
     }
   }
 
-  async loginWithGoogle(): Promise<void> {
-    const redirectUrl = Linking.createURL('auth/callback'); 
-    
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { 
-        redirectTo: redirectUrl,
-        skipBrowserRedirect: true,
-        queryParams: {
-          prompt: 'select_account', 
-          access_type: 'offline'
-        }
-      },
-    });
-
-    if (error) throw new Error(error.message);
-    if (data?.url) {
-      await Linking.openURL(data.url);
-    }
-  }
-
   onAuthStateChange(callback: (user: LoggedInUser | null) => void): () => void {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') return;
@@ -121,4 +100,14 @@ export class AuthApiRepository implements AuthRepository {
     if (error) throw new Error("No se pudo eliminar el usuario");
     await this.logout();
   }
+
+  async signInWithIdToken(token: string): Promise<void> {
+  const { data, error } = await supabase.auth.signInWithIdToken({
+    provider: 'google',
+    token: token,
+  });
+
+  if (error) throw error;
+  
+}
 }
