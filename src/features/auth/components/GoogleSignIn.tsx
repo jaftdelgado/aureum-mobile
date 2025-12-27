@@ -1,25 +1,28 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Button } from '@core/ui/Button';
-import { useTranslation } from 'react-i18next';
-import { GoogleLogo } from '@resources/svg/GoogleLogo';
-import { useGoogleSignIn } from '../hooks/useGoogleSignIn'; // <--- Importamos
+import { TouchableOpacity, ActivityIndicator } from 'react-native';
+import { GoogleLogo } from '../../../resources/svg/GoogleLogo'; 
+import { Text } from '@core/ui/Text';
+import { useGoogleSignIn } from '../hooks/useGoogleSignIn';
 
 export const GoogleSignIn = () => {
-  const { t } = useTranslation('auth');
-  const { handleGoogleLogin, loading } = useGoogleSignIn();
+  const { handleGoogleSignIn, loading } = useGoogleSignIn();
 
   return (
-    <View className="w-full my-2">
-      <Button 
-        title={loading ? t("common.loading") : t("signin.continueWithGoogle")}
-        variant="outline"
-        className="border-gray-300 bg-white"
-        textClassName="text-gray-700 font-medium"
-        onPress={handleGoogleLogin}
-        loading={loading}
-        leftIcon={<GoogleLogo width={20} height={20} />}
-      />
-    </View>
+    <TouchableOpacity 
+      onPress={handleGoogleSignIn}
+      disabled={loading}
+      className="flex-row items-center justify-center bg-white border border-gray-200 rounded-xl py-3.5 px-4 shadow-sm active:bg-gray-50"
+    >
+      {loading ? (
+        <ActivityIndicator size="small" color="#000" />
+      ) : (
+        <>
+          <GoogleLogo width={20} height={20} />
+          <Text weight="semibold" className="ml-3 text-gray-700">
+            Continuar con Google
+          </Text>
+        </>
+      )}
+    </TouchableOpacity>
   );
 };
