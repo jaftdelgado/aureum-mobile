@@ -7,44 +7,45 @@ import {
   SettingsIcon,
   PortfolioIcon,
   MarketIcon,
-  OverviewIcon, 
+  OverviewIcon,
   MembersIcon,
+  MovementsIcon,
 } from '@features/teams/resources/svg/index';
 
 interface TeamModulesProps {
   onOverview?: () => void;
   onMembers?: () => void;
+  onMarket?: () => void;
   onAssets?: () => void;
+  onTransactions?: () => void;
   onSettings?: () => void;
 }
 
 export const TeamModules: React.FC<TeamModulesProps> = ({
   onOverview,
   onMembers,
+  onMarket,
   onAssets,
+  onTransactions,
   onSettings,
 }) => {
   const { t } = useTranslation('teams');
 
   return (
     <ListContainer>
-      <ListOption 
-        text={t('team.overview')} 
+      <ListOption
+        text={t('team.overview')}
         onPress={onOverview}
         icon={OverviewIcon}
-        iconVariant="orange" 
+        iconVariant="orange"
       />
-      <ListOption 
-        text={t('team.members')} 
+      <ListOption
+        text={t('team.members')}
         onPress={onMembers}
         icon={MembersIcon}
-        iconVariant="purple" 
+        iconVariant="purple"
       />
-      <ListOption 
-        text={t('team.market')} 
-        icon={MarketIcon} 
-        iconVariant="blue" 
-      />
+      <ListOption text={t('team.market')} onPress={onMarket} icon={MarketIcon} iconVariant="blue" />
       <ListOption
         text={t('team.assets')}
         onPress={onAssets}
@@ -52,6 +53,12 @@ export const TeamModules: React.FC<TeamModulesProps> = ({
         iconVariant="yellow"
       />
       <ListOption text={t('team.portfolio')} icon={PortfolioIcon} iconVariant="green" />
+      <ListOption
+        text={t('team.movements')}
+        onPress={onTransactions}
+        icon={MovementsIcon}
+        iconVariant="purple"
+      />
       <ListOption
         text={t('team.settings')}
         onPress={onSettings}

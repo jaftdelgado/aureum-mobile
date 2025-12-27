@@ -10,10 +10,24 @@ interface IconProps {
   color?: IconColor;
   component: FC<SvgProps>;
   size?: number;
+  strokeWidth?: number;
 }
 
-export const Icon: FC<IconProps> = ({ color = 'primaryText', component: Component, size = 24 }) => {
+export const Icon: FC<IconProps> = ({
+  color = 'primaryText',
+  component: Component,
+  size = 24,
+  strokeWidth = 1.6,
+}) => {
   const themeColor = useThemeColor(color);
 
-  return <Component width={size} height={size} stroke={themeColor} fill="none" strokeWidth={1.6} />;
+  return (
+    <Component
+      width={size}
+      height={size}
+      stroke={themeColor}
+      fill="none"
+      strokeWidth={strokeWidth}
+    />
+  );
 };

@@ -13,7 +13,6 @@ type Props = RNTextProps &
     className?: string;
   };
 
-// Mapeo de nuestras keys de color a las keys del objeto de colores
 const colorMap: Record<TextColor, keyof typeof colors.light> = {
   default: 'primaryText',
   secondary: 'secondaryText',

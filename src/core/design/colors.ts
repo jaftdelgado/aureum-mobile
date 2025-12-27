@@ -20,9 +20,9 @@ export const colors = {
   dark: {
     primary: '#60a5fa',
     secondary: '#9ca3af',
-    bg: '#080808',
+    bg: '#060606',
     primaryBtn: '#f9fafb',
-    secondaryBtn: '#374151',
+    secondaryBtn: '#212121',
     primaryText: '#f9fafb',
     secondaryText: '#6b7280',
     text: '#f9fafb',

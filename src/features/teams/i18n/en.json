@@ -51,6 +51,7 @@
     "market": "Market",
     "assets": "Assets",
     "portfolio": "Portfolio",
+    "movements": "Movements",
     "settings": "Settings"
   },
   "card": {

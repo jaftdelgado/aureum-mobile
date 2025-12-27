@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FixedHeader from './FixedHeader';
 import DisplayTitle from './DisplayTitle';
 
-const HEADER_HEIGHT = 40;
+const HEADER_HEIGHT = 46;
 const END_REACHED_THRESHOLD = 120;
 
 type Props = {
@@ -14,6 +14,7 @@ type Props = {
   onEndReached?: () => void;
   isFetchingNextPage?: boolean;
   children: React.ReactNode;
+  rightAction?: React.ReactNode;
 };
 
 export default function CollapsibleHeaderLayout({
@@ -22,6 +23,7 @@ export default function CollapsibleHeaderLayout({
   onEndReached,
   isFetchingNextPage,
   children,
+  rightAction, // <--- Prop añadida
 }: Props) {
   const insets = useSafeAreaInsets();
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -29,7 +31,6 @@ export default function CollapsibleHeaderLayout({
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
-
     const distanceFromEnd = contentSize.height - (layoutMeasurement.height + contentOffset.y);
 
     if (
@@ -42,14 +43,13 @@ export default function CollapsibleHeaderLayout({
       onEndReached();
     }
 
-    if (distanceFromEnd > END_REACHED_THRESHOLD) {
-      hasCalledEnd.current = false;
-    }
+    if (distanceFromEnd > END_REACHED_THRESHOLD) hasCalledEnd.current = false;
   };
 
   return (
     <View className="flex-1">
-      <FixedHeader title={title} scrollY={scrollY} onBack={onBack} />
+      {/* Pasamos rightAction a la prop 'right' del FixedHeader */}
+      <FixedHeader title={title} scrollY={scrollY} onBack={onBack} right={rightAction} />
 
       <Animated.ScrollView
         scrollEventThrottle={16}

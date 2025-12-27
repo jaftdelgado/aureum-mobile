@@ -33,6 +33,7 @@ export default function FixedHeader({
   const insets = useSafeAreaInsets();
   const { theme, isDark } = useTheme();
 
+  // Animación para el título pequeño que aparece al hacer scroll
   const smallTitleOpacity = scrollY.interpolate({
     inputRange: [0, 60],
     outputRange: [0, 1],
@@ -53,6 +54,7 @@ export default function FixedHeader({
         zIndex: 10,
         paddingTop: insets.top,
       }}>
+      {/* Fondo con Blur y Máscara de Gradiente */}
       <MaskedView
         style={StyleSheet.absoluteFillObject}
         maskElement={
@@ -70,32 +72,36 @@ export default function FixedHeader({
         <View style={[StyleSheet.absoluteFillObject, { backgroundColor: theme.bg }]} />
       </MaskedView>
 
+      {/* Contenedor de Contenido */}
       <View className="flex-row items-center justify-center px-4" style={{ height: HEADER_HEIGHT }}>
+        {/* Lado Izquierdo: Botón Volver */}
         {onBack && (
-          <View className="absolute left-4">
+          <View className="absolute left-4 z-20">
             <IconButton
               icon={ChevronLeft}
               onPress={onBack}
               variant="thirdy"
               size="md"
-              className="rounded-full"
+              className="rounded-[17px]"
             />
           </View>
         )}
 
-        {/* Título animado usando tu componente Text */}
-        <AnimatedText
-          type="headline"
-          weight="semibold"
-          numberOfLines={1}
-          style={{
-            opacity: smallTitleOpacity,
-            transform: [{ translateY: smallTitleTranslateY }],
-          }}>
-          {title}
-        </AnimatedText>
+        {/* Centro: Título Animado */}
+        <View className="max-w-[60%]">
+          <AnimatedText
+            type="headline"
+            weight="semibold"
+            numberOfLines={1}
+            style={{
+              opacity: smallTitleOpacity,
+              transform: [{ translateY: smallTitleTranslateY }],
+            }}>
+            {title}
+          </AnimatedText>
+        </View>
 
-        {right && <View className="absolute right-4">{right}</View>}
+        {right && <View className="absolute right-3 z-20">{right}</View>}
       </View>
     </View>
   );

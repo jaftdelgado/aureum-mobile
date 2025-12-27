@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, View, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
 import { Icon } from '@core/ui/Icon';
@@ -53,8 +53,8 @@ const colorMap = {
   },
   thirdy: {
     bg: 'transparent' as const,
-    border: 'border' as const, // Ahora activamos el borde del tema aquí
-    icon: 'primaryText' as const,
+    border: 'border' as const,
+    icon: 'secondaryText' as const,
   },
   ghost: {
     bg: 'transparent' as const,

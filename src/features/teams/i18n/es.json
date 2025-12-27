@@ -67,5 +67,7 @@
     "empty": "No hay miembros en este equipo aún",
     "professor": "Profesor",
     "student": "Estudiante"
-  }
+  },
+  "movements": "Movimientos",
+  "settings": "Ajustes de Equipo"
 }

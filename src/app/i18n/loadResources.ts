@@ -6,6 +6,7 @@ export function loadResources() {
       settings: require('@features/settings/i18n/es.json'),
       auth: require('@features/auth/i18n/es.json'),
       home: require('@features/home/i18n/es.json'),
+      market: require('@features/market/i18n/es.json'),
     },
     en: {
       app: require('@app/i18n/locales/en.json'),
@@ -13,6 +14,7 @@ export function loadResources() {
       settings: require('@features/settings/i18n/en.json'),
       auth: require('@features/auth/i18n/en.json'),
       home: require('@features/home/i18n/en.json'),
+      market: require('@features/market/i18n/en.json'),
     },
   };
 }

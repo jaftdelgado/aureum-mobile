@@ -10,17 +10,17 @@ import { useSelectedTeam } from '../hooks/useSelectedTeam';
 
 export default function SelectedTeamScreen() {
   const insets = useSafeAreaInsets();
-  
+
   const {
     t,
-    scrollY, 
-    teamName, 
+    scrollY,
+    teamName,
     teamDescription,
-    handleOverview, 
-    handleMembers, 
-    handleAssets, 
+    handleOverview,
+    handleMembers,
+    handleAssets,
     handleSettings,
-    handleBack
+    handleBack,
   } = useSelectedTeam();
 
   return (
@@ -33,16 +33,15 @@ export default function SelectedTeamScreen() {
           useNativeDriver: true,
         })}
         contentContainerStyle={{
-          paddingTop: 50 + insets.top, 
+          paddingTop: 50 + insets.top,
           paddingHorizontal: 16,
-          paddingBottom: 120
+          paddingBottom: 120,
         }}
         className="flex-1">
-        
         <DisplayTitle title={teamName} scrollY={scrollY} />
 
         {teamDescription && (
-          <View className="mb-6 px-1 mt-6">
+          <View className="mb-6 mt-6 px-1">
             <Text type="body" color="secondary">
               {teamDescription}
             </Text>
@@ -56,15 +55,9 @@ export default function SelectedTeamScreen() {
           onSettings={handleSettings}
         />
       </Animated.ScrollView>
-      <View 
-          className="absolute right-4 left-4"
-          style={{ bottom: insets.bottom + 20 }}
-        >
-          <Button 
-            variant="outline" 
-            title={t('common.back')} 
-            onPress={handleBack}
-          />
+
+      <View className="absolute left-4 right-4" style={{ bottom: insets.bottom + 20 }}>
+        <Button variant="outline" title={t('common.back')} onPress={handleBack} />
       </View>
     </View>
   );
