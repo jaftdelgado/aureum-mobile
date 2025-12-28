@@ -73,7 +73,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
           />
           <TouchableOpacity 
             onPress={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-12" 
+            className="absolute right-4 top-11" 
             hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
           >
             <Ionicons 

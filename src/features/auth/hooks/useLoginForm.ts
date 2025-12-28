@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Alert } from 'react-native'; 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +8,9 @@ import { loginSchema, LoginFormData } from '../schemas/loginSchema';
 
 export const useLoginForm = (onShowRegister?: () => void) => {
   const { t } = useTranslation('auth');
-  const { login } = useAuth(); 
+  
+  const { login, logoutReason, clearLogoutReason } = useAuth(); 
+  
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -24,6 +27,27 @@ export const useLoginForm = (onShowRegister?: () => void) => {
       password: ''
     }
   });
+
+  useEffect(() => {
+    if (logoutReason === 'network_lost') {
+      Alert.alert(
+        t('common.attention'),
+        t('signin.errors.networkLost'),
+        [
+          { 
+            text: "OK", 
+            onPress: () => clearLogoutReason()
+          }
+        ]
+      );
+    } else if (logoutReason === 'session_expired') {
+      Alert.alert(
+        t('common.attention'),
+        t('signin.errors.sessionExpired'),
+        [{ text: "OK", onPress: () => clearLogoutReason() }]
+      );
+    }
+  }, [logoutReason, clearLogoutReason, t]);
 
   const formData = watch();
 

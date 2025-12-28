@@ -52,8 +52,16 @@ export class AuthApiRepository implements AuthRepository {
   }
 
   async checkSessionAlive(): Promise<boolean> {
-    const { data } = await supabase.auth.getSession();
-    return !!data.session;
+    try {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error || !data.user) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   async getPendingSocialUser(): Promise<SocialUser | null> {

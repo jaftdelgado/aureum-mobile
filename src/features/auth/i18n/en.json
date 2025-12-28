@@ -1,6 +1,7 @@
 {
   "signin": {
     "title": "Sign In",
+    "subtitle": "Welcome back",
     "usernameOrEmail": "Email address",
     "usernamePlaceholder": "example@email.com",
     "password": "Password",
@@ -9,12 +10,15 @@
     "google": "Continue with Google",
     "noAccount": "Don't have an account?",
     "createAccount": "Sign Up",
+    "register": "Sign Up",
     "continueWithGoogle": "Continue with Google",
     "loginError": "Login failed",
     "errors": {
       "required": "Required",
+      "sessionExpired": "Your session has expired or has been logged in on another device.",
       "emailInvalid": "Invalid email address",
-      "invalidCredentials": "Invalid email or password"
+      "invalidCredentials": "Invalid email or password",
+      "networkLost": "Your session has been closed due to internet connection loss."
     }
   },
   "validation": {
@@ -78,6 +82,7 @@
     "back": "Back",
     "attention": "Attention",
     "noInternet": "No internet connection",
-    "genericLoginError": "Could not sign in"
+    "genericLoginError": "Could not sign in",
+    "or": "or"
   }
 }
