@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'expo-image-picker'; 
 import { useAuth } from '@app/providers/AuthProvider';
 import { createTeamUseCase } from '../../../app/di'; 
+import { invalidateTeamsCache } from '../hooks/useTeamsList';
 
 export const useCreateTeam = () => {
   const { t } = useTranslation('teams');
@@ -61,6 +62,10 @@ export const useCreateTeam = () => {
             type: selectedImage.mimeType || 'image/jpeg'
         } : undefined
       });
+
+      if (user?.id) {
+        await invalidateTeamsCache(user.id); 
+      }
 
       Alert.alert(
         t('create.success_title'),

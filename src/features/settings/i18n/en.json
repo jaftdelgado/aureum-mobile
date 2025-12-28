@@ -20,6 +20,8 @@
   "changePhoto": "Change photo",
   "back": "Back",
   "updateError": "Could not update profile",
+  "light_mode": "Light Mode",
+  "dark_mode": "Dark Mode",
   "sections": {
     "account": "Account"
   },

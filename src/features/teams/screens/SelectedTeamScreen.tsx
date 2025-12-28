@@ -19,6 +19,8 @@ export default function SelectedTeamScreen() {
     handleMembers,
     handleAssets,
     handleSettings,
+    handleMarket, 
+    handleTransactions, 
     handleBack,
   } = useSelectedTeam();
 
@@ -34,7 +36,7 @@ export default function SelectedTeamScreen() {
         contentContainerStyle={{
           paddingTop: 50 + insets.top,
           paddingHorizontal: 16,
-          paddingBottom: 120,
+          paddingBottom: 60,
         }}
         className="flex-1">
         <DisplayTitle title={teamName} scrollY={scrollY} />
@@ -51,10 +53,12 @@ export default function SelectedTeamScreen() {
           onMembers={handleMembers}
           onAssets={handleAssets}
           onSettings={handleSettings}
+          onMarket={handleMarket}
+          onTransactions={handleTransactions}
         />
       </Animated.ScrollView>
 
-      <View className="absolute left-3 right-3" style={{ bottom: insets.bottom + 20 }}>
+      <View className="absolute left-3 right-3" style={{ bottom: insets.bottom }}>
         <Button variant="outline" title={t('common.back')} onPress={handleBack} />
       </View>
     </View>

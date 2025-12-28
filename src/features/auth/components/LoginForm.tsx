@@ -8,6 +8,7 @@ import { TextField } from '@core/ui/TextField';
 import { GoogleSignIn } from './GoogleSignIn';
 import { useLoginForm } from '../hooks/useLoginForm';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@app/providers/ThemeProvider';
 
 interface LoginFormProps {
   onShowRegister: () => void;
@@ -16,7 +17,8 @@ interface LoginFormProps {
 export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
   const { t } = useTranslation('auth'); 
   const [showPassword, setShowPassword] = useState(false);
-  
+  const { isDark } = useTheme();
+
   const { 
     formData, 
     handleChange, 
@@ -27,7 +29,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
   } = useLoginForm();
 
   return (
-    <View className="p-6 bg-white rounded-xl w-full shadow-sm">
+    <View className="p-6 bg-white dark:bg-gray-900 rounded-xl w-full shadow-sm">
       <Text 
         type="title1" 
         weight="bold" 
@@ -38,7 +40,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
       </Text>
 
       {errorMsg && (
-        <View className="mb-4 bg-red-50 p-3 rounded-lg">
+        <View className="mb-4 bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
           <Text color="error" align="center" type="subhead">
             {errorMsg}
           </Text>
@@ -77,7 +79,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
             <Ionicons 
               name={showPassword ? "eye-off-outline" : "eye-outline"} 
               size={24} 
-              color="#6B7280" 
+              color={isDark ? "#9CA3AF" : "#6B7280"} 
             />
           </TouchableOpacity>
         </View>
@@ -105,7 +107,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onShowRegister }) => {
             variant="link" 
             onPress={onShowRegister} 
             className="h-auto min-h-0 p-0 bg-transparent active:opacity-60"
-            textClassName="text-blue-600 font-semibold ml-1"
+            textClassName="text-blue-600 dark:text-blue-400 font-semibold ml-1"
             />
           </View>
         </View>

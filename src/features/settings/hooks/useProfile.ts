@@ -8,14 +8,14 @@ import { profileRepository } from '../../../app/di';
 import { UserProfile } from '../../../domain/entities/UserProfile'; 
 import { getInitials } from '@core/utils/profile';
 import { Animated } from 'react-native';
-import { AppStackParamList } from '../../../app/navigation/routes-types'; 
+import { SettingsStackParamList } from '../../../app/navigation/routes-types';
 
 export const useProfile = () => {
   const { t } = useTranslation('settings');
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
 
-  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<SettingsStackParamList>>();
   
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);

@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@app/providers/AuthProvider';
 import { joinTeamUseCase } from '../../../app/di'; 
+import { invalidateTeamsCache } from '../hooks/useTeamsList';
 
 export const useJoinTeam = () => {
   const { t } = useTranslation('teams');
@@ -22,7 +23,9 @@ export const useJoinTeam = () => {
     setLoading(true);
     try {
       await joinTeamUseCase.execute(user.id, code.trim());
-      
+      if (user?.id) {
+        await invalidateTeamsCache(user.id); 
+      }
       Alert.alert(
         t('common.success'),
         t('join.success_msg'),

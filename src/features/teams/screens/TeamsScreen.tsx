@@ -95,7 +95,7 @@ export const TeamsScreen = () => {
         contentContainerStyle={{
           paddingTop: 50 + insets.top,
           paddingHorizontal: 16,
-          paddingBottom: 120,
+          paddingBottom: 60,
           flexGrow: 1,
         }}
         ListHeaderComponent={renderHeader}
@@ -105,7 +105,7 @@ export const TeamsScreen = () => {
       />
 
       {!loading && teams.length > 0 && (
-        <View className="absolute left-4 right-4" style={{ bottom: insets.bottom + 20 }}>
+        <View className="absolute left-4 right-4" style={{ bottom: insets.bottom }}>
           <Button
             title={userRole === 'professor' ? t('create_team') : t('join_team')}
             onPress={userRole === 'professor' ? handleCreateTeam : handleJoinTeam}

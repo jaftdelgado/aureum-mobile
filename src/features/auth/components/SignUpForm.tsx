@@ -1,11 +1,13 @@
-import React from "react";
-import { View } from "react-native";
+import React, { useState } from "react";
+import { View, TouchableOpacity } from "react-native";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Button } from "@core/ui/Button";
 import { Text } from "@core/ui/Text";
 import { TextField } from "@core/ui/TextField";
 import { useSignUp } from "../hooks/useSignUp"; 
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@app/providers/ThemeProvider';
 
 interface SignUpFormProps {
   isGoogleFlow?: boolean;
@@ -19,6 +21,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
   onBack 
 }) => {
   const { t } = useTranslation('auth');
+  const { isDark } = useTheme();
+  
+  const [showPassword, setShowPassword] = useState(false);
   
   const { 
     step, 
@@ -31,13 +36,13 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
   } = useSignUp({ isGoogleFlow, onSuccess });
 
   return (
-    <View className="p-6 bg-white rounded-xl w-full shadow-sm">
+    <View className="p-6 bg-white dark:bg-slate-800 rounded-xl w-full shadow-sm">
       <Text type="title1" weight="bold" align="center" className="mb-6">
         {isGoogleFlow ? t("signup.completeRegistration", "Terminar Registro") : t("signup.createAccount", "Crear Cuenta")}
       </Text>
 
       {isGoogleFlow && (
-         <Text className="text-sm text-gray-500 text-center mb-4">
+         <Text className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
            {t("signup.googleFlowMessage", "Confirma tus datos para continuar")}
          </Text>
       )}
@@ -118,7 +123,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
           />
           
           <View>
-            <Text className="mb-2 font-medium">{t("signup.accountType", "Soy...")}:</Text>
+            <Text className="mb-2 font-medium text-gray-900 dark:text-gray-100">
+              {t("signup.accountType", "Soy...")}:
+            </Text>
             <View className="flex-row gap-2">
               <Controller
                 control={control}
@@ -149,31 +156,47 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
       {/* PASO 3: Contraseña (Solo flujo normal) */}
       {step === 3 && !isGoogleFlow && (
         <View className="gap-4">
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextField
-                  label={t("signup.password", "Contraseña")}
-                  secureTextEntry
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  errorText={errors.password?.message}
-                  error={!!errors.password}
+            <View>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextField
+                    label={t("signup.password", "Contraseña")}
+                    secureTextEntry={!showPassword}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    contextMenuHidden={true}
+                    errorText={errors.password?.message}
+                    error={!!errors.password}
+                  />
+                )}
+              />
+              <TouchableOpacity 
+                onPress={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-12" 
+                hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+              >
+                <Ionicons 
+                  name={showPassword ? "eye-off-outline" : "eye-outline"} 
+                  size={24} 
+                  color={isDark ? "#9CA3AF" : "#6B7280"} 
                 />
-              )}
-            />
+              </TouchableOpacity>
+            </View>
+
             <Controller
               control={control}
               name="confirmPassword"
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
                   label={t("signup.confirmPassword", "Confirmar Contraseña")}
-                  secureTextEntry
+                  secureTextEntry={true} 
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
+                  contextMenuHidden={true}
                   errorText={errors.confirmPassword?.message}
                   error={!!errors.confirmPassword}
                 />
@@ -195,7 +218,6 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
             loading={loading} 
         />
         
-        {/* Botón Atrás */}
         {step > 1 && !shouldHideBackButton && (
            <Button 
              title={t("common.back", "Atrás")} 
@@ -204,7 +226,6 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
            />
         )}
 
-        {/* Botón ir a Login */}
         {!isGoogleFlow && step === 1 && onBack && (
             <Button 
               title={t("signup.goToLogin", "Ya tengo cuenta")} 

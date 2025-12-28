@@ -11,8 +11,11 @@ import { ListOption } from '@core/ui/ListOption';
 import { Text } from '@core/ui/Text';
 import { Avatar } from '@core/ui/Avatar';
 import { useSettings } from '../hooks/usesettings';
-import { AppStackParamList } from '@app/navigation/routes-types';
-import { Ionicons } from '@expo/vector-icons';
+import { SettingsStackParamList } from '../../../app/navigation/routes-types';
+import { ThemeIcon } from '../resources/svg/ThemeIcon';
+import { LanguageIcon } from '../resources/svg/LanguageIcon';
+import { LogoutIcon } from '../resources/svg/LogoutIcon';
+import { TrashIcon } from '../resources/svg/TrashIcon';
 
 export default function SettingsScreen() {
   const { t } = useTranslation('settings');
@@ -24,11 +27,13 @@ export default function SettingsScreen() {
     user,
     avatarUrl,
     initials,
+    isDark,
+    toggleTheme
   } = useSettings();
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+   const navigation = useNavigation<NativeStackNavigationProp<SettingsStackParamList>>();
 
   return (
     <View className="flex-1">
@@ -50,19 +55,21 @@ export default function SettingsScreen() {
 
           {user && (
             <View className="mb-3 mt-6">
-              <Text type="title3" weight="semibold" className="mb-3">
+              <Text type="title3" weight="semibold" className="mb-3 text-gray-900 dark:text-gray-100">
                 {t('sections.account')}
               </Text>
+              
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => navigation.navigate('Profile')}
-                className="flex-row items-center rounded-xl bg-white p-4 shadow-sm">
+                className="flex-row items-center rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm"
+              >
                 <Avatar size="md" source={avatarUrl} placeholderText={initials} className="mr-4" />
                 <View className="flex-1">
-                  <Text type="body" weight="bold">
+                  <Text type="body" weight="bold" className="text-gray-900 dark:text-gray-100">
                     {user.fullName}
                   </Text>
-                  <Text type="caption1" color="secondary">
+                  <Text type="caption1" className="text-gray-500 dark:text-gray-400">
                     {t('viewProfile')}
                   </Text>
                 </View>
@@ -74,15 +81,24 @@ export default function SettingsScreen() {
         <View className="mt-auto">
           <ListContainer>
             <ListOption
+              text={isDark ? (t('light_mode')) : (t('dark_mode'))}
+              onPress={toggleTheme}
+              icon={ThemeIcon}
+              iconVariant={isDark ? "yellow" : "blue"} 
+            />
+
+            <ListOption
               text={t('changeLanguage')}
               onPress={handleChangeLanguage}
-              icon={<Ionicons name="language-outline" size={20} color="#6B7280" />}
+              icon={LanguageIcon}
+              iconVariant="purple"
             />
 
             <ListOption
               text={t('logout')}
               onPress={handleLogout}
-              icon={<Ionicons name="log-out-outline" size={20} color="#6B7280" />}
+              icon={LogoutIcon}
+              iconVariant="gray"
             />
 
             <ListOption
@@ -92,7 +108,8 @@ export default function SettingsScreen() {
                 </Text>
               }
               onPress={handleDeleteAccount}
-              icon={<Ionicons name="trash-outline" size={20} color="#EF4444" />}
+              icon={TrashIcon}
+              iconVariant="orange"
               isLast
             />
           </ListContainer>

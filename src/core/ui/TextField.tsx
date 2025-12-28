@@ -3,6 +3,7 @@ import { TextInput, View, TextInputProps } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
 import { Text } from '@core/ui//Text';
+import { useTheme } from '@app/providers/ThemeProvider';
 
 const inputWrapperStyles = cva('w-full flex-col', {
   variants: {
@@ -17,7 +18,7 @@ const inputWrapperStyles = cva('w-full flex-col', {
   },
 });
 
-const inputStyles = cva('w-full border bg-white text-gray-900 font-body flex-row items-center', {
+const inputStyles = cva('w-full border bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-body flex-row items-center', {
   variants: {
     variant: {
       default: 'border-gray-300',
@@ -80,6 +81,7 @@ export const TextField = ({
   ...props
 }: TextFieldProps) => {
   const hasError = !!error || !!errorText;
+  const { isDark } = useTheme();
 
   return (
     <View className={cn(inputWrapperStyles({ size }))}>
@@ -105,8 +107,8 @@ export const TextField = ({
 
           <TextInput
             editable={!disabled}
-            placeholderTextColor="#9ca3af"
-            className={cn('flex-1 text-gray-900', inputClassName)}
+            placeholderTextColor={isDark ? "#6B7280" : "#9CA3AF"}
+            className={cn('flex-1 text-gray-900 dark:text-gray-100', inputClassName)}
             {...props}
           />
 

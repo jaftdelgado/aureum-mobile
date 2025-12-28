@@ -4,6 +4,7 @@ import { LoggedInUser } from '../../domain/entities/LoggedInUser';
 import { RegisterData } from '../../domain/entities/RegisterData';
 import { AUTH_EVENTS } from '../events/authEvents';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { 
   authRepository, 
@@ -12,6 +13,12 @@ import {
   logoutUseCase, 
   enrichSessionUserUseCase 
 } from '../di';
+
+
+const KEYS_TO_PRESERVE = [
+  '@aureum_theme', 
+  '@aureum_language', 
+];
 
 const extractParamsFromUrl = (url: string) => {
   const params: Record<string, string> = {};
@@ -41,6 +48,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<LoggedInUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
+
+  const clearUserData = async () => {
+    try {
+      const allKeys = await AsyncStorage.getAllKeys();
+      
+      const keysToRemove = allKeys.filter(key => !KEYS_TO_PRESERVE.includes(key));
+      
+      if (keysToRemove.length > 0) {
+        await AsyncStorage.multiRemove(keysToRemove);
+        console.log('Datos de sesión limpiados:', keysToRemove);
+      }
+    } catch (error) {
+      console.error('Error limpiando datos de usuario:', error);
+    }
+  };
 
   const refreshSession = useCallback(async () => {
     try {
@@ -140,6 +162,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
+      await clearUserData();
       await logoutUseCase.execute();
       setUser(null);
     } catch (error) {

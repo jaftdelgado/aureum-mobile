@@ -5,6 +5,7 @@ import { SignUpForm } from '../components/SignUpForm';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList, RootStackParamList } from '../../../app/navigation/routes-types'; 
 import { useAuth } from '../../../app/providers/AuthProvider';
+import { AuthHeader } from '../components/AuthHeader';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'> | NativeStackScreenProps<RootStackParamList, 'CompleteRegistration'>;
 
@@ -13,14 +14,16 @@ export const RegisterScreen: React.FC<Props> = ({ navigation, route }) => {
   const { logout } = useAuth();
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1">
+      <AuthHeader />
+
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
       >
         <ScrollView 
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-          className="px-4"
+          className="px-4 pt-12"
           keyboardShouldPersistTaps="handled"
         >
           <View className="w-full max-w-md mx-auto">

@@ -15,7 +15,7 @@ export const JoinTeamScreen = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
-    <View className="flex-1 bg-bg">
+    <View className="flex-1">
       <FixedHeader title={t('join.title')} scrollY={scrollY} />
 
       <KeyboardAvoidingView 
@@ -48,7 +48,7 @@ export const JoinTeamScreen = () => {
                 </Text>
               </View>
 
-              <View className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
+              <View className="p-6 rounded-2xl border shadow-sm mb-6">
                 <TextField
                   placeholder={t('join.code_placeholder')}
                   value={code}
@@ -62,7 +62,7 @@ export const JoinTeamScreen = () => {
             </Animated.ScrollView>
 
             <View 
-              className="px-4 pt-4 border-t border-gray-100 bg-bg"
+              className="px-4 pt-4"
               style={{ paddingBottom: Platform.OS === 'ios' ? insets.bottom : 20 }}
             >
               <Button

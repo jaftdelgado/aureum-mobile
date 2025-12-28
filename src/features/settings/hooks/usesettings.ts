@@ -4,11 +4,13 @@ import { useAuth } from '@app/providers/AuthProvider';
 import { deleteAccountUseCase } from '../../../app/di';
 import { useTranslation } from 'react-i18next';
 import { getInitials } from '@core/utils/profile';
+import { useTheme } from '@app/providers/ThemeProvider';
 
 export const useSettings = () => {
   const { t, i18n } = useTranslation('settings');
   const { user, logout} = useAuth();
   const [loading, setLoading] = useState(false);
+  const { theme, toggleTheme, isDark } = useTheme();
 
   const avatarUrl = user?.avatarUrl;
   const initials = user?.fullName ? getInitials(user.fullName) : "?";
@@ -107,6 +109,9 @@ export const useSettings = () => {
     handleChangeLanguage,
     user,
     avatarUrl,
-    initials
+    initials,
+    theme,
+    toggleTheme,
+    isDark,
   };
 };
