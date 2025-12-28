@@ -24,19 +24,19 @@ export const TeamCard: React.FC<TeamCardProps> = ({ team, onPress, role }) => {
   return (
     <TouchableOpacity 
       onPress={() => onPress(team)}
-      className="bg-white rounded-xl mb-5 shadow-sm border border-gray-200 overflow-hidden elevation-2"
+      className="bg-white dark:bg-slate-800 rounded-xl mb-5 shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden elevation-2"
       activeOpacity={0.9}
     >
-      <View className="h-36 bg-gray-200 relative">
+      <View className="h-36 bg-gray-200 dark:bg-slate-700 relative">
         <Image 
           source={finalSource} 
           className="w-full h-full absolute"
           resizeMode="cover"
         />
         <View className="w-full h-full bg-black/20 absolute" />
-        
-        <View className="absolute top-3 right-3 bg-white/90 px-2 py-1 rounded-md shadow-sm">
-          <Text type="caption2" weight="bold" className="text-primary uppercase">
+
+        <View className="absolute top-3 right-3 bg-white/90 dark:bg-black/60 px-2 py-1 rounded-md shadow-sm">
+          <Text type="caption2" weight="bold" className="text-primary dark:text-blue-400 uppercase">
             {isProfessor ? t('card.professor') : t('card.student')}
           </Text>
         </View>
@@ -44,12 +44,13 @@ export const TeamCard: React.FC<TeamCardProps> = ({ team, onPress, role }) => {
 
       <View className="p-4">
         <View className="mb-2">
-          <Text type="title3" weight="bold" numberOfLines={1} className="text-gray-900">
+          <Text type="title3" weight="bold" numberOfLines={1} className="text-gray-900 dark:text-gray-100">
             {team.name}
           </Text>
           
           {team.description && (
-            <Text type="caption1" color="secondary" numberOfLines={2} className="mt-1">
+
+            <Text type="caption1" numberOfLines={2} className="mt-1 text-gray-500 dark:text-gray-400">
               {team.description}
             </Text>
           )}

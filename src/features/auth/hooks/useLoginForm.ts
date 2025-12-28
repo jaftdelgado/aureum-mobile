@@ -2,14 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
-import { Alert } from 'react-native';
 import { useAuth } from '../../../app/providers/AuthProvider'; 
 import { loginSchema, LoginFormData } from '../schemas/loginSchema'; 
 
 export const useLoginForm = (onShowRegister?: () => void) => {
   const { t } = useTranslation('auth');
   const { login } = useAuth(); 
-  
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 

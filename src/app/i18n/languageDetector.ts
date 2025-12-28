@@ -1,34 +1,30 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
-import { LanguageDetectorAsyncModule } from 'i18next';
 
-const STORE_LANGUAGE_KEY = 'settings.lang';
+const LANGUAGE_STORAGE_KEY = '@aureum_language';
 
-const languageDetector: LanguageDetectorAsyncModule = {
+export const languageDetector: any = {
   type: 'languageDetector',
   async: true,
   init: () => {},
-  detect: (callback) => {
-    AsyncStorage.getItem(STORE_LANGUAGE_KEY)
-      .then((language) => {
-        if (language) {
-          return callback(language);
-        }
-        const bestLanguage = Localization.getLocales()[0]?.languageCode ?? 'es';
-        return callback(bestLanguage);
-      })
-      .catch((error) => {
-        console.error('Error leyendo idioma', error);
-        callback('es');
-      });
-  },
-  cacheUserLanguage: async (language) => {
+  detect: async (callback: (lang: string) => void) => {
     try {
-      await AsyncStorage.setItem(STORE_LANGUAGE_KEY, language);
+      const savedLanguage = await AsyncStorage.getItem(LANGUAGE_STORAGE_KEY);
+      if (savedLanguage) {
+        return callback(savedLanguage);
+      }
     } catch (error) {
-      console.error('Error guardando idioma', error);
+      console.log('Error reading language', error);
+    }
+
+    const bestLanguage = Localization.getLocales()[0]?.languageCode || 'es';
+    callback(bestLanguage);
+  },
+  cacheUserLanguage: async (language: string) => {
+    try {
+      await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    } catch (error) {
+      console.log('Error saving language', error);
     }
   },
 };
-
-export default languageDetector;

@@ -23,7 +23,19 @@ export const AppTabBar: React.FC<AppTabBarProps> = ({ state, navigation }) => {
   const activeTab = state.routes[state.index].name as keyof TabParamList;
 
   const handleTabPress = (key: keyof TabParamList) => {
-    navigation.navigate(key);
+    if (key === 'Teams') {
+      navigation.navigate('Teams', { 
+        screen: 'Teams' 
+      });
+    } 
+    else if (key === 'Settings') {
+      navigation.navigate('Settings', { 
+        screen: 'SettingsRoot' 
+      });
+    } 
+    else {
+      navigation.navigate(key);
+    }
   };
 
   const translatedTabs = tabs.map((tab) => ({

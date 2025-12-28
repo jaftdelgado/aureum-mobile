@@ -24,7 +24,7 @@ export const MemberCard: React.FC<MemberCardProps> = ({
   const formattedDate = dateToFormat.toLocaleDateString();
 
   return (
-    <View className="flex-row items-center justify-between p-4 bg-white rounded-xl mb-3 border border-gray-100 shadow-sm">
+    <View className="flex-row items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-xl mb-3 border border-gray-100 dark:border-slate-700 shadow-sm">
       <View className="flex-row items-center flex-1 gap-3">
         <Avatar 
           source={member.avatarUrl}  
@@ -33,11 +33,12 @@ export const MemberCard: React.FC<MemberCardProps> = ({
         />
         
         <View className="flex-1">
-          <Text type="body" weight="bold" numberOfLines={1}>
+          <Text type="body" weight="bold" numberOfLines={1} className="text-gray-900 dark:text-gray-100">
             {member.name}
           </Text>
+          
           {member.joinedAt && (
-            <Text type="caption1" color="secondary">
+            <Text type="caption1" className="text-gray-500 dark:text-gray-400">
               {t('members.since', { date: formattedDate })}
             </Text>
           )}
@@ -48,7 +49,7 @@ export const MemberCard: React.FC<MemberCardProps> = ({
         <IconButton 
           icon={TrashIcon} 
           variant="ghost"
-          className="text-red-500" 
+          className="text-red-500 dark:text-red-400" 
           onPress={() => onRemove?.(member.id)}
         />
       )}

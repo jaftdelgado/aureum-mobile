@@ -30,7 +30,7 @@ export default function MembersScreen() {
   } = useTeamMembers(teamId);
 
   return (
-    <View className="flex-1 bg-bg">
+    <View className="flex-1 ">
       <FixedHeader title={t('members.title')} scrollY={scrollY} />
 
       <Animated.ScrollView
@@ -41,14 +41,14 @@ export default function MembersScreen() {
         contentContainerStyle={{
           paddingTop: 50 + insets.top,
           paddingHorizontal: 16,
-          paddingBottom: 120
+          paddingBottom: 60
         }}
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={onRefresh} />
         }
         className="flex-1"
       >
-        <DisplayTitle title={t('members.title')} scrollY={scrollY} />
+        <DisplayTitle title={teamName} scrollY={scrollY} />
         
 
         <View className="flex-col gap-2 mt-12">
@@ -63,7 +63,7 @@ export default function MembersScreen() {
 
           {!loading && members.length === 0 && (
             <View className="py-10 items-center">
-              <Text color="secondary">{t('members.empty')}</Text>
+              <Text className="text-gray-500 dark:text-gray-400">{t('members.empty')}</Text>
             </View>
           )}
         </View>
@@ -71,7 +71,7 @@ export default function MembersScreen() {
       </Animated.ScrollView>
       <View 
           className="absolute right-4 left-4"
-          style={{ bottom: insets.bottom + 20 }}
+          style={{ bottom: insets.bottom }}
       >
         <Button 
           variant="outline" 

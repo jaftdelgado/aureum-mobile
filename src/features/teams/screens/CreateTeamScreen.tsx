@@ -23,7 +23,7 @@ export const CreateTeamScreen = () => {
   const MAX_DESC_LENGTH = 160;
 
   return (
-    <View className="flex-1 bg-bg">
+    <View className="flex-1">
       <FixedHeader title={t('create.title')} scrollY={scrollY} />
 
       <KeyboardAvoidingView 
@@ -54,7 +54,9 @@ export const CreateTeamScreen = () => {
                 onPress={pickImage}
                 activeOpacity={0.8}
                 className={`w-full h-48 rounded-2xl mb-6 justify-center items-center overflow-hidden border-2 border-dashed mt-8 ${
-                  selectedImage ? 'border-primary bg-white' : 'border-gray-300 bg-gray-50'
+                  selectedImage 
+                    ? 'border-primary bg-white dark:bg-slate-800' 
+                    : 'border-gray-300 dark:border-slate-700 bg-gray-50 dark:bg-slate-800'
                 }`}
               >
                 {selectedImage ? (
@@ -99,7 +101,7 @@ export const CreateTeamScreen = () => {
             </Animated.ScrollView>
 
             <View 
-              className="px-4 pt-4 border-t border-gray-100 bg-bg"
+              className="px-4 pt-4"
               style={{ paddingBottom: Platform.OS === 'ios' ? insets.bottom : 20 }}
             >
               <Button

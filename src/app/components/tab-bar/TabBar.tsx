@@ -4,7 +4,7 @@ import { cn } from '@core/utils/cn';
 import { cva } from 'class-variance-authority';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
-
+import { useTheme } from '@app/providers/ThemeProvider';
 import { TabParamList } from '@app/navigation/routes-types';
 import { TabButton } from '@app/components/tab-bar/TabButton';
 
@@ -26,14 +26,15 @@ const tabBarStyles = cva('flex-row justify-around items-center px-3', {
 });
 
 export const TabBar: FC<TabBarProps> = ({ tabs, activeTab, onTabPress }) => {
+  const { isDark } = useTheme();
   return (
     <BlurView
       intensity={85}
-      tint="default"
-      className="bg-white/12"
+      tint={isDark ? 'dark' : 'light'}
+      className="bg-white/80 dark:bg-black/50"
       style={{
         borderTopWidth: 1,
-        borderColor: 'rgba(255,255,255,0.12)',
+        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
       }}>
       <SafeAreaView edges={['bottom']} className="bg-transparent">
         <View className={cn(tabBarStyles())} style={{ height: 58 }}>

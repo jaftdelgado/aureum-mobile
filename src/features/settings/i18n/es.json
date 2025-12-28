@@ -19,6 +19,8 @@
   "saveChanges": "Guardar Cambios",
   "changePhoto": "Cambiar foto",
   "back": "Volver",
+  "light_mode": "Modo Claro",
+  "dark_mode": "Modo Oscuro",
   "updateError": "No se pudo actualizar el perfil",
   "sections": {
     "account": "Cuenta"

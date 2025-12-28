@@ -2,6 +2,12 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { UserProfile } from '../../domain/entities/UserProfile';
 import { Team } from '@domain/entities/Team';
 
+export type SettingsStackParamList = {
+  SettingsRoot: undefined; 
+  Profile: undefined;
+  EditProfile: { profile: UserProfile };    
+};
+
 export type AssetsStackParamList = {
   Assets: undefined;
 };
@@ -30,13 +36,11 @@ export type TabParamList = {
   Home: undefined;
   Teams: NavigatorScreenParams<TeamsStackParamList>; 
   Lessons: undefined;
-  Settings: undefined;
+  Settings: NavigatorScreenParams<SettingsStackParamList>;
 };
 
 export type AppStackParamList = {
   MainTabs: NavigatorScreenParams<TabParamList>;
-  Profile: undefined;
-  EditProfile: { profile: UserProfile };
 };
 
 export type RootStackParamList = {
