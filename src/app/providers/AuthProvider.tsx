@@ -5,13 +5,15 @@ import { RegisterData } from '../../domain/entities/RegisterData';
 import { AUTH_EVENTS } from '../events/authEvents';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 
 import { 
   authRepository, 
   loginUseCase, 
   registerUseCase, 
   logoutUseCase, 
-  enrichSessionUserUseCase 
+  enrichSessionUserUseCase,
+  checkSessionAliveUseCase 
 } from '../di';
 
 
@@ -40,6 +42,8 @@ interface AuthContextType {
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
   googleLogin: (token: string) => Promise<void>;
+  logoutReason: string | null;
+  clearLogoutReason: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -48,6 +52,55 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<LoggedInUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
+  const [logoutReason, setLogoutReason] = useState<string | null>(null);
+
+  const verifySession = useCallback(async () => {
+    if (!user) return;
+
+    const isAlive = await checkSessionAliveUseCase.execute();
+
+    if (!isAlive) {
+      console.log("Sesión invalidada remotamente (Token expirado o usado en otro lado).");
+      setLogoutReason('session_expired'); 
+      handleLogout();
+    }
+  }, [user]); 
+
+  const refreshSession = useCallback(async () => {
+    try {
+      const enrichedUser = await enrichSessionUserUseCase.execute();
+      setUser(enrichedUser);
+    } catch (error) {
+      console.log('Session refresh error:', error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+  
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active') {
+        console.log("App en primer plano, verificando sesión...");
+        verifySession();
+        refreshSession(); 
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [verifySession, refreshSession]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const interval = setInterval(() => {
+      verifySession();
+    }, 2 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [user, verifySession]);
 
   const clearUserData = async () => {
     try {
@@ -64,22 +117,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const refreshSession = useCallback(async () => {
-    try {
-      const enrichedUser = await enrichSessionUserUseCase.execute();
-      setUser(enrichedUser);
-    } catch (error) {
-      console.log('Session refresh error:', error);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  useEffect(() => {
+    const unsubscribeNet = NetInfo.addEventListener(state => {
+      if (state.isConnected === false && user) {
+        console.log("Internet perdido. Cerrando sesión...");
+        setLogoutReason('network_lost'); 
+        handleLogout();
+      }
+    });
+
+    return () => {
+      unsubscribeNet();
+    };
+  }, [user]);
 
   useEffect(() => {
     const unsubscribe = authRepository.onAuthStateChange(async (authUser) => {
       if (authUser) {
-        console.log("Supabase Auth Change: User detected");
         const enrichedUser = await enrichSessionUserUseCase.execute(authUser);
         setUser(enrichedUser);
       }
@@ -134,6 +188,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [refreshSession]);
 
   const login = async (data: { email: string, password: string }) => {
+    setIsLoading(true);
     try {
       const loggedUser = await loginUseCase.execute(data.email, data.password);
       const enrichedUser = await enrichSessionUserUseCase.execute(loggedUser);
@@ -187,9 +242,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const clearLogoutReason = () => setLogoutReason(null);
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, register, logout: handleLogout, refreshSession, googleLogin}}
+      value={{ 
+        user, 
+        isLoading, 
+        login, 
+        register, 
+        logout: handleLogout, 
+        refreshSession, 
+        googleLogin,
+        logoutReason,
+        clearLogoutReason
+      }}
     >
       {children}
     </AuthContext.Provider>

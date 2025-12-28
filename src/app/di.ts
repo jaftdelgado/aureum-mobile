@@ -11,6 +11,7 @@ import { EnrichSessionUserUseCase } from '../domain/use-cases/auth/EnrichSession
 import { CheckProfileExistsUseCase } from '../domain/use-cases/auth/CheckProfileExistsUseCase';
 import { GetSocialUserUseCase } from '../domain/use-cases/auth/GetSocialUserUseCase';
 import { DeleteAccountUseCase } from '../domain/use-cases/profile/DeleteAccountUseCase';
+import { CheckSessionAliveUseCase } from '../domain/use-cases/auth/CheckSessionAliveUseCase';
 
 import { CreateTeamUseCase } from '../domain/use-cases/teams/CreateTeamUseCase';
 import { GetProfessorTeamsUseCase } from '../domain/use-cases/teams/GetProfessorTeamsUseCase';
@@ -29,6 +30,7 @@ export const loginUseCase = new LoginUseCase(authRepository, profileRepository);
 export const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
 export const logoutUseCase = new LogoutUseCase(authRepository);
 export const getSessionUseCase = new GetSessionUseCase(authRepository, profileRepository);
+export const checkSessionAliveUseCase = new CheckSessionAliveUseCase(authRepository);
 
 export const checkProfileExistsUseCase = new CheckProfileExistsUseCase(profileRepository);
 export const getSocialUserUseCase = new GetSocialUserUseCase(authRepository);

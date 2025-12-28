@@ -7,6 +7,10 @@ export class CheckSessionAliveUseCase {
   }
 
   async execute(): Promise<boolean> {
-    return await this.authRepository.checkSessionAlive();
+    try {
+      return await this.authRepository.checkSessionAlive();
+    } catch (error) {
+      return false;
+    }
   }
 }

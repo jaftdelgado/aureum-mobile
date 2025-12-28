@@ -1,6 +1,7 @@
 {
   "signin": {
     "title": "Iniciar Sesión",
+    "subtitle": "Bienvenido de nuevo", 
     "usernameOrEmail": "Correo electrónico",
     "usernamePlaceholder": "ejemplo@correo.com",
     "password": "Contraseña",
@@ -9,12 +10,15 @@
     "google": "Continuar con Google",
     "noAccount": "¿No tienes cuenta?",
     "createAccount": "Regístrate",
+    "register": "Regístrate", 
     "continueWithGoogle": "Continuar con Google",
     "loginError": "Error al iniciar sesión",
     "errors": {
       "required": "Requerido",
+      "sessionExpired": "Tu sesión ha caducado o se ha iniciado sesión en otro dispositivo.",
       "emailInvalid": "Correo electrónico inválido",
-      "invalidCredentials": "Correo o contraseña incorrectos"
+      "invalidCredentials": "Correo o contraseña incorrectos",
+      "networkLost": "Se ha cerrado tu sesión debido a una pérdida de conexión a internet."
     }
   },
   "validation": {
@@ -77,6 +81,7 @@
     "back": "Atrás",
     "attention": "Atención",
     "noInternet": "No hay conexión a internet",
-    "genericLoginError": "No se pudo iniciar sesión"
+    "genericLoginError": "No se pudo iniciar sesión",
+    "or": "o"
   }
 }
