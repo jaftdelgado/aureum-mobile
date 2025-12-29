@@ -110,12 +110,12 @@ export class AuthApiRepository implements AuthRepository {
   }
 
   async signInWithIdToken(token: string): Promise<void> {
-  const { data, error } = await supabase.auth.signInWithIdToken({
-    provider: 'google',
-    token: token,
-  });
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: token,
+    });
 
-  if (error) throw error;
+    if (error) throw error;
   
-}
+  }
 }

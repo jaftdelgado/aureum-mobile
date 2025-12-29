@@ -45,20 +45,20 @@ export const createSignUpSchema = (t: (key: string, options?: any) => string) =>
 
       username: z
         .string()
-        .transform((val) => val.trim())
+        .transform((val) => val.trim().toLowerCase())
         .pipe(
           z
             .string()
             .min(4, { message: t("signup.errors.usernameMin", "Mínimo 4 caracteres") })
             .max(20, { message: t("signup.errors.usernameMax", "Máximo 20 caracteres") })
             .regex(USERNAME_REGEX, { message: t("signup.errors.usernameInvalid", "Solo letras, números y _") })
-            .refine((val) => !RESERVED_USERNAMES.includes(val.toLowerCase()), {
+            .refine((val) => !RESERVED_USERNAMES.includes(val), { 
               message: t("signup.errors.usernameReserved", "Este usuario no está disponible"),
             })
         ),
 
       accountType: z.enum(["student", "teacher"], {
-        error: t("signup.errors.accountTypeRequired", "Selecciona un tipo de cuenta"),
+        message: t("signup.errors.accountTypeRequired", "Selecciona un tipo de cuenta"),
       }),
 
       password: z
@@ -86,7 +86,7 @@ export const createSignUpSchema = (t: (key: string, options?: any) => string) =>
           message: t("signup.errors.passwordPwned", "Esta contraseña ha sido filtrada en internet, elige otra"), 
         }),
 
-      confirmPassword: z.string().max(64),
+      confirmPassword: z.string(),
     })
     .superRefine((data, ctx) => {
       if (data.password !== data.confirmPassword) {
@@ -99,9 +99,9 @@ export const createSignUpSchema = (t: (key: string, options?: any) => string) =>
 
       const passLower = data.password.toLowerCase();
       const checks = [
-        { val: data.username.toLowerCase(), field: "username" },
+        { val: data.username, field: "username" }, 
         { val: data.firstName.toLowerCase(), field: "nombre" },
-        { val: data.email.split("@")[0].toLowerCase(), field: "email" },
+        { val: data.email.split("@")[0], field: "email" }, 
       ];
 
       checks.forEach((check) => {

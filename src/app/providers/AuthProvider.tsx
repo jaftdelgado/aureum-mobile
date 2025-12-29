@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback, useRef } from 'react';
 import { AppState, DeviceEventEmitter, Alert, Linking } from 'react-native';
 import { LoggedInUser } from '../../domain/entities/LoggedInUser';
 import { RegisterData } from '../../domain/entities/RegisterData';
@@ -15,6 +15,7 @@ import {
   enrichSessionUserUseCase,
   checkSessionAliveUseCase 
 } from '../di';
+import { is } from 'zod/v4/locales';
 
 
 const KEYS_TO_PRESERVE = [
@@ -52,7 +53,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<LoggedInUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { t } = useTranslation();
+  const [isSplashLoading, setIsSplashLoading] = useState(true);
   const [logoutReason, setLogoutReason] = useState<string | null>(null);
+  const isLoggingInRef = useRef(false);
 
   const verifySession = useCallback(async () => {
     if (!user) return;
@@ -74,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('Session refresh error:', error);
       setUser(null);
     } finally {
-      setIsLoading(false);
+      setIsSplashLoading(false);
     }
   }, []);
   
@@ -133,6 +136,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = authRepository.onAuthStateChange(async (authUser) => {
+      if (isLoggingInRef.current) {
+        return;
+      }
       if (authUser) {
         const enrichedUser = await enrichSessionUserUseCase.execute(authUser);
         setUser(enrichedUser);
@@ -188,7 +194,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [refreshSession]);
 
   const login = async (data: { email: string, password: string }) => {
-    setIsLoading(true);
+    isLoggingInRef.current = true;
     try {
       const loggedUser = await loginUseCase.execute(data.email, data.password);
       const enrichedUser = await enrichSessionUserUseCase.execute(loggedUser);
@@ -248,7 +254,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{ 
         user, 
-        isLoading, 
+        isLoading: isSplashLoading, 
         login, 
         register, 
         logout: handleLogout, 

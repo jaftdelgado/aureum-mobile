@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { createSignUpSchema, SignUpFormData } from "../schemas/signUpSchema";
 import { getSocialUserUseCase } from "../../../app/di";
 import { useAuth } from "../../../app/providers/AuthProvider";
+import { getUserFriendlyErrorMessage } from "@core/utils/errorMapper";
 
 const GOOGLE_AUTH_DUMMY_PASS = "GoogleDummyPass1!";
 
@@ -17,7 +18,7 @@ interface UseSignUpProps {
 
 export const useSignUp = ({ isGoogleFlow, onSuccess, onBack }: UseSignUpProps) => {
   const { t } = useTranslation('auth');
-  const { register, refreshSession } = useAuth();
+  const { register } = useAuth();
   
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -74,16 +75,29 @@ export const useSignUp = ({ isGoogleFlow, onSuccess, onBack }: UseSignUpProps) =
       
     } catch (error: any) {
       const errorMessage = error.message || "";
+      const userMessage = getUserFriendlyErrorMessage(error, t);
       
       if (errorMessage.includes("already registered") || errorMessage.includes("already exists")) {
         setStep(1);
         setShouldHideBackButton(false);
-        setError("email", { 
-          type: "manual", 
-          message: t("signup.errors.emailAlreadyRegistered") || "Correo ya registrado"
-        });
-      } else {
-        Alert.alert(t("common.error"), errorMessage);
+        setTimeout(() => {
+            setError("email", { 
+                type: "manual", 
+                message: t("signup.errors.emailAlreadyRegistered") 
+            });
+        }, 100);
+      } else if (errorMessage.includes("El nombre de usuario ya esta en uso")) {
+        if (step !== 2) setStep(2);
+        
+        setTimeout(() => {
+            setError("username", { 
+                type: "manual", 
+                message: t("signup.errors.usernameReserved") 
+            });
+        }, 100);
+      }
+      else {
+        Alert.alert(t("common.error"), userMessage);
       }
     } finally {
       setLoading(false);

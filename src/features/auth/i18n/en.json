@@ -25,6 +25,7 @@
     "required": "Field required",
     "email": "Invalid email",
     "min": "Minimum {{min}} characters",
+    "maxLength255": "Maximum 255 characters",
     "password_min": "Password must be at least 6 characters" 
   },
   "signup": {
@@ -83,6 +84,11 @@
     "attention": "Attention",
     "noInternet": "No internet connection",
     "genericLoginError": "Could not sign in",
-    "or": "or"
+    "or": "or",
+    "errors": {
+      "timeout": "The server took too long to respond. Please check your connection.",
+      "server": "We encountered a technical issue. Please try again later.",
+      "notFound": "We couldn't find what you were looking for."
+    }
   }
 }

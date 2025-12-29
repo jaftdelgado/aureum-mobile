@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../app/providers/AuthProvider'; 
 import { loginSchema, LoginFormData } from '../schemas/loginSchema'; 
+import { getUserFriendlyErrorMessage } from '@core/utils/errorMapper';
 
 export const useLoginForm = (onShowRegister?: () => void) => {
   const { t } = useTranslation('auth');
@@ -57,15 +58,11 @@ export const useLoginForm = (onShowRegister?: () => void) => {
     try {
       await login({ email: data.email, password: data.password });
     } catch (error: any) {
-      console.log("Login attempt result:", error.message); 
-      
-      let message = t('common.genericLoginError');
-
-      if (error.message?.includes("Invalid login") || error.message?.includes("invalid_credentials")) {
-        message = t('signin.errors.invalidCredentials');
-      }
-
-      setErrorMsg(message);
+      console.error("Login Error:", error); 
+    
+      const userMessage = getUserFriendlyErrorMessage(error, t);
+    
+      setErrorMsg(userMessage);
     } finally {
       setLoading(false);
     }
