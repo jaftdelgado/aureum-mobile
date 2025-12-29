@@ -11,6 +11,8 @@
   "common": {
     "error": "Error",
     "success": "¡Éxito!",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
     "attention": "Atención",
     "cancel": "Cancelar",
     "back": "Volver",
@@ -18,31 +20,39 @@
   },
   "create": {
     "title": "Crear Nuevo Curso",
-    "upload_cover": "Subir portada",
-    "team_name": "Nombre del Curso",
+    "upload_cover": "Subir portada del curso",
+    "team_name": "Nombre del curso",
     "name_placeholder": "Ej. Matemáticas Avanzadas",
     "description": "Descripción",
-    "desc_placeholder": "Breve descripción de los objetivos...",
-    "creating": "Creando...",
+    "desc_placeholder": "Describe brevemente los objetivos...",
     "action": "Crear Curso",
-    "req_image": "La imagen de portada es obligatoria.",
-    "req_name": "El nombre del curso es obligatorio.",
-    "req_desc": "La descripción es obligatoria.",
+    "creating": "Creando...",
+    "req_image": "Debes seleccionar una imagen de portada",
+    "req_name": "El nombre debe tener al menos 3 caracteres",
+    "req_desc": "La descripción es requerida",
+    "image_too_large": "La imagen es demasiado grande. Intenta con una menor a 5MB.",
+    "unauthorized": "Solo los profesores pueden crear cursos.",
     "success_title": "¡Curso Creado!",
-    "success_msg": "Tu nuevo curso está listo.",
-    "error_msg": "No se pudo crear el curso."
+    "success_msg": "Tu curso ha sido creado exitosamente. Ya puedes invitar alumnos.",
+    "error_msg": "Hubo un problema al crear el curso."
+  },
+  "permissions": {
+    "title": "Permiso necesario",
+    "msg": "Requerimos acceso a tu galería para subir la portada del curso."
   },
   "join": {
     "title": "Unirse a un Curso",
-    "subtitle": "Pídele el código de acceso a tu profesor e ingrésalo aquí.",
-    "code_label": "Código de acceso",
-    "code_placeholder": "Ej. AB12-CD34",
-    "joining": "Uniéndome...",
-    "action": "Unirse al Curso",
-    "success_msg": "Te has unido al curso correctamente.",
-    "error_title": "Verifica el código",
-    "error_msg": "Ocurrió un error al intentar unirse.",
-    "code_required": "El código es obligatorio."
+    "input_label": "Código de acceso",
+    "placeholder": "Ej. A1B2C3",
+    "helper_text": "Pide el código a tu profesor e ingrésalo aquí.",
+    "action": "Unirme",
+    "joining": "Uniéndose...",
+    "code_required": "Por favor ingresa el código",
+    "code_too_short": "El código parece incompleto (mínimo 8 caracteres).",
+    "code_invalid_format": "El código solo debe contener letras y números, sin símbolos ni espacios.",
+    "success_msg": "¡Te has unido al curso correctamente!",
+    "error_not_found": "No encontramos ningún curso con ese código. Verifícalo.",
+    "error_already_member": "Ya eres alumno de este curso."
   },
   "team": {
     "untitled": "Sin Título",
@@ -51,7 +61,9 @@
     "market": "Mercado",
     "assets": "Activos",
     "portfolio": "Portafolio",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "access_code_label": "CÓDIGO DE CURSO", 
+    "load_error": "No se pudo cargar la información del curso."
   },
   "card": {
     "professor": "Profesor",

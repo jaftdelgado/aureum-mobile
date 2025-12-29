@@ -17,11 +17,17 @@
   "viewProfile": "Ver perfil",
   "editProfile": "Editar Perfil",
   "saveChanges": "Guardar Cambios",
+  "save": "Guardar",
   "changePhoto": "Cambiar foto",
   "back": "Volver",
   "light_mode": "Modo Claro",
   "dark_mode": "Modo Oscuro",
   "updateError": "No se pudo actualizar el perfil",
+  "discardChanges": "Tienes cambios sin guardar. ¿Deseas salir?",
+  "discard": "Descartar",
+  "nameRequired": "El nombre es obligatorio",
+  "imageTooLarge": "La imagen es muy grande. Máximo 5MB.",
+  "updatePartial": "Tu perfil se actualizó, pero hubo un problema subiendo la foto. Intenta subirla de nuevo.",
   "sections": {
     "account": "Cuenta"
   },
@@ -36,7 +42,14 @@
     "email": "Correo electrónico",
     "noBio": "Sin biografía"
   },
+  "permissions": {
+    "title": "Permiso denegado",
+    "msg": "Necesitamos acceso a tu galería para cambiar la foto."
+  },
   "common": {
-    "error": "Error"
+    "error": "Error",
+    "attention": "Atención",
+    "cancel": "Cancelar",
+    "success": "Éxito"
   }
 }

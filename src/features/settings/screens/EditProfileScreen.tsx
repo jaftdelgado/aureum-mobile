@@ -19,7 +19,8 @@ export const EditProfileScreen = () => {
     t, loading, profile,
     fullName, setFullName, bio, setBio,
     imageSource, initials,
-    pickImage, handleSave, handleCancel 
+    pickImage, handleSave, handleCancel,
+    hasChanges
   } = useEditProfile();
 
   const insets = useSafeAreaInsets();
@@ -135,6 +136,7 @@ export const EditProfileScreen = () => {
                 onPress={handleSave} 
                 loading={loading}
                 variant="primary"
+                disabled={loading || !hasChanges}
               />
               <Button 
                 title={t('cancel')}

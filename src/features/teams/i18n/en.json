@@ -11,6 +11,8 @@
   "common": {
     "error": "Error",
     "success": "Success!",
+    "copy": "Copy",
+    "copied": "Copied!",
     "attention": "Attention",
     "cancel": "Cancel",
     "back": "Back",
@@ -18,31 +20,39 @@
   },
   "create": {
     "title": "Create New Course",
-    "upload_cover": "Upload cover",
+    "upload_cover": "Upload course cover",
     "team_name": "Course Name",
-    "name_placeholder": "E.g. Advanced Math",
+    "name_placeholder": "Ex. Advanced Math",
     "description": "Description",
-    "desc_placeholder": "Brief description of goals...",
-    "creating": "Creating...",
+    "desc_placeholder": "Briefly describe the goals...",
     "action": "Create Course",
-    "req_image": "Cover image is required.",
-    "req_name": "Course name is required.",
-    "req_desc": "Description is required.",
+    "creating": "Creating...",
+    "req_image": "You must select a cover image",
+    "req_name": "Name must be at least 3 characters",
+    "req_desc": "Description is required",
+    "image_too_large": "Image is too large. Try one smaller than 5MB.",
+    "unauthorized": "Only professors can create courses.",
     "success_title": "Course Created!",
-    "success_msg": "Your new course is ready.",
-    "error_msg": "Could not create the course."
+    "success_msg": "Your course has been created successfully. You can now invite students.",
+    "error_msg": "There was a problem creating the course."
+  },
+  "permissions": {
+    "title": "Permission Required",
+    "msg": "We need access to your gallery to upload the course cover."
   },
   "join": {
     "title": "Join a Course",
-    "subtitle": "Ask your professor for the access code and enter it here.",
-    "code_label": "Access Code",
-    "code_placeholder": "E.g. AB12-CD34",
+    "input_label": "Access Code",
+    "placeholder": "Ex. A1B2C3",
+    "helper_text": "Ask your professor for the code and enter it here.",
+    "action": "Join",
     "joining": "Joining...",
-    "action": "Join Course",
-    "success_msg": "You have joined the course successfully.",
-    "error_title": "Check the code",
-    "error_msg": "An error occurred while trying to join.",
-    "code_required": "Code is required."
+    "code_required": "Please enter the code",
+    "code_too_short": "Code seems too short (min 8 chars).",
+    "code_invalid_format": "Code should only contain letters and numbers.",
+    "success_msg": "You have joined the course successfully!",
+    "error_not_found": "We couldn't find a course with that code.",
+    "error_already_member": "You are already a member of this course."
   },
   "team": {
     "untitled": "Untitled",
@@ -52,7 +62,9 @@
     "assets": "Assets",
     "portfolio": "Portfolio",
     "movements": "Movements",
-    "settings": "Settings"
+    "settings": "Settings",
+    "access_code_label": "COURSE CODE",
+    "load_error": "Could not load course information."
   },
   "card": {
     "professor": "Professor",
