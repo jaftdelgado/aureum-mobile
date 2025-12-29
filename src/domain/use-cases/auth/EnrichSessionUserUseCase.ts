@@ -8,32 +8,39 @@ export class EnrichSessionUserUseCase {
     private profileRepository: ProfileRepository
   ) {}
 
-  async execute(authUser?: LoggedInUser): Promise<LoggedInUser | null> {
-    let user: LoggedInUser | null | undefined = authUser;
-
-    if (!user) {
-      user = await this.authRepository.getSession();
+  async execute(authUser?: any): Promise<LoggedInUser | null> {
+    let baseUser = authUser;
+    let isProfileComplete = false;
+    
+    if (!baseUser) {
+      const session = await this.authRepository.getSession();
+      baseUser = session;
     }
 
-    if (!user) return null;
+    if (!baseUser) return null;
 
-    try {
-      const profile = await this.profileRepository.getProfile(user.id);
-      
-      if (profile) {
-        return {
-          ...user,
-          username: profile.username,
-          role: profile.role,
-          fullName: profile.fullName,
-          avatarUrl: profile.avatarUrl,
-          bio: profile.bio,
-        };
-      }
-    } catch (error) {
-      console.log("Perfil no encontrado o error, devolviendo usuario base:", error);
-    }
+    const user: LoggedInUser = {
+      id: baseUser.id,
+      email: baseUser.email || '',
+      role: 'student',
+      fullName: '',
+      username: '',
+      avatarUrl: '',
+      createdAt: '',
+    };
+    
+    const profile = await this.profileRepository.getProfile(user.id);
 
-    return user; 
+    if (profile) {
+      user.fullName = profile.fullName;
+      user.username = profile.username;
+      user.role = profile.role;
+      user.avatarUrl = profile.avatarUrl;
+      user.createdAt = profile.createdAt?.toDateString() || '';
+      user.avatarUrl = profile.avatarUrl;
+      isProfileComplete = true;
+    } 
+
+    return user;
   }
 }

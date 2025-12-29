@@ -7,6 +7,7 @@ import { mapDTOToTeamMember, mapDTOToUserProfile } from "./profile.mappers";
 import type { UserProfileDTO, CreateProfileRequestDTO, UpdateProfileRequestDTO } from "./profile.dto";
 import { blobToBase64 } from "@core/utils/fileUtils";
 import { ReactNativeFile } from "../../types/http-types";
+import { httpClient, HttpError } from '../http/client';
 
 export class ProfileApiRepository implements ProfileRepository {
   
@@ -33,12 +34,11 @@ export class ProfileApiRepository implements ProfileRepository {
       };
 
     } catch (error: any) {
-      if (error.status === 404 || error.response?.status === 404) {
+      if (error instanceof HttpError && error.status === 404) {
         return null;
       }
-      
-      console.error(`Error fetching profile for ${authId}`, error);
-      return null;
+      console.error('[ProfileApiRepository] Error fetching profile:', error);
+      throw error;
     }
   }
 

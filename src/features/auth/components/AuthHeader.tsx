@@ -14,7 +14,7 @@ export const AuthHeader = () => {
   const { i18n } = useTranslation();
 
   const handleLanguageChange = () => {
-    const newLang = i18n.language === 'es' ? 'en' : 'es';
+    const newLang = i18n.language === 'en' ? 'es' : 'en';
     i18n.changeLanguage(newLang);
   };
 

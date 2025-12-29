@@ -26,7 +26,7 @@ const triggerServerDisconnect = () => {
 
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: GATEWAY_URL,
-  timeout: 10000,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -113,6 +113,14 @@ export class HttpClient {
         throw new HttpError(status, message);
       }
 
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        console.warn('[HttpClient] Request timed out:', url);
+        throw new HttpError(408, 'La solicitud tardó demasiado. Verifica tu conexión.');
+      }
+
+      console.error('[HttpClient] Network error:', error.message);
+      triggerServerDisconnect();
+
       console.error('[HttpClient] Network error:', error.message);
       triggerServerDisconnect();
       throw new HttpError(0, 'Error de conexión');
@@ -156,6 +164,9 @@ export class HttpClient {
       return response.data as Blob;
     } catch (err) {
       const error = err as AxiosError;
+      if (error.code === 'ECONNABORTED') {
+         throw new HttpError(408, 'Tiempo de descarga agotado');
+      }
       throw new HttpError(error.response?.status || 0, 'Error descargando archivo');
     }
   }

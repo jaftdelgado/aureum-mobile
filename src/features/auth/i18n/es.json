@@ -25,6 +25,7 @@
     "required": "Campo requerido",
     "email": "Correo inválido",
     "min": "Mínimo {{min}} caracteres", 
+    "maxLength255": "Máximo 255 caracteres",
     "password_min": "La contraseña debe tener al menos 6 caracteres"
   },
   "signup": {
@@ -82,6 +83,11 @@
     "attention": "Atención",
     "noInternet": "No hay conexión a internet",
     "genericLoginError": "No se pudo iniciar sesión",
-    "or": "o"
+    "or": "o",
+    "errors": {
+      "timeout": "El servidor tardó demasiado en responder. Revisa tu conexión.",
+      "server": "Tuvimos un problema técnico. Intenta más tarde.",
+      "notFound": "No pudimos encontrar lo que buscabas."
+    }
   }
 }

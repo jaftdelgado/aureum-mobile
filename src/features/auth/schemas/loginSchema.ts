@@ -2,8 +2,10 @@ import { z } from 'zod';
 
 export const loginSchema = z.object({
   email: z
-    .string({ message: 'validation.required' }) 
-    .min(1, 'validation.required')                     
+    .string({ message: 'validation.required' })
+    .trim()
+    .min(1, 'validation.required')
+    .max(255, 'validation.maxLength255')                  
     .email('validation.email'),      
 
   password: z
