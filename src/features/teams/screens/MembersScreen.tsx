@@ -24,6 +24,7 @@ export default function MembersScreen() {
   const { 
     members, 
     loading, 
+    refreshing,
     isProfessor, 
     handleRemoveMember, 
     onRefresh 
@@ -44,14 +45,14 @@ export default function MembersScreen() {
           paddingBottom: 60
         }}
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         className="flex-1"
       >
         <DisplayTitle title={teamName} scrollY={scrollY} />
         
 
-        <View className="flex-col gap-2 mt-12">
+        <View className="flex-col gap-2 mt-8">
           {members.map((member) => (
             <MemberCard
               key={member.id}

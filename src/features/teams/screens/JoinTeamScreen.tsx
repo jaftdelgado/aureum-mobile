@@ -44,13 +44,13 @@ export const JoinTeamScreen = () => {
 
               <View className="mt-10 mb-8">
                 <Text type="body" color="secondary">
-                  {t('join.subtitle')}
+                  {t('join.helper_text')}
                 </Text>
               </View>
 
               <View className="p-6 rounded-2xl border shadow-sm mb-6">
                 <TextField
-                  placeholder={t('join.code_placeholder')}
+                  placeholder={t('join.placeholder')}
                   value={code}
                   onChangeText={setCode}
                   autoCapitalize="characters"

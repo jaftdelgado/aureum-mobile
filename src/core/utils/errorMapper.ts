@@ -30,6 +30,11 @@ export const getUserFriendlyErrorMessage = (error: any, t: (key: string) => stri
   }
   if (message.includes('unique_username') || message.includes('username_key')) {
     return t('signup.errors.usernameReserved');
+  }if (message === 'TEAM_NOT_FOUND') {
+    return t('join.error_not_found'); 
+  }
+  if (message === 'TEAM_ALREADY_MEMBER') {
+    return t('join.error_already_member'); 
   }
 
   return t('common.genericLoginError');

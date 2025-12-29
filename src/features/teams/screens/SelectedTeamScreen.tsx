@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from '@core/ui/Text';
 import { Button } from '@core/ui/Button';
@@ -16,6 +16,9 @@ export default function SelectedTeamScreen() {
     scrollY,
     teamName,
     teamDescription,
+    accessCode,      
+    isCopied,
+    handleCopyCode,
     handleMembers,
     handleAssets,
     handleSettings,
@@ -42,11 +45,38 @@ export default function SelectedTeamScreen() {
         <DisplayTitle title={teamName} scrollY={scrollY} />
 
         {teamDescription && (
-          <View className="mb-6 mt-6 px-1">
-            <Text type="body" color="secondary">
+          <View className="mb-4 mt-6 px-1">
+            <Text type="body" color="secondary" align="center">
               {teamDescription}
             </Text>
           </View>
+        )}
+
+        {accessCode && (
+          <TouchableOpacity 
+            onPress={handleCopyCode}
+            activeOpacity={0.7}
+            className="mt-2 mb-6 dark:card rounded-xl p-4 flex-row justify-between items-center border border-gray-200 dark:border-slate-700"
+          >
+            <View>
+              <Text type="caption1" color="secondary" className="uppercase text-xs tracking-wider">
+                {t('team.access_code_label', 'Código de Acceso')}
+              </Text>
+              <Text type="body" weight="bold" className="text-primary mt-1 tracking-widest">
+                {accessCode}
+              </Text>
+            </View>
+            
+            <View className={`px-3 py-1.5 rounded-full ${isCopied ? 'bg-green-100 dark:bg-green-900' : 'bg-white dark:bg-slate-700'}`}>
+              <Text 
+                type="caption2" 
+                weight="bold" 
+                className={isCopied ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-300'}
+              >
+                {isCopied ? t('common.copied', '¡Copiado!') : t('common.copy', 'Copiar')}
+              </Text>
+            </View>
+          </TouchableOpacity>
         )}
 
         <TeamModules

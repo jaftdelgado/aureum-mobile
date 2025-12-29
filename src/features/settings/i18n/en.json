@@ -17,11 +17,17 @@
   "viewProfile": "View profile",
   "editProfile": "Edit Profile",
   "saveChanges": "Save Changes",
+  "save": "Save",
   "changePhoto": "Change photo",
   "back": "Back",
   "updateError": "Could not update profile",
   "light_mode": "Light Mode",
   "dark_mode": "Dark Mode",
+  "discardChanges": "You have unsaved changes. Do you want to discard them?",
+  "discard": "Discard",
+  "nameRequired": "Name is required",
+  "imageTooLarge": "Image is too large. Max 5MB.",
+  "updatePartial": "Profile updated, but image upload failed. Please try again.",
   "sections": {
     "account": "Account"
   },
@@ -36,7 +42,14 @@
     "email": "Email",
     "noBio": "No biography"
   },
+  "permissions": {
+    "title": "Permission denied",
+    "msg": "We need access to your gallery to change your photo."
+  },
   "common": {
-    "error": "Error"
+    "error": "Error",
+    "attention": "Attention",
+    "cancel": "Cancel",
+    "success": "Success"
   }
 }

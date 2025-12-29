@@ -7,12 +7,14 @@ import { GetTeamMembersUseCase } from '../../../domain/use-cases/teams/GetTeamMe
 import { RemoveMemberUseCase } from '../../../domain/use-cases/teams/RemoveMemberUseCase';
 import { teamsRepository } from '../../../app/di'; 
 import { TeamMember } from '../../../domain/entities/TeamMember';
+import { getUserFriendlyErrorMessage } from '@core/utils/errorMapper';
 
 export const useTeamMembers = (teamId: string) => {
   const { t } = useTranslation('teams');
   const { user } = useAuth();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const isProfessor = user?.role === 'professor';
 
@@ -35,16 +37,29 @@ export const useTeamMembers = (teamId: string) => {
       console.error('Error fetching members:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }, [teamId]);
 
   useFocusEffect(
     useCallback(() => {
-      fetchMembers();
+      let isActive = true;
+      const load = async () => {
+        setLoading(true);
+        if (isActive) await fetchMembers();
+      };
+      load();
+      return () => { isActive = false; };
     }, [fetchMembers])
   );
 
+  const onRefresh = async () => {
+      setRefreshing(true);
+      await fetchMembers();
+  };
+
   const handleRemoveMember = (memberId: string, memberName: string) => {
+    if (!isProfessor) return;
     Alert.alert(
       t('members.remove_confirm_title'),
       t('members.remove_confirm_desc', { name: memberName }),
@@ -58,8 +73,13 @@ export const useTeamMembers = (teamId: string) => {
               const useCase = new RemoveMemberUseCase(teamsRepository);
               await useCase.execute(teamId, memberId);
               setMembers(prev => prev.filter(m => m.id !== memberId));
+              Alert.alert(t('common.success'), t('members.remove_success'));
             } catch (error) {
               console.error('Error removing member:', error);
+              const msg = getUserFriendlyErrorMessage(error, t);
+              Alert.alert(t('common.error'), msg);
+              
+              fetchMembers();
             }
           }
         }
@@ -70,6 +90,7 @@ export const useTeamMembers = (teamId: string) => {
   return {
     members,
     loading,
+    refreshing,
     isProfessor,
     handleRemoveMember,
     onRefresh: fetchMembers

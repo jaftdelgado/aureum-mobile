@@ -37,13 +37,18 @@ export const useTeamsList = () => {
         const cachedData = await AsyncStorage.getItem(cacheKey);
         
         if (cachedData) {
-          const { teams: cachedTeams, timestamp } = JSON.parse(cachedData);
-          const now = Date.now();
-          
-          if (now - timestamp < CACHE_DURATION) {
-            setTeams(cachedTeams);
-            setLoading(false);
-            return; 
+          try {
+            const { teams: cachedTeams, timestamp } = JSON.parse(cachedData);
+            const now = Date.now();
+            
+            if (Array.isArray(cachedTeams) && now - timestamp < CACHE_DURATION) {
+              setTeams(cachedTeams);
+              setLoading(false);
+              return; 
+            }
+          } catch (parseError) {
+            console.warn("Cache corrupto, limpiando...", parseError);
+            await AsyncStorage.removeItem(cacheKey);
           }
         }
       }

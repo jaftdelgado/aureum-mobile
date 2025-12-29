@@ -7,10 +7,30 @@ import { mapDTOToTeamMember, mapDTOToUserProfile } from "./profile.mappers";
 import type { UserProfileDTO, CreateProfileRequestDTO, UpdateProfileRequestDTO } from "./profile.dto";
 import { blobToBase64 } from "@core/utils/fileUtils";
 import { ReactNativeFile } from "../../types/http-types";
-import { httpClient, HttpError } from '../http/client';
+import { HttpError } from '../http/client';
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export class ProfileApiRepository implements ProfileRepository {
   
+  private async getAvatarWithRetry(url: string, retries = 3, backoff = 1000): Promise<string | undefined> {
+    for (let i = 0; i < retries; i++) {
+      try {
+        const blob = await client.getBlob(url);
+        const base64 = await blobToBase64(blob);
+        return base64;
+      } catch (error) {
+        if (i === retries - 1) {
+          console.warn(`[ProfileRepository] Falló la carga del avatar tras ${retries} intentos:`, url);
+          return undefined; 
+        }
+        
+        await delay(backoff);
+      }
+    }
+    return undefined;
+  }
+
   async getProfile(authId: string): Promise<UserProfile | null> {
     try {
       const dto = await client.get<UserProfileDTO>(`/api/users/profiles/${authId}`);
@@ -19,11 +39,7 @@ export class ProfileApiRepository implements ProfileRepository {
       let avatarBase64: string | undefined = undefined;
 
       if (dto.profile_pic_id) {
-        try {
-          const blob = await client.getBlob(`/api/users/profiles/${authId}/avatar`);
-          avatarBase64 = await blobToBase64(blob);
-        } catch (imageError) {
-        }
+        avatarBase64 = await this.getAvatarWithRetry(`/api/users/profiles/${authId}/avatar`);
       }
 
       const userProfile = mapDTOToUserProfile(dto);
@@ -49,12 +65,7 @@ export class ProfileApiRepository implements ProfileRepository {
       let avatarBase64: string | undefined = undefined;
 
       if (dto.profile_pic_id) {
-        try {
-          const blob = await client.getBlob(`/api/users/profiles/${userId}/avatar`);
-          avatarBase64 = await blobToBase64(blob);
-        } catch (imageError) {
-          console.warn(`Error loading avatar for user ${userId}`, imageError);
-        }
+        avatarBase64 = await this.getAvatarWithRetry(`/api/users/profiles/${userId}/avatar`);
       }
 
       const member = mapDTOToTeamMember(dto);
@@ -105,12 +116,14 @@ export class ProfileApiRepository implements ProfileRepository {
   async uploadAvatar(authId: string, imageFile: ReactNativeFile): Promise<void> {
     const formData = new FormData();
     
-    formData.append('file', {
+    const filePayload = {
       uri: imageFile.uri,
       name: imageFile.name || `avatar_${authId}.jpg`,
       type: imageFile.type || 'image/jpeg',
-    } as any);
+    };
 
+    formData.append('file', filePayload as unknown as Blob);
+    
     await client.post(`/api/users/profiles/${authId}/avatar`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data', 

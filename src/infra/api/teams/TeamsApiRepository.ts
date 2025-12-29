@@ -1,4 +1,4 @@
-import { httpClient } from '../http/client'; 
+import { httpClient, HttpError } from '../http/client'; 
 import { Team } from '../../../domain/entities/Team';
 import { TeamMember } from '../../../domain/entities/TeamMember';
 import { TeamsRepository } from '../../../domain/repositories/TeamsRepository'; 
@@ -11,13 +11,27 @@ export class TeamsApiRepository implements TeamsRepository {
   private profileRepo = new ProfileApiRepository();
 
   async getProfessorTeams(userId: string): Promise<Team[]> {
-    const response = await httpClient.get<TeamDTO[]>(`/api/courses/professor/${userId}`);
-    return response.map(mapTeamDTOToEntity);
+    try {
+      const response = await httpClient.get<TeamDTO[]>(`/api/courses/professor/${userId}`);
+      return response.map(mapTeamDTOToEntity);
+    } catch (error: any) {
+      if (error instanceof HttpError && error.status === 404) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   async getStudentTeams(userId: string): Promise<Team[]> {
-    const response = await httpClient.get<TeamDTO[]>(`/api/courses/student/${userId}`);
-    return response.map(mapTeamDTOToEntity);
+    try {
+      const response = await httpClient.get<TeamDTO[]>(`/api/courses/student/${userId}`);
+      return response.map(mapTeamDTOToEntity);
+    } catch (error: any) {
+      if (error instanceof HttpError && error.status === 404) {
+        return [];
+      }
+      throw error;
+    }
   }
 
   async getTeamMembers(teamId: string): Promise<TeamMember[]> {
@@ -29,7 +43,16 @@ export class TeamsApiRepository implements TeamsRepository {
           try {
             const profile = await this.profileRepo.getPublicProfile(membership.userid); 
             
-            if (!profile) return null; 
+            if (!profile) {
+                return {
+                    id: membership.userid,
+                    role: 'student',
+                    joinedAt: membership.joinedat,
+                    name: 'Usuario Desconocido', 
+                    email: 'Unknown',
+                    avatarUrl: undefined
+                };
+            } 
 
             return {
               ...profile, 
@@ -46,9 +69,13 @@ export class TeamsApiRepository implements TeamsRepository {
 
       return students.filter((s): s is TeamMember => s !== null);
 
-    } catch (error) {
+    } catch (error: any) {
+      if (error instanceof HttpError && error.status === 404) {
+          console.warn("Curso no encontrado al buscar miembros");
+          return [];
+      }
       console.error("Error cargando estudiantes del equipo:", error);
-      return [];  
+      throw error; 
     }
   }
 
@@ -59,17 +86,27 @@ export class TeamsApiRepository implements TeamsRepository {
     if (request.description) formData.append('description', request.description);
 
     if (request.image) {
-      formData.append('file', {
+      const filePayload = {
         uri: request.image.uri,
-        type: request.image.type,
-        name: request.image.name,
-      } as any); 
+        type: request.image.type || 'image/jpeg',
+        name: request.image.name || 'cover.jpg',
+      };
+  
+      formData.append('file', filePayload as unknown as Blob);
     }
 
-    const response = await httpClient.post<TeamDTO>('/api/courses', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    return mapTeamDTOToEntity(response);
+    try {
+      const response = await httpClient.post<TeamDTO>('/api/courses', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return mapTeamDTOToEntity(response);
+
+    } catch (error: any) {
+      if (error instanceof HttpError && error.status === 413) {
+        throw new Error("IMAGE_TOO_LARGE_SERVER");
+      }
+      throw error;
+    }
   }
 
   async joinTeam(request: JoinTeamRequestDTO): Promise<Team> {
@@ -78,8 +115,20 @@ export class TeamsApiRepository implements TeamsRepository {
       user_id: request.userId   
     };
     
-    const response = await httpClient.post<TeamDTO>('/api/memberships/join', payload);
-    return mapTeamDTOToEntity(response);
+    try {
+      const response = await httpClient.post<TeamDTO>('/api/memberships/join', payload);
+      return mapTeamDTOToEntity(response);
+    } catch (error: any) {
+      if (error instanceof HttpError) {
+        if (error.status === 404) {
+          throw new Error("TEAM_NOT_FOUND"); 
+        }
+        if (error.status === 409) {
+          throw new Error("TEAM_ALREADY_MEMBER"); 
+        }
+      }
+      throw error;
+    }
   }
 
   async removeMember(teamId: string, userId: string): Promise<void> {
