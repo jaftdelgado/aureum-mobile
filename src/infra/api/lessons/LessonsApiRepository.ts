@@ -4,21 +4,21 @@ import type { Lesson } from "@domain/entities/Lesson";
 
 interface LessonDTO {
   id: string;
-  title: string;
-  description: string;
-  thumbnail: string | null;
+  titulo: string;      
+  descripcion: string; 
+  miniatura: string | null; 
 }
 
 export class LessonsApiRepository {
   async getAll(): Promise<Lesson[]> {
     const response = await httpClient.get<LessonDTO[]>("/api/lessons");
     
-    return response.map((item: LessonDTO) => ({
+    return response.map((item) => ({
       id: item.id,
-      title: item.title,
-      description: item.description,
-      thumbnailUrl: item.thumbnail 
-        ? `data:image/jpeg;base64,${item.thumbnail}` 
+      title: item.titulo,       
+      description: item.descripcion, 
+      thumbnailUrl: item.miniatura 
+        ? `data:image/jpeg;base64,${item.miniatura}` 
         : null
     }));
   }

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import Slider from '@react-native-community/slider';
@@ -9,6 +9,7 @@ import { useLessons } from '../hooks/useLessons';
 import { lessonsRepository } from '@app/di';
 import { Lesson } from '@domain/entities/Lesson';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@infra/external/supabase'; 
 
 const formatTime = (millis: number) => {
   const totalSeconds = millis / 1000;
@@ -22,6 +23,8 @@ export default function LessonsScreen() {
   const { lessons, isLoading } = useLessons();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  
   const videoRef = useRef<Video>(null);
   const [status, setStatus] = useState<any>({});
   const [isBuffering, setIsBuffering] = useState(false);
@@ -32,6 +35,14 @@ export default function LessonsScreen() {
   const primaryColor = useThemeColor('primary');
   const secondaryTextColor = useThemeColor('secondaryText');
   const whiteColor = useThemeColor('white');
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setAuthToken(data.session?.access_token || null);
+    };
+    getSession();
+  }, []);
 
   const handleSkip = async (seconds: number) => {
     if (videoRef.current && status.isLoaded) {
@@ -63,7 +74,10 @@ export default function LessonsScreen() {
           <View className="w-full aspect-video bg-black rounded-xl overflow-hidden relative">
             <Video
               ref={videoRef}
-              source={{ uri: lessonsRepository.getVideoUrl(selectedLesson.id) }}
+              source={{ 
+                uri: lessonsRepository.getVideoUrl(selectedLesson.id),
+                headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined
+              }}
               resizeMode={ResizeMode.CONTAIN}
               shouldPlay
               onPlaybackStatusUpdate={(s) => setStatus(() => s)}
@@ -71,22 +85,25 @@ export default function LessonsScreen() {
               onReadyForDisplay={() => setIsBuffering(false)}
               className="w-full h-full"
             />
+            
             {(isBuffering || (status.isLoaded && status.isBuffering)) && (
               <View className="absolute inset-0 items-center justify-center bg-black/40 z-10">
                 <ActivityIndicator size="large" color={whiteColor} />
-                <Text color="secondary" type="caption1" weight="medium" className="text-white mt-2">
+                <Text type="caption1" weight="medium" className="mt-2" style={{ color: whiteColor }}>
                   {t('loading_video')}
                 </Text>
               </View>
             )}
           </View>
 
+          {/* Controles del Reproductor */}
           <View 
             style={{ backgroundColor: cardColor, borderColor }} 
             className="p-3 rounded-b-xl border-x border-b"
           >
+            {/* Barra de progreso */}
             <View className="flex-row items-center gap-2 mb-2">
-              <Text color="secondary" type="caption2" className="w-8">
+              <Text color="secondary" type="caption2" className="w-10">
                 {formatTime(status.positionMillis || 0)}
               </Text>
               <Slider
@@ -101,11 +118,12 @@ export default function LessonsScreen() {
                 maximumTrackTintColor={borderColor}
                 thumbTintColor={primaryColor}
               />
-              <Text color="secondary" type="caption2" className="w-8">
+              <Text color="secondary" type="caption2" className="w-10">
                 {formatTime(status.durationMillis || 0)}
               </Text>
             </View>
 
+            {/* Botones de acción */}
             <View className="flex-row justify-between items-center px-4">
               <TouchableOpacity onPress={handleFullscreen}>
                 <MaterialIcons name="fullscreen" size={28} color={secondaryTextColor} />
@@ -147,6 +165,7 @@ export default function LessonsScreen() {
         </View>
       )}
 
+      {/* Listado de lecciones */}
       <Text type="title3" weight="bold" className="mb-4">{t('available_lessons')}</Text>
       
       <FlatList
@@ -164,7 +183,11 @@ export default function LessonsScreen() {
               className="flex-row p-3 mb-3 rounded-lg border"
             >
               {item.thumbnailUrl && (
-                <Image source={{ uri: item.thumbnailUrl }} className="w-16 h-16 rounded bg-zinc-800" />
+                <Image 
+                  source={{ uri: item.thumbnailUrl }} 
+                  className="w-16 h-16 rounded bg-zinc-800" 
+                  resizeMode="cover"
+                />
               )}
               <View className="flex-1 ml-3 justify-center">
                 <Text weight="bold" numberOfLines={1}>{item.title}</Text>
