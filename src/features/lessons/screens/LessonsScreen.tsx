@@ -2,12 +2,13 @@ import React, { useState, useRef } from 'react';
 import { View, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 import Slider from '@react-native-community/slider';
-import { MaterialIcons } from '@expo/vector-icons'; 
-import { Text } from '@core/ui/Text';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Text } from '@core/ui/Text'; 
 import { useThemeColor } from '@core/design/useThemeColor'; 
 import { useLessons } from '../hooks/useLessons';
 import { lessonsRepository } from '@app/di';
 import { Lesson } from '@domain/entities/Lesson';
+import { useTranslation } from 'react-i18next';
 
 const formatTime = (millis: number) => {
   const totalSeconds = millis / 1000;
@@ -17,6 +18,7 @@ const formatTime = (millis: number) => {
 };
 
 export default function LessonsScreen() {
+  const { t } = useTranslation('lessons');
   const { lessons, isLoading } = useLessons();
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   
@@ -24,9 +26,12 @@ export default function LessonsScreen() {
   const [status, setStatus] = useState<any>({});
   const [isBuffering, setIsBuffering] = useState(false);
 
-  const iconGray = useThemeColor('secondaryText'); 
-  const iconWhite = useThemeColor('white');
+  const backgroundColor = useThemeColor('bg');
+  const cardColor = useThemeColor('card');
+  const borderColor = useThemeColor('border');
   const primaryColor = useThemeColor('primary');
+  const secondaryTextColor = useThemeColor('secondaryText');
+  const whiteColor = useThemeColor('white');
 
   const handleSkip = async (seconds: number) => {
     if (videoRef.current && status.isLoaded) {
@@ -45,14 +50,14 @@ export default function LessonsScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-black">
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor }}>
         <ActivityIndicator size="large" color={primaryColor} />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-zinc-950 p-4">
+    <View style={{ flex: 1, backgroundColor }} className="p-4">
       {selectedLesson && (
         <View className="w-full mb-6">
           <View className="w-full aspect-video bg-black rounded-xl overflow-hidden relative">
@@ -66,21 +71,24 @@ export default function LessonsScreen() {
               onReadyForDisplay={() => setIsBuffering(false)}
               className="w-full h-full"
             />
-
-            {/* Pantalla de carga */}
             {(isBuffering || (status.isLoaded && status.isBuffering)) && (
               <View className="absolute inset-0 items-center justify-center bg-black/40 z-10">
-                <ActivityIndicator size="large" color={iconWhite} />
-                <Text className="text-white text-xs mt-2 font-medium">Cargando video...</Text>
+                <ActivityIndicator size="large" color={whiteColor} />
+                <Text color="secondary" type="caption1" weight="medium" className="text-white mt-2">
+                  {t('loading_video')}
+                </Text>
               </View>
             )}
           </View>
 
-          {/* Controles del reproductor */}
-          <View className="bg-zinc-900 p-3 rounded-b-xl border-x border-b border-zinc-800">
-            {/* Barra de progreso interactiva */}
+          <View 
+            style={{ backgroundColor: cardColor, borderColor }} 
+            className="p-3 rounded-b-xl border-x border-b"
+          >
             <View className="flex-row items-center gap-2 mb-2">
-              <Text className="text-[10px] text-zinc-400 w-8">{formatTime(status.positionMillis || 0)}</Text>
+              <Text color="secondary" type="caption2" className="w-8">
+                {formatTime(status.positionMillis || 0)}
+              </Text>
               <Slider
                 className="flex-1 h-10"
                 minimumValue={0}
@@ -90,29 +98,28 @@ export default function LessonsScreen() {
                   if (videoRef.current) await videoRef.current.setPositionAsync(value);
                 }}
                 minimumTrackTintColor={primaryColor}
-                maximumTrackTintColor="#3f3f46"
+                maximumTrackTintColor={borderColor}
                 thumbTintColor={primaryColor}
               />
-              <Text className="text-[10px] text-zinc-400 w-8">{formatTime(status.durationMillis || 0)}</Text>
+              <Text color="secondary" type="caption2" className="w-8">
+                {formatTime(status.durationMillis || 0)}
+              </Text>
             </View>
 
-            {/* Botones de acción principales */}
             <View className="flex-row justify-between items-center px-4">
-              {/* Botón Fullscreen */}
               <TouchableOpacity onPress={handleFullscreen}>
-                <MaterialIcons name="fullscreen" size={28} color={iconGray} />
+                <MaterialIcons name="fullscreen" size={28} color={secondaryTextColor} />
               </TouchableOpacity>
 
-              {/* Controles centrales */}
               <View className="flex-row items-center gap-6">
                 <TouchableOpacity onPress={() => handleSkip(-10)}>
-                  <MaterialIcons name="replay-10" size={30} color={iconWhite} />
+                  <MaterialIcons name="replay-10" size={30} color={secondaryTextColor} />
                 </TouchableOpacity>
                 
                 <TouchableOpacity 
                   onPress={() => status.isPlaying ? videoRef.current?.pauseAsync() : videoRef.current?.playAsync()}
-                  className="bg-indigo-500 p-3 rounded-full"
                   style={{ backgroundColor: primaryColor }}
+                  className="p-3 rounded-full"
                 >
                   <MaterialIcons 
                     name={status.isPlaying ? "pause" : "play-arrow"} 
@@ -122,18 +129,17 @@ export default function LessonsScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => handleSkip(10)}>
-                  <MaterialIcons name="forward-10" size={30} color={iconWhite} />
+                  <MaterialIcons name="forward-10" size={30} color={secondaryTextColor} />
                 </TouchableOpacity>
               </View>
 
-              {/* Botón mute */}
               <TouchableOpacity onPress={async () => {
                   if (videoRef.current) await videoRef.current.setIsMutedAsync(!status.isMuted);
               }}>
                 <MaterialIcons 
                   name={status.isMuted ? "volume-off" : "volume-up"} 
                   size={28} 
-                  color={iconGray} 
+                  color={secondaryTextColor} 
                 />
               </TouchableOpacity>
             </View>
@@ -141,25 +147,34 @@ export default function LessonsScreen() {
         </View>
       )}
 
-      {/* Lista de lecciones */}
-      <Text className="text-xl font-bold text-white mb-4">Mis Lecciones</Text>
+      <Text type="title3" weight="bold" className="mb-4">{t('available_lessons')}</Text>
+      
       <FlatList
         data={lessons}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            onPress={() => setSelectedLesson(item)}
-            className={`flex-row p-3 mb-3 rounded-lg border ${selectedLesson?.id === item.id ? 'bg-indigo-500/10 border-indigo-500' : 'bg-zinc-900 border-zinc-800'}`}
-          >
-            {item.thumbnailUrl && (
-              <Image source={{ uri: item.thumbnailUrl }} className="w-16 h-16 rounded bg-zinc-800" />
-            )}
-            <View className="flex-1 ml-3 justify-center">
-              <Text className="text-white font-bold" numberOfLines={1}>{item.title}</Text>
-              <Text className="text-zinc-500 text-xs mt-1" numberOfLines={2}>{item.description}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => {
+          const isSelected = selectedLesson?.id === item.id;
+          return (
+            <TouchableOpacity 
+              onPress={() => setSelectedLesson(item)}
+              style={{ 
+                backgroundColor: cardColor, 
+                borderColor: isSelected ? primaryColor : borderColor 
+              }}
+              className="flex-row p-3 mb-3 rounded-lg border"
+            >
+              {item.thumbnailUrl && (
+                <Image source={{ uri: item.thumbnailUrl }} className="w-16 h-16 rounded bg-zinc-800" />
+              )}
+              <View className="flex-1 ml-3 justify-center">
+                <Text weight="bold" numberOfLines={1}>{item.title}</Text>
+                <Text color="secondary" type="caption1" className="mt-1" numberOfLines={2}>
+                  {item.description}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );
