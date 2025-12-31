@@ -2,6 +2,7 @@ import { AuthApiRepository } from '../infra/external/auth/AuthApiRepository';
 import { ProfileApiRepository } from '../infra/api/users/ProfileApiRepository';
 import { TeamsApiRepository } from '../infra/api/teams/TeamsApiRepository';
 import { AssetApiRepository } from '../infra/api/assets/AssetApiRepository';
+import { LessonsApiRepository } from '../infra/api/lessons/LessonsApiRepository';
 
 import { LoginUseCase } from '../domain/use-cases/auth/LoginUseCase';
 import { RegisterUseCase } from '../domain/use-cases/auth/RegisterUseCase';
@@ -20,11 +21,13 @@ import { JoinTeamUseCase } from '../domain/use-cases/teams/JoinTeamUseCase';
 import { GetTeamMembersUseCase } from '../domain/use-cases/teams/GetTeamMembersUseCase';
 import { RemoveMemberUseCase } from '../domain/use-cases/teams/RemoveMemberUseCase';
 import { UpdateProfileUseCase } from '../domain/use-cases/profile/UpdateProfileUseCase';
+import { GetLessonsUseCase } from '../domain/use-cases/lessons/GetLessonsUseCase';
 
 export const authRepository = new AuthApiRepository();
 export const profileRepository = new ProfileApiRepository();
 export const teamsRepository = new TeamsApiRepository();
 export const assetRepository = new AssetApiRepository();
+export const lessonsRepository = new LessonsApiRepository();
 
 export const loginUseCase = new LoginUseCase(authRepository, profileRepository);
 export const registerUseCase = new RegisterUseCase(authRepository, profileRepository);
@@ -44,3 +47,5 @@ export const getStudentTeamsUseCase = new GetStudentTeamsUseCase(teamsRepository
 export const joinTeamUseCase = new JoinTeamUseCase(teamsRepository);
 export const getTeamMembersUseCase = new GetTeamMembersUseCase(teamsRepository);
 export const removeMemberUseCase = new RemoveMemberUseCase(teamsRepository);
+
+export const getLessonsUseCase = new GetLessonsUseCase(lessonsRepository);
