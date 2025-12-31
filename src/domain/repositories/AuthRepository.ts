@@ -10,6 +10,7 @@ export interface AuthRepository {
   register(data: RegisterData): Promise<string>;
   checkSessionAlive(): Promise<boolean>;
   getPendingSocialUser(): Promise<SocialUser | null>;
+  loginWithGoogle(): Promise<void>;
   onAuthStateChange(callback: (user: LoggedInUser | null) => void): () => void;
   deleteAuthUser(): Promise<void>;
   signInWithIdToken(token: string): Promise<void>;

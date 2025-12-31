@@ -1,6 +1,7 @@
-import type { LoggedInUserDTO, UserProfileDTO } from "./auth.dto";
+import type { LoggedInUserDTO } from "./auth.dto";
 import type { LoggedInUser } from "../../../domain/entities/LoggedInUser"; 
 import type { User } from "@supabase/supabase-js";
+import { UserProfileDTO } from "@infra/api/users/profile.dto";
 
 export const mapUserDTOToLoggedInUser = (
   dto: LoggedInUserDTO,

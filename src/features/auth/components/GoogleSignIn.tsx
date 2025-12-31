@@ -7,13 +7,13 @@ import { useGoogleSignIn } from '../hooks/useGoogleSignIn';
 import { useTheme } from '@app/providers/ThemeProvider';
 
 export const GoogleSignIn = () => {
-  const { handleGoogleSignIn, loading } = useGoogleSignIn();
+  const { handleGoogleLogin, loading } = useGoogleSignIn();
   const { isDark } = useTheme();
   const { t } = useTranslation('auth'); 
 
   return (
     <TouchableOpacity 
-      onPress={handleGoogleSignIn}
+      onPress={handleGoogleLogin}
       disabled={loading}
       className={`flex-row items-center justify-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl py-3.5 px-4 shadow-sm active:bg-gray-50 dark:active:bg-slate-700 ${loading ? 'opacity-50' : ''}`}
     >

@@ -3,7 +3,7 @@ import type { AuthRepository } from '../../../domain/repositories/AuthRepository
 import type { LoggedInUser } from '../../../domain/entities/LoggedInUser';
 import type { SocialUser } from '../../../domain/entities/SocialUser';
 import type { RegisterData } from '../../../domain/entities/RegisterData';
-import { mapUserDTOToLoggedInUser, mapSessionToUser } from './auth.mappers';
+import { mapSessionToUser } from './auth.mappers';
 import * as Linking from 'expo-linking';
 
 export class AuthApiRepository implements AuthRepository {
@@ -14,6 +14,27 @@ export class AuthApiRepository implements AuthRepository {
     if (!data.user) throw new Error("No se pudo iniciar sesión");
 
     return mapSessionToUser(data.user)
+  }
+
+  async loginWithGoogle(): Promise<void> {
+    const redirectUrl = Linking.createURL('auth/callback'); 
+    console.log('⚠️ URL de Redirección:', redirectUrl);
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { 
+        redirectTo: redirectUrl,
+        skipBrowserRedirect: true,
+        queryParams: {
+          prompt: 'select_account', 
+          access_type: 'offline'
+        }
+      },
+    });
+
+    if (error) throw new Error(error.message);
+    if (data?.url) {
+      await Linking.openURL(data.url);
+    }
   }
 
   async logout(): Promise<void> {

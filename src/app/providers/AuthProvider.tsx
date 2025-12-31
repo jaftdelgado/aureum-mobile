@@ -15,7 +15,6 @@ import {
   enrichSessionUserUseCase,
   checkSessionAliveUseCase 
 } from '../di';
-import { is } from 'zod/v4/locales';
 
 
 const KEYS_TO_PRESERVE = [
@@ -41,6 +40,7 @@ interface AuthContextType {
   login: (data: { email: string, password: string }) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   refreshSession: () => Promise<void>;
   googleLogin: (token: string) => Promise<void>;
   logoutReason: string | null;
@@ -248,6 +248,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const loginWithGoogle = async () => {
+      try {
+          await authRepository.loginWithGoogle();
+      } catch (error) {
+          console.error("Google login error:", error);
+      }
+  };
+
   const clearLogoutReason = () => setLogoutReason(null);
 
   return (
@@ -260,6 +268,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout: handleLogout, 
         refreshSession, 
         googleLogin,
+        loginWithGoogle,
         logoutReason,
         clearLogoutReason
       }}
