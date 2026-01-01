@@ -18,7 +18,6 @@ export class AuthApiRepository implements AuthRepository {
 
   async loginWithGoogle(): Promise<void> {
     const redirectUrl = Linking.createURL('auth/callback'); 
-    console.log('⚠️ URL de Redirección:', redirectUrl);
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { 

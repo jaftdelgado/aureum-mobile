@@ -1,7 +1,6 @@
 import type { TeamDTO } from "@infra/api/teams/team.dto";
 import type { Team } from "@domain/entities/Team";
 import { ENV } from "@app/config/env";
-import type { TeamMember } from "@domain/entities/TeamMember";
 
 export interface TeamMemberDomain {
   id: string;
