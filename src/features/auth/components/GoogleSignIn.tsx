@@ -15,7 +15,8 @@ export const GoogleSignIn = () => {
     <TouchableOpacity 
       onPress={handleGoogleLogin}
       disabled={loading}
-      className={`flex-row items-center justify-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl py-3.5 px-4 shadow-sm active:bg-gray-50 dark:active:bg-slate-700 ${loading ? 'opacity-50' : ''}`}
+      className="flex-row items-center justify-center bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl py-3.5 px-4 shadow-sm active:bg-gray-50 dark:active:bg-slate-700"
+      style={{ opacity: loading ? 0.5 : 1 }}
     >
       {loading ? (
         <ActivityIndicator size="small" color={isDark ? "#FFFFFF" : "#000000"} />
