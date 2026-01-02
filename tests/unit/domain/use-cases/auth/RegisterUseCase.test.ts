@@ -52,7 +52,8 @@ describe('RegisterUseCase', () => {
     mockProfileRepo.createProfile.mockRejectedValue(profileError);
     mockAuthRepo.deleteAuthUser.mockResolvedValue();
 
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
 
     await expect(useCase.execute(registerData)).rejects.toThrow(profileError);
 
@@ -60,7 +61,8 @@ describe('RegisterUseCase', () => {
     expect(mockProfileRepo.createProfile).toHaveBeenCalledTimes(1);
     expect(mockAuthRepo.deleteAuthUser).toHaveBeenCalledTimes(1); 
 
-    consoleSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+    consoleLogSpy.mockRestore();
   });
 
   it('should throw original error even if rollback fails (Catastrophic failure)', async () => {

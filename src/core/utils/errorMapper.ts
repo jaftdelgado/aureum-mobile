@@ -2,7 +2,7 @@ import { HttpError } from '../../infra/api/http/client';
 
 export const getUserFriendlyErrorMessage = (error: any, t: (key: string) => string): string => {
   if (error instanceof HttpError) {
-    if (error.status === 408, error.status === 504) {
+    if (error.status === 408 || error.status === 504) {
       return t('common.errors.timeout'); 
     }
     if (error.status >= 500) {
