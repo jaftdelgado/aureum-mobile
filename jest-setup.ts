@@ -7,6 +7,12 @@ jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper', () => ({
 
 const originalConsoleError = console.error;
 console.error = (...args) => {
-  if (/Warning:/.test(args[0])) return;
+  const message = args[0];
+
+  if (/Warning:/.test(message)) return;
+
+  if (typeof message === 'string' && message.includes('An update to HookContainer')) return;
+  if (typeof message === 'string' && message.includes('was not wrapped in act(...)')) return;
+
   originalConsoleError(...args);
 };

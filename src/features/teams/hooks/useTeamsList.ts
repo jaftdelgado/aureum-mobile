@@ -88,7 +88,7 @@ export const useTeamsList = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchTeams();
+    await fetchTeams(true);
     setRefreshing(false);
   };
 

@@ -117,7 +117,7 @@ export const useSignUp = ({ isGoogleFlow, onSuccess, onBack }: UseSignUpProps) =
     const isLastStep = (isGoogleFlow && step === 2) || step === 3;
 
     if (isLastStep) {
-      handleSubmit(onSubmit, (formErrors) => {
+      await handleSubmit(onSubmit, (formErrors) => {
         if (isGoogleFlow && (formErrors.firstName || formErrors.lastName)) {
            Alert.alert(t("common.attention"), t("signup.errors.checkName"));
            setStep(1);
