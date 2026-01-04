@@ -73,9 +73,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const enrichedUser = await enrichSessionUserUseCase.execute();
       setUser(enrichedUser);
-    } catch (error) {
+    } catch (error: any) {
       console.log('Session refresh error:', error);
-      setUser(null);
+      if (error.status === 401) {
+        setUser(null);
+      }
     } finally {
       setIsSplashLoading(false);
     }
@@ -109,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const allKeys = await AsyncStorage.getAllKeys();
       
-      const keysToRemove = allKeys.filter(key => !KEYS_TO_PRESERVE.includes(key));
+      const keysToRemove = allKeys.filter(key => !KEYS_TO_PRESERVE.includes(key)&& !key.startsWith('sb-'));
       
       if (keysToRemove.length > 0) {
         await AsyncStorage.multiRemove(keysToRemove);
@@ -119,7 +121,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error('Error limpiando datos de usuario:', error);
     }
   };
-
+/*
   useEffect(() => {
     const unsubscribeNet = NetInfo.addEventListener(state => {
       if (state.isConnected === false && user) {
@@ -133,6 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       unsubscribeNet();
     };
   }, [user]);
+  */
 
   useEffect(() => {
     const unsubscribe = authRepository.onAuthStateChange(async (authUser) => {
