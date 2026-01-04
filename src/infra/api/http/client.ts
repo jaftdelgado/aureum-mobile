@@ -26,7 +26,7 @@ const triggerServerDisconnect = () => {
 
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: GATEWAY_URL,
-  timeout: 15000,
+  timeout: 45000,
   headers: {
     'Content-Type': 'application/json',
   },
