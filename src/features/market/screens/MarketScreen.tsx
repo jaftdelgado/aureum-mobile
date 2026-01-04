@@ -26,11 +26,11 @@ export default function MarketScreen() {
     isRefetching,
   } = useTeamAssets(teamId);
 
-  const handleSettings = () => console.log('Settings pressed');
-  const handlePlay = () => console.log('Play pressed');
+  const handleSettings = () => { };
+  const handlePlay = () => { };
 
-  const handleSell = () => console.log('Vender pressed');
-  const handleBuy = () => console.log('Comprar pressed');
+  const handleSell = () => { };
+  const handleBuy = () => { };
 
   const handlePressAsset = (id: string) => {
     setSelectedIds((prev) => {

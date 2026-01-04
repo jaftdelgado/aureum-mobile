@@ -12,7 +12,6 @@ export default function TeamAssetsScreen() {
   const route = useRoute<RouteProp<AssetsStackParamList, 'TeamAssets'>>();
 
   const { teamId } = route.params;
-  console.log('TeamAssetsScreen cargado con ID:', teamId);
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
