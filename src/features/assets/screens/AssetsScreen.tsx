@@ -21,8 +21,6 @@ export default function AssetsScreen() {
       }
       return [...prev, id];
     });
-
-    console.log('Tapped asset:', id);
   };
 
   return (

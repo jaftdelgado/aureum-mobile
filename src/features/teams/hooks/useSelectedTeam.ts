@@ -4,7 +4,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useRoute, useNavigation, RouteProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { SelectedTeamStackParamList } from '../../../app/navigation/teams/SelectedTeamNavigator'; 
+import { SelectedTeamStackParamList } from '../../../app/navigation/teams/SelectedTeamNavigator';
 
 export const useSelectedTeam = () => {
   const { t } = useTranslation('teams');
@@ -14,7 +14,7 @@ export const useSelectedTeam = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const team = route.params?.team;
-  
+
   useEffect(() => {
     if (!team || !team.public_id) {
       Alert.alert(t('common.error'), t('team.load_error', 'No se pudo cargar la información del curso.'), [
@@ -39,9 +39,9 @@ export const useSelectedTeam = () => {
   };
 
   const handleAssets = () => {
-    navigation.navigate('AssetsRoot' as any, { 
-      screen: 'Assets', 
-      params: { teamId } 
+    navigation.navigate('AssetsRoot' as any, {
+      screen: 'TeamAssets',
+      params: { teamId }
     });
   };
 
@@ -58,7 +58,7 @@ export const useSelectedTeam = () => {
 
   const handleSettings = () => console.log('Settings for:', teamId);
 
-  const handleMarket = () => navigation.navigate('MarketRoot');
+  const handleMarket = () => navigation.navigate('MarketRoot', { teamId });
   const handleTransactions = () => navigation.navigate('TransactionsRoot');
 
   return {
@@ -67,15 +67,15 @@ export const useSelectedTeam = () => {
     team,
     teamName,
     teamDescription,
-    accessCode,     
-    isCopied,      
+    accessCode,
+    isCopied,
     handleCopyCode,
     handleOverview,
     handleMembers,
     handleAssets,
     handleSettings,
-    handleMarket,     
-    handleTransactions,  
+    handleMarket,
+    handleTransactions,
     handleBack
   };
 };

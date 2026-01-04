@@ -1,16 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 
 import CollapsibleHeaderLayout from '@app/components/screen-header/CollapsibleHeaderLayout';
 import { Text } from '@core/ui/Text';
-import { Button } from '@core/ui/Button'; // Asegúrate de que la ruta sea correcta
+import { Button } from '@core/ui/Button';
 import { MarketHeaderActions } from '../components/MarketHeaderActions';
+import { useTeamAssets } from '../hooks/useTeamAssets';
+import { TeamAssetsList } from '../components/TeamAssetsList';
+import { MarketStackParamList } from '../navigation/MarketNavigator';
 
 export default function MarketScreen() {
   const { t } = useTranslation('market');
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<MarketStackParamList, 'Market'>>();
+
+  const { teamId } = route.params;
+
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const {
+    assets: teamAssets,
+    refetch,
+    isRefetching,
+  } = useTeamAssets(teamId);
 
   const handleSettings = () => console.log('Settings pressed');
   const handlePlay = () => console.log('Play pressed');
@@ -18,19 +32,27 @@ export default function MarketScreen() {
   const handleSell = () => console.log('Vender pressed');
   const handleBuy = () => console.log('Comprar pressed');
 
+  const handlePressAsset = (id: string) => {
+    setSelectedIds((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((assetId) => assetId !== id);
+      }
+      return [...prev, id];
+    });
+  };
+
   return (
     <CollapsibleHeaderLayout
       title={t('title')}
       onBack={() => navigation.goBack()}
       rightAction={
         <MarketHeaderActions onSettingsPress={handleSettings} onPlayPress={handlePlay} />
-      }>
-      <View className="gap-6 p-4">
-        {/* Mensaje de bienvenida */}
+      }
+    >
+      <View className="gap-6">
         <Text className="text-center text-secondaryText">{t('welcome_message')}</Text>
 
-        {/* Acciones principales: Dos columnas */}
-        <View className="flex-row gap-3">
+        <View className="flex-row gap-3 p-4">
           <View className="flex-1">
             <Button
               title={t('sell', 'Vender')}
@@ -44,7 +66,16 @@ export default function MarketScreen() {
           </View>
         </View>
 
-        {/* Espacio para el resto del contenido del Market */}
+        <View>
+          <Text className="text-lg font-bold text-primaryText px-4 mb-2">
+            {t('market-assets', 'Activos del mercado')}
+          </Text>
+          <TeamAssetsList
+            data={teamAssets ?? []}
+            selectedAssetIds={selectedIds}
+            onPressAsset={handlePressAsset}
+          />
+        </View>
       </View>
     </CollapsibleHeaderLayout>
   );

@@ -3,13 +3,14 @@ import { UserProfile } from '../../domain/entities/UserProfile';
 import { Team } from '@domain/entities/Team';
 
 export type SettingsStackParamList = {
-  SettingsRoot: undefined; 
+  SettingsRoot: undefined;
   Profile: undefined;
-  EditProfile: { profile: UserProfile };    
+  EditProfile: { profile: UserProfile };
 };
 
 export type AssetsStackParamList = {
   Assets: undefined;
+  TeamAssets: { teamId: string };
 };
 
 export type SelectedTeamStackParamList = {
@@ -34,7 +35,7 @@ export type TeamsStackParamList = {
 
 export type TabParamList = {
   Home: undefined;
-  Teams: NavigatorScreenParams<TeamsStackParamList>; 
+  Teams: NavigatorScreenParams<TeamsStackParamList>;
   Lessons: undefined;
   Settings: NavigatorScreenParams<SettingsStackParamList>;
 };

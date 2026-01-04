@@ -9,13 +9,13 @@ import { TransactionsNavigator } from '@features/transactions/navigation/Transac
 import { Team } from '@domain/entities/Team';
 
 export type SelectedTeamStackParamList = {
-  SelectedTeam: { team: Team }; 
-  MarketRoot: undefined;
+  SelectedTeam: { team: Team };
+  MarketRoot: { teamId: string };
   AssetsRoot: undefined;
   TransactionsRoot: undefined;
-  MembersRoot: { 
+  MembersRoot: {
     screen: string;
-    params: { teamId: String; teamName: string} 
+    params: { teamId: String; teamName: string }
   };
 };
 
@@ -25,10 +25,10 @@ export function SelectedTeamNavigator({ route }: any) {
   const { teamId } = route.params;
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen 
-        name="SelectedTeam" 
-        component={SelectedTeamScreen} 
-        initialParams={route.params} 
+      <Stack.Screen
+        name="SelectedTeam"
+        component={SelectedTeamScreen}
+        initialParams={route.params}
       />
       <Stack.Screen name="MembersRoot" component={MembersNavigator} />
       <Stack.Screen name="MarketRoot" component={MarketNavigator} />

@@ -7,7 +7,6 @@ import {
   SettingsIcon,
   PortfolioIcon,
   MarketIcon,
-  OverviewIcon,
   MembersIcon,
   MovementsIcon,
 } from '@features/teams/resources/svg/index';
