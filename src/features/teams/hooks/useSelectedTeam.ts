@@ -44,8 +44,14 @@ export const useSelectedTeam = () => {
       params: { teamId }
     });
   };
+  
 
-  const handleOverview = () => console.log('Overview for:', teamId);
+  const handleOverview = () => {
+  if (teamId) {
+    console.log("Navegando a Portfolio con ID:", teamId);
+    navigation.navigate('Portfolio', { team }as any); 
+  } 
+};
 
   const handleMembers = () => {
     if (team) {

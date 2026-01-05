@@ -7,12 +7,14 @@ import { MarketNavigator } from '@features/market/navigation/MarketNavigator';
 import { MembersNavigator } from '@features/teams/navigation/MembersNavigator';
 import { TransactionsNavigator } from '@features/transactions/navigation/TransactionsNavigator';
 import { Team } from '@domain/entities/Team';
+import { PortfolioScreen } from '@features/portfolio/screens/PortfolioScreen';
 
 export type SelectedTeamStackParamList = {
   SelectedTeam: { team: Team };
   MarketRoot: { teamId: string };
   AssetsRoot: undefined;
   TransactionsRoot: undefined;
+  Portfolio: { team: Team };
   MembersRoot: {
     screen: string;
     params: { teamId: String; teamName: string }
@@ -34,6 +36,7 @@ export function SelectedTeamNavigator({ route }: any) {
       <Stack.Screen name="MarketRoot" component={MarketNavigator} />
       <Stack.Screen name="AssetsRoot" component={AssetsNavigator} />
       <Stack.Screen name="TransactionsRoot" component={TransactionsNavigator} />
+      <Stack.Screen name="Portfolio" component={PortfolioScreen} />
     </Stack.Navigator>
   );
 }
