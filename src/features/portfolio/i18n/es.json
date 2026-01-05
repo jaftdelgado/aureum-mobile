@@ -1,0 +1,10 @@
+{
+  "title": "Portafolio",
+  "description": "Resumen de tus activos y rendimiento",
+  "total_balance": "Balance Total Estimado",
+  "your_assets": "Tus Activos",
+  "empty": "No tienes activos en este equipo aún",
+  "avg_price": "P. Promedio",
+  "current_price": "P. Actual",
+  "pnl": "Rendimiento"
+}

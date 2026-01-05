@@ -16,7 +16,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ...(config.plugins || []), 
     'expo-web-browser',
     'expo-secure-store',
-    'expo-font',         
+    'expo-font', 
+    "expo-video",        
     'expo-localization', 
     [
       'expo-image-picker',

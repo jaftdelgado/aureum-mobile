@@ -3,7 +3,7 @@ import Svg, { Path } from 'react-native-svg';
 import type { SvgProps } from 'react-native-svg';
 
 export const ChevronLeft: React.FC<SvgProps> = (props) => {
-  const { width = 24, height = 24, stroke = '#262626', strokeWidth = 1.6, ...rest } = props;
+  const { width = 24, height = 24, stroke = '#262626', strokeWidth = 1, ...rest } = props;
 
   return (
     <Svg width={width} height={height} viewBox="0 0 12 12" fill="none" {...rest}>

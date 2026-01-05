@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
 import { Icon } from '@core/ui/Icon';
@@ -20,7 +20,7 @@ const iconButtonStyles = cva('items-center justify-center active:opacity-80 over
     variant: {
       primary: '',
       secondary: '',
-      thirdy: '',
+      thirdy: 'border', // Se asegura que el borde sea visible en la variante glass
       ghost: 'bg-transparent',
     },
     rounded: {
@@ -112,7 +112,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
         opacity: disabled ? 0.4 : 1,
       }}>
       {safeVariant === 'thirdy' ? (
-        <GlassContainer intensity={60} style={StyleSheet.absoluteFill}>
+        <GlassContainer intensity={40} style={StyleSheet.absoluteFill}>
           {renderContent()}
         </GlassContainer>
       ) : (

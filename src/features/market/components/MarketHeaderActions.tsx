@@ -12,8 +12,8 @@ interface MarketHeaderActionsProps {
 export const MarketHeaderActions = ({ onSettingsPress, onPlayPress }: MarketHeaderActionsProps) => {
   return (
     <ButtonGroup showSeparators className="mr-2">
-      <IconButton icon={SettingsIcon} variant="thirdy" size="md" onPress={onSettingsPress} />
-      <IconButton icon={PlayIcon} variant="thirdy" size="md" onPress={onPlayPress} />
+      <IconButton icon={SettingsIcon} variant="thirdy" onPress={onSettingsPress} />
+      <IconButton icon={PlayIcon} variant="thirdy" onPress={onPlayPress} />
     </ButtonGroup>
   );
 };

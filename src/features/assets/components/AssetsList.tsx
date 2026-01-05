@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 import { Avatar } from '@core/ui/Avatar';
 import { ListItem } from '@core/ui/ListItem';
 import { Icon } from '@core/ui/Icon';
-import { Image } from 'expo-image';
 
 import { AddIcon } from '../resources/svg/AddIcon';
 import { SuccessIcon } from '../resources/svg/SuccessIcon';
@@ -30,13 +29,7 @@ export const AssetsList: React.FC<AssetsListProps> = ({
   onPressAsset,
   addedAssetIds = [],
 }) => {
-  useEffect(() => {
-    data.forEach((item) => {
-      if (item.assetPicUrl) {
-        Image.prefetch(item.assetPicUrl);
-      }
-    });
-  }, [data]);
+  // Se eliminó el useEffect con Image.prefetch para optimizar el rendimiento
 
   return (
     <FlatList
@@ -59,9 +52,9 @@ export const AssetsList: React.FC<AssetsListProps> = ({
             leftElement={<Avatar source={item.assetPicUrl} size="md" mode="square" />}
             rightElement={
               isAdded ? (
-                <Icon component={SuccessIcon} color="secondaryText" size={20} />
+                <Icon component={SuccessIcon} color="primaryText" size={28} />
               ) : (
-                <Icon component={AddIcon} color="primaryText" size={20} />
+                <Icon component={AddIcon} color="secondaryText" size={28} />
               )
             }
           />

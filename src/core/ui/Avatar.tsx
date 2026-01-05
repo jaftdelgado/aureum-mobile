@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ViewStyle, StyleProp } from 'react-native'; 
+import { View, Text, ViewStyle, StyleProp } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
 import { Image, ImageSource } from 'expo-image';
@@ -24,10 +24,10 @@ const avatarStyles = cva('overflow-hidden items-center justify-center bg-gray-30
 });
 
 export interface AvatarProps extends VariantProps<typeof avatarStyles> {
-  source?: string | ImageSource | null; 
+  source?: string | ImageSource | null;
 
-  style?: StyleProp<ViewStyle>; 
-  
+  style?: StyleProp<ViewStyle>;
+
   placeholderText?: string;
   placeholder?: string | number;
   className?: string;
@@ -57,13 +57,14 @@ export const Avatar: React.FC<AvatarProps> = ({
     <View className={cn(avatarStyles({ mode, size }), className)} style={style}>
       {showImage ? (
         <Image
-          source={imageSource} 
+          source={imageSource}
           style={{ width: '100%', height: '100%' }}
           contentFit="cover"
-          cachePolicy="disk"
+          cachePolicy="memory-disk"
+          transition={200}
           placeholder={placeholder}
           onError={(e) => {
-            console.log("Avatar load error:", e.error); 
+            console.log('Avatar load error:', e.error);
             setHasError(true);
           }}
         />
