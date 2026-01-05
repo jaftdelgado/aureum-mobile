@@ -6,5 +6,18 @@
   "empty": "No tienes activos en este equipo aún",
   "avg_price": "P. Promedio",
   "current_price": "P. Actual",
-  "pnl": "Rendimiento"
+  "pnl": "Rendimiento",
+  "chart_title": "Rendimiento por activo",
+  "history": {
+    "title": "Movimientos de {{symbol}}",
+    "empty": "No hay movimientos registrados",
+    "price": "Precio",
+    "quantity": "Cantidad",
+    "total": "Total Operación",
+    "pnl_realized": "PnL Realizado",
+    "type": {
+      "buy": "Compra",
+      "sell": "Venta"
+    }
+  }
 }
