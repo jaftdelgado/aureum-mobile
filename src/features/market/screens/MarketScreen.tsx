@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import CollapsibleHeaderLayout from '@app/components/screen-header/CollapsibleHeaderLayout';
 import { Text } from '@core/ui/Text';
@@ -11,9 +12,11 @@ import { useTeamAssets } from '../hooks/useTeamAssets';
 import { TeamAssetsList } from '../components/TeamAssetsList';
 import { MarketStackParamList } from '../navigation/MarketNavigator';
 
+type MarketScreenNavigationProp = NativeStackNavigationProp<MarketStackParamList, 'Market'>;
+
 export default function MarketScreen() {
   const { t } = useTranslation('market');
-  const navigation = useNavigation();
+  const navigation = useNavigation<MarketScreenNavigationProp>();
   const route = useRoute<RouteProp<MarketStackParamList, 'Market'>>();
 
   const { teamId } = route.params;
@@ -26,7 +29,9 @@ export default function MarketScreen() {
     isRefetching,
   } = useTeamAssets(teamId);
 
-  const handleSettings = () => { };
+  const handleSettings = () => {
+    navigation.navigate('MarketSettings');
+  };
   const handlePlay = () => { };
 
   const handleSell = () => { };

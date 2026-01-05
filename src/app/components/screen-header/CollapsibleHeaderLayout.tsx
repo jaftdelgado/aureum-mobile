@@ -5,7 +5,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FixedHeader from './FixedHeader';
 import DisplayTitle from './DisplayTitle';
 
-const HEADER_HEIGHT = 46;
+const HEADER_HEIGHT = 44;
+const MODAL_TOP_SPACING = 16;
 const END_REACHED_THRESHOLD = 120;
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
   isFetchingNextPage?: boolean;
   children: React.ReactNode;
   rightAction?: React.ReactNode;
+  isModal?: boolean;
 };
 
 export default function CollapsibleHeaderLayout({
@@ -23,11 +25,14 @@ export default function CollapsibleHeaderLayout({
   onEndReached,
   isFetchingNextPage,
   children,
-  rightAction, // <--- Prop añadida
+  rightAction,
+  isModal = false,
 }: Props) {
   const insets = useSafeAreaInsets();
   const scrollY = useRef(new Animated.Value(0)).current;
   const hasCalledEnd = useRef(false);
+
+  const headerSpace = isModal ? HEADER_HEIGHT + MODAL_TOP_SPACING : HEADER_HEIGHT + insets.top;
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
@@ -48,8 +53,13 @@ export default function CollapsibleHeaderLayout({
 
   return (
     <View className="flex-1">
-      {/* Pasamos rightAction a la prop 'right' del FixedHeader */}
-      <FixedHeader title={title} scrollY={scrollY} onBack={onBack} right={rightAction} />
+      <FixedHeader
+        title={title}
+        scrollY={scrollY}
+        onBack={onBack}
+        right={rightAction}
+        isModal={isModal}
+      />
 
       <Animated.ScrollView
         scrollEventThrottle={16}
@@ -58,7 +68,7 @@ export default function CollapsibleHeaderLayout({
           listener: handleScroll,
         })}
         contentContainerStyle={{
-          paddingTop: HEADER_HEIGHT + insets.top + 20,
+          paddingTop: headerSpace + 20,
         }}>
         <DisplayTitle title={title} scrollY={scrollY} />
         {children}

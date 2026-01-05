@@ -49,7 +49,6 @@ export const TeamAssetsList: React.FC<TeamAssetsListProps> = ({
             subtitle={item.asset.assetSymbol}
             isLast={index === data.length - 1}
             leftElement={<Avatar source={item.asset.assetPicUrl} size="md" mode="square" />}
-            rightElement={renderRightElement(item)}
           />
         );
       }}

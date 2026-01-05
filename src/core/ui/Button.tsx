@@ -1,43 +1,47 @@
 import React from 'react';
-import { Pressable, ActivityIndicator, View, StyleProp, ViewStyle } from 'react-native';
+import { Pressable, ActivityIndicator, View, StyleProp, ViewStyle, StyleSheet } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@core/utils/cn';
 import { useTheme } from '@app/providers/ThemeProvider';
 import { Text } from '@core/ui/Text';
+import { GlassContainer } from './GlassContainer';
 
-const buttonStyles = cva('w-full active:opacity-80 items-center justify-center flex-row', {
-  variants: {
-    variant: {
-      primary: '',
-      secondary: '',
-      outline: 'border',
-      link: 'bg-transparent',
+const buttonStyles = cva(
+  'w-full active:opacity-80 items-center justify-center flex-row overflow-hidden',
+  {
+    variants: {
+      variant: {
+        primary: '',
+        secondary: '',
+        outline: 'border',
+        link: 'bg-transparent',
+      },
+      size: {
+        sm: 'h-12 px-4',
+        md: 'h-14 px-5',
+        lg: 'h-18 px-6',
+      },
+      rounded: {
+        none: 'rounded-none',
+        md: 'rounded-lg',
+        xl: 'rounded-[16px]',
+        full: 'rounded-full',
+      },
     },
-    size: {
-      sm: 'h-12 px-4',
-      md: 'h-14 px-5',
-      lg: 'h-18 px-6',
+    defaultVariants: {
+      variant: 'primary',
+      size: 'md',
+      rounded: 'xl',
     },
-    rounded: {
-      none: 'rounded-none',
-      md: 'rounded-lg',
-      xl: 'rounded-[16px]',
-      full: 'rounded-full',
-    },
-  },
-  defaultVariants: {
-    variant: 'primary',
-    size: 'md',
-    rounded: 'xl',
-  },
-});
+  }
+);
 
 interface ButtonProps extends VariantProps<typeof buttonStyles> {
   title: string;
   className?: string;
   textClassName?: string;
   onPress?: () => void;
-  isLoading?: boolean; // Propiedad renombrada/agregada
+  isLoading?: boolean;
   disabled?: boolean;
   leftIcon?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -51,7 +55,7 @@ export const Button = ({
   className,
   textClassName,
   onPress,
-  isLoading = false, // Valor por defecto
+  isLoading = false,
   disabled = false,
   leftIcon,
   style,
@@ -74,7 +78,8 @@ export const Button = ({
         };
       case 'outline':
         return {
-          container: { backgroundColor: 'transparent', borderColor: theme.border },
+          // El fondo y borde ahora se gestionan con GlassContainer y estilos base
+          container: { borderColor: theme.border },
           textColor: theme.primaryText,
           spinner: theme.primaryText,
         };
@@ -95,18 +100,13 @@ export const Button = ({
 
   const currentStyles = getVariantStyles();
 
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={disabled || isLoading} // Deshabilitar si está cargando
-      className={cn(buttonStyles({ variant, size, rounded }), 'gap-3', className)}
-      style={[currentStyles.container, (disabled || isLoading) && { opacity: 0.5 }, style]}>
+  const renderContent = () => (
+    <>
       {isLoading ? (
         <ActivityIndicator color={currentStyles.spinner} />
       ) : (
-        <>
+        <View className="flex-row items-center justify-center gap-3">
           {leftIcon && <View>{leftIcon}</View>}
-
           <Text
             type="body"
             weight="medium"
@@ -115,7 +115,23 @@ export const Button = ({
             className={textClassName}>
             {title}
           </Text>
-        </>
+        </View>
+      )}
+    </>
+  );
+
+  return (
+    <Pressable
+      onPress={onPress}
+      disabled={disabled || isLoading}
+      className={cn(buttonStyles({ variant, size, rounded }), className)}
+      style={[currentStyles.container, (disabled || isLoading) && { opacity: 0.5 }, style]}>
+      {variant === 'outline' ? (
+        <GlassContainer intensity={30} style={StyleSheet.absoluteFill}>
+          {renderContent()}
+        </GlassContainer>
+      ) : (
+        renderContent()
       )}
     </Pressable>
   );

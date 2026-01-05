@@ -1,3 +1,29 @@
 {
-  "title": "Market"
+  "title": "Market",
+  "settings_title": "Settings",
+  "settings_description": "Manage your market preferences.",
+  "simulator": {
+    "sections": {
+      "marketBasics": "Market Basics",
+      "marketBasicsDesc": "Configure the initial and fundamental parameters of the simulator.",
+      "marketParams": "Market Parameters",
+      "marketParamsDesc": "Adjust the overall market behavior and its main dynamics.",
+      "tradingRules": "Trading Rules",
+      "tradingRulesDesc": "Define the limits and conditions under which participants can operate.",
+      "marketEvents": "Market Events",
+      "marketEventsDesc": "Control the appearance and impact of unexpected events within the simulator."
+    },
+    "settings": {
+      "initialCash": "Initial Capital",
+      "currency": "Market Currency",
+      "marketVolatility": "Market Volatility",
+      "marketLiquidity": "Market Liquidity",
+      "thickSpeed": "Simulation Speed",
+      "transactionFee": "Transaction Fee",
+      "eventFrequency": "Event Frequency",
+      "dividendImpact": "Dividend Impact",
+      "crashImpact": "Crash Impact",
+      "allowShortSelling": "Allow Short Selling"
+    }
+  }
 }

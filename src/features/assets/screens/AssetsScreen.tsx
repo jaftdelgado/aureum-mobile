@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import CollapsibleHeaderLayout from '@app/components/screen-header/CollapsibleHeaderLayout';
-import { Button } from '@core/ui/Button';
 import { AssetsList } from '@features/assets/components/AssetsList';
+import { AssetsSelectionFooter } from '@features/assets/components/AssetsSelectionFooter';
 import { useAssetsList } from '@features/assets/hooks/useAssetsList';
 import { useSyncTeamAssets } from '@features/assets/hooks/useSyncTeamAssets';
 import { AssetsStackParamList } from '@app/navigation/routes-types';
@@ -13,6 +13,7 @@ export default function AssetsScreen() {
   const { t } = useTranslation('assets');
   const navigation = useNavigation();
   const route = useRoute<RouteProp<AssetsStackParamList, 'Assets'>>();
+  const isModal = true;
 
   const teamId = route.params?.teamId;
   const initialIds = route.params?.existingAssetIds ?? [];
@@ -27,12 +28,22 @@ export default function AssetsScreen() {
   const handlePressAsset = (id: string) => {
     setSelectedIds((prev) => {
       const newIds = prev.includes(id) ? prev.filter((assetId) => assetId !== id) : [...prev, id];
-
       return newIds;
     });
   };
 
+  const hasChanges = useMemo(() => {
+    if (selectedIds.length !== initialIds.length) return true;
+
+    const initialSet = new Set(initialIds);
+    return !selectedIds.every((id) => initialSet.has(id));
+  }, [selectedIds, initialIds]);
+
+  const isButtonDisabled = isSaving || selectedIds.length === 0 || !hasChanges;
+
   const handleSave = () => {
+    if (!teamId) return;
+
     syncAssets(
       { teamId, selectedAssetIds: selectedIds },
       {
@@ -49,25 +60,23 @@ export default function AssetsScreen() {
         title={t('title')}
         onBack={() => navigation.goBack()}
         onEndReached={fetchNextPage}
-        isFetchingNextPage={isFetchingNextPage}>
+        isFetchingNextPage={isFetchingNextPage}
+        isModal={isModal}>
         <AssetsList
           data={assets}
           isFetchingNextPage={isFetchingNextPage}
           addedAssetIds={selectedIds}
           onPressAsset={handlePressAsset}
         />
-
         <View className="h-24" />
       </CollapsibleHeaderLayout>
 
-      <View className="absolute bottom-0 left-0 right-0 border-t border-gray-100 bg-white px-4 py-4 pb-8">
-        <Button
-          title={t('saveChanges')}
-          onPress={handleSave}
-          isLoading={isSaving}
-          disabled={isSaving}
-        />
-      </View>
+      <AssetsSelectionFooter
+        title={t('saveChanges')}
+        onPress={handleSave}
+        isLoading={isSaving}
+        disabled={isButtonDisabled}
+      />
     </View>
   );
 }

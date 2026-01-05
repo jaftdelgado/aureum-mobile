@@ -14,6 +14,7 @@ import { Text } from '@core/ui/Text';
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
 const HEADER_HEIGHT = 44;
+const MODAL_TOP_SPACING = 16;
 
 type FixedHeaderProps = {
   title: string;
@@ -21,6 +22,7 @@ type FixedHeaderProps = {
   right?: React.ReactNode;
   onBack?: () => void;
   className?: string;
+  isModal?: boolean;
 };
 
 export default function FixedHeader({
@@ -29,11 +31,14 @@ export default function FixedHeader({
   right,
   onBack,
   className,
+  isModal = false,
 }: FixedHeaderProps) {
   const insets = useSafeAreaInsets();
   const { theme, isDark } = useTheme();
 
-  // Animación para el título pequeño que aparece al hacer scroll
+  const actualPaddingTop = isModal ? MODAL_TOP_SPACING : insets.top;
+  const actualHeight = HEADER_HEIGHT + actualPaddingTop;
+
   const smallTitleOpacity = scrollY.interpolate({
     inputRange: [0, 60],
     outputRange: [0, 1],
@@ -50,11 +55,10 @@ export default function FixedHeader({
     <View
       className={cn('absolute left-0 right-0 top-0', className)}
       style={{
-        height: HEADER_HEIGHT + insets.top,
+        height: actualHeight,
         zIndex: 10,
-        paddingTop: insets.top,
+        paddingTop: actualPaddingTop,
       }}>
-      {/* Fondo con Blur y Máscara de Gradiente */}
       <MaskedView
         style={StyleSheet.absoluteFillObject}
         maskElement={
@@ -72,9 +76,7 @@ export default function FixedHeader({
         <View style={[StyleSheet.absoluteFillObject, { backgroundColor: theme.bg }]} />
       </MaskedView>
 
-      {/* Contenedor de Contenido */}
       <View className="flex-row items-center justify-center px-4" style={{ height: HEADER_HEIGHT }}>
-        {/* Lado Izquierdo: Botón Volver */}
         {onBack && (
           <View className="absolute left-4 z-20">
             <IconButton
@@ -87,7 +89,6 @@ export default function FixedHeader({
           </View>
         )}
 
-        {/* Centro: Título Animado */}
         <View className="max-w-[60%]">
           <AnimatedText
             type="headline"

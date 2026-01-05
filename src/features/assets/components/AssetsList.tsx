@@ -52,9 +52,9 @@ export const AssetsList: React.FC<AssetsListProps> = ({
             leftElement={<Avatar source={item.assetPicUrl} size="md" mode="square" />}
             rightElement={
               isAdded ? (
-                <Icon component={SuccessIcon} color="secondaryText" size={20} />
+                <Icon component={SuccessIcon} color="primaryText" size={28} />
               ) : (
-                <Icon component={AddIcon} color="primaryText" size={20} />
+                <Icon component={AddIcon} color="secondaryText" size={28} />
               )
             }
           />
