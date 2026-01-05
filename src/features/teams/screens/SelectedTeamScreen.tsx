@@ -22,6 +22,7 @@ export default function SelectedTeamScreen() {
     handleMembers,
     handleAssets,
     handleSettings,
+    handleOverview,
     handleMarket, 
     handleTransactions, 
     handleBack,
@@ -81,6 +82,7 @@ export default function SelectedTeamScreen() {
 
         <TeamModules
           onMembers={handleMembers}
+          onPortfolio={handleOverview}
           onAssets={handleAssets}
           onSettings={handleSettings}
           onMarket={handleMarket}

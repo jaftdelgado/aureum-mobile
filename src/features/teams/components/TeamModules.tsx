@@ -16,6 +16,7 @@ interface TeamModulesProps {
   onMarket?: () => void;
   onAssets?: () => void;
   onTransactions?: () => void;
+  onPortfolio?: () => void;
   onSettings?: () => void;
 }
 
@@ -23,6 +24,7 @@ export const TeamModules: React.FC<TeamModulesProps> = ({
   onMembers,
   onMarket,
   onAssets,
+  onPortfolio,
   onTransactions,
   onSettings,
 }) => {
@@ -43,7 +45,12 @@ export const TeamModules: React.FC<TeamModulesProps> = ({
         icon={AssetsIcon}
         iconVariant="yellow"
       />
-      <ListOption text={t('team.portfolio')} icon={PortfolioIcon} iconVariant="green" />
+     <ListOption 
+        text={t('team.portfolio')} 
+        onPress={onPortfolio} 
+        icon={PortfolioIcon} 
+        iconVariant="green" 
+      />
       <ListOption
         text={t('team.movements')}
         onPress={onTransactions}
