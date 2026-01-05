@@ -9,6 +9,7 @@ export function loadResources() {
       market: require('@features/market/i18n/es.json'),
       lessons: require('@features/lessons/i18n/es.json'),
       assets: require('@features/assets/i18n/es.json'),
+      portfolio: require('@features/portfolio/i18n/es.json')
     },
     en: {
       app: require('@app/i18n/locales/en.json'),
@@ -19,6 +20,7 @@ export function loadResources() {
       market: require('@features/market/i18n/en.json'),
       lessons: require('@features/lessons/i18n/en.json'),
       assets: require('@features/assets/i18n/en.json'),
+      portfolio: require('@features/portfolio/i18n/en.json')
     },
   };
 }

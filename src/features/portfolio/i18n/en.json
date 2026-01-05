@@ -1,0 +1,10 @@
+{
+  "title": "Portfolio",
+  "description": "Overview of your assets and performance",
+  "total_balance": "Estimated Total Balance",
+  "your_assets": "Your Assets",
+  "empty": "You don't have assets in this team yet",
+  "avg_price": "Avg. Price",
+  "current_price": "Current Price",
+  "pnl": "PnL"
+}
