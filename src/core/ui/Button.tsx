@@ -37,7 +37,7 @@ interface ButtonProps extends VariantProps<typeof buttonStyles> {
   className?: string;
   textClassName?: string;
   onPress?: () => void;
-  loading?: boolean;
+  isLoading?: boolean; // Propiedad renombrada/agregada
   disabled?: boolean;
   leftIcon?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -51,7 +51,7 @@ export const Button = ({
   className,
   textClassName,
   onPress,
-  loading = false,
+  isLoading = false, // Valor por defecto
   disabled = false,
   leftIcon,
   style,
@@ -98,10 +98,10 @@ export const Button = ({
   return (
     <Pressable
       onPress={onPress}
-      disabled={disabled || loading}
+      disabled={disabled || isLoading} // Deshabilitar si está cargando
       className={cn(buttonStyles({ variant, size, rounded }), 'gap-3', className)}
-      style={[currentStyles.container, (disabled || loading) && { opacity: 0.5 }, style]}>
-      {loading ? (
+      style={[currentStyles.container, (disabled || isLoading) && { opacity: 0.5 }, style]}>
+      {isLoading ? (
         <ActivityIndicator color={currentStyles.spinner} />
       ) : (
         <>

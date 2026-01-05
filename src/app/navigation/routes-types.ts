@@ -9,7 +9,7 @@ export type SettingsStackParamList = {
 };
 
 export type AssetsStackParamList = {
-  Assets: undefined;
+  Assets: { existingAssetIds: string[]; teamId: string };
   TeamAssets: { teamId: string };
 };
 
