@@ -3,4 +3,5 @@ export interface Lesson {
   title: string;
   description: string;
   thumbnailUrl: string | null;
+  videoUrl: string; 
 }
