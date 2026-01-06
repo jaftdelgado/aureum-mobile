@@ -128,8 +128,8 @@ export default function MarketScreen() {
     const res = validateAuth(userPublicId);
     if (!res.ok) {
       Alert.alert(
-        t('auth_required', 'Inicia sesión'),
-        t('auth_required_desc', 'Necesitas sesión activa para operar.')
+        t('auth_required', 'Inicia sesión'),
+        t('auth_required_desc', 'Necesitas sesión activa para operar.')
       );
       return null;
     }
@@ -226,7 +226,7 @@ export default function MarketScreen() {
           {streamError ? (
             <View className="px-4">
               <Text className="text-center text-red-500">
-                {t('stream_error', 'Error de conexión al mercado')}: {streamError.message}
+                {t('stream_error', 'Error de conexión al mercado')}: {streamError.message}
               </Text>
             </View>
           ) : null}
