@@ -20,6 +20,9 @@ import {
 
 import { getMarketErrorMessage } from "../utils/marketErrorMapper";
 
+type AssetHistoryPoint = { date: string; value: number };
+type HistoryMap = Record<string, AssetHistoryPoint[]>;
+
 type UseMarketPresenterResult = {
   mergedAssets: any[];
   selectedIds: string[];
@@ -48,21 +51,28 @@ export function useMarketPresenter(teamId: string): UseMarketPresenterResult {
   const { snapshot, error: streamError } = useMarketStream(teamId);
   const { buy, sell, loading: tradeLoading } = useMarketTrading();
 
+  // ✅ soporta snapshot.assets o snapshot.Assets
+  const streamAssets = useMemo<any[]>(() => {
+    const a = (snapshot as any)?.assets ?? (snapshot as any)?.Assets ?? [];
+    return Array.isArray(a) ? a : [];
+  }, [snapshot]);
+
   const [isStreamReady, setIsStreamReady] = useState(false);
   useEffect(() => {
-    if (snapshot?.assets?.length) setIsStreamReady(true);
-  }, [snapshot?.assets?.length]);
+    if (streamAssets.length) setIsStreamReady(true);
+  }, [streamAssets.length]);
 
+  // ✅ dirección de precio (up/down/flat)
   const prevPriceRef = useRef<Record<string, number>>({});
   const [priceDirectionMap, setPriceDirectionMap] = useState<Record<string, PriceDirection>>({});
 
   useEffect(() => {
-    if (!snapshot?.assets?.length) return;
+    if (!streamAssets.length) return;
 
     const nextPrev = { ...prevPriceRef.current };
     const nextDir: Record<string, PriceDirection> = {};
 
-    for (const a of snapshot.assets as any[]) {
+    for (const a of streamAssets) {
       const symbol = normSymbol(a.symbol ?? a.Symbol);
       if (!symbol) continue;
 
@@ -81,33 +91,104 @@ export function useMarketPresenter(teamId: string): UseMarketPresenterResult {
 
     prevPriceRef.current = nextPrev;
     setPriceDirectionMap(nextDir);
-  }, [snapshot]);
+  }, [streamAssets]);
 
+  // ✅ historial por símbolo
+  const [historyMap, setHistoryMap] = useState<HistoryMap>({});
+
+  useEffect(() => {
+    if (!streamAssets.length) return;
+
+    const label = new Date().toLocaleTimeString("es-MX", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+    setHistoryMap((prev) => {
+      const next: HistoryMap = { ...prev };
+
+      for (const a of streamAssets) {
+        const symbol = normSymbol(a.symbol ?? a.Symbol);
+        if (!symbol) continue;
+
+        const price = Number(a.price ?? a.Price);
+        const point: AssetHistoryPoint = { date: label, value: price };
+
+        const prevHistory = next[symbol] ?? [];
+        next[symbol] = [...prevHistory, point].slice(-100);
+      }
+
+      return next;
+    });
+  }, [streamAssets]);
+
+  // ✅ merge: teamAssets + livePrice + direction + history + change24h
   const mergedAssets = useMemo(() => {
     const liveBySymbol = new Map<string, number>(
-      (snapshot?.assets ?? []).map((a: any) => [
+      streamAssets.map((a: any) => [
         normSymbol(a.symbol ?? a.Symbol),
         Number(a.price ?? a.Price),
       ])
     );
 
     return (teamAssets ?? []).map((item: any) => {
-      const symbol = normSymbol(getAssetSymbol(item));
+      const assetObj = item?.asset ?? item;
+
+      // ✅ symbol robusto
+      const symbol = normSymbol(
+        getAssetSymbol(item) ||
+          assetObj?.symbol ||
+          assetObj?.Symbol ||
+          item?.symbol ||
+          item?.Symbol
+      );
+
       const livePrice = symbol ? liveBySymbol.get(symbol) : undefined;
-      const direction: PriceDirection = symbol ? priceDirectionMap[symbol] ?? "flat" : "flat";
+
+      const direction: PriceDirection =
+        symbol ? priceDirectionMap[symbol] ?? "flat" : "flat";
+
+      const history = symbol ? historyMap[symbol] ?? [] : [];
+
+      const current =
+        typeof livePrice === "number"
+          ? livePrice
+          : Number(assetObj?.currentPrice ?? item?.currentPrice ?? 0);
+
+      const firstPrice = history[0]?.value ?? current;
+      const change24h = firstPrice > 0 ? ((current - firstPrice) / firstPrice) * 100 : 0;
+
+      // ✅ name robusto (YA NO ES "name" undefined)
+      const name =
+        assetObj?.name ??
+        assetObj?.Name ??
+        assetObj?.displayName ??
+        assetObj?.DisplayName ??
+        assetObj?.title ??
+        assetObj?.Title ??
+        assetObj?.companyName ??
+        assetObj?.company ??
+        symbol ??
+        "—";
 
       return {
         ...item,
-        currentPrice: typeof livePrice === "number" ? livePrice : item.currentPrice,
+        name,
+        symbol: symbol || "—",
+        currentPrice: current,
         priceDirection: direction,
+        history,
+        change24h,
       };
     });
-  }, [teamAssets, snapshot, priceDirectionMap]);
+  }, [teamAssets, streamAssets, priceDirectionMap, historyMap]);
 
+  // ✅ selectedAsset sale del merge
   const selectedAsset = useMemo(() => {
     if (selectedIds.length !== 1) return null;
     const id = selectedIds[0];
-    return (mergedAssets ?? []).find((a: any) => getAssetPublicId(a) === id) ?? null;
+    return mergedAssets.find((a: any) => getAssetPublicId(a) === id) ?? null;
   }, [selectedIds, mergedAssets]);
 
   const onPressAsset = useCallback((id: string) => {
@@ -153,7 +234,6 @@ export function useMarketPresenter(teamId: string): UseMarketPresenterResult {
       });
 
       refetch?.();
-
       Alert.alert(t("alerts.sellSuccessTitle"), t("alerts.sellSuccessDesc"));
     } catch (e: any) {
       Alert.alert(t("alerts.sellErrorTitle"), getMarketErrorMessage(e, t));
@@ -180,7 +260,6 @@ export function useMarketPresenter(teamId: string): UseMarketPresenterResult {
       });
 
       refetch?.();
-
       Alert.alert(t("alerts.buySuccessTitle"), t("alerts.buySuccessDesc"));
     } catch (e: any) {
       Alert.alert(t("alerts.buyErrorTitle"), getMarketErrorMessage(e, t));
