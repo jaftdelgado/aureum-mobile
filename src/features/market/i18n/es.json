@@ -1,27 +1,53 @@
 {
   "title": "Mercado",
-  "save": "Guardar",
-  "sell": "Vender",
-  "buy": "Comprar",
-  "loadingMarket": "Cargando mercado...",
-  "welcomeMessage": "Bienvenido al simulador de mercado.",
-  "streamError": "Error de conexión al mercado",
-  "marketAssets": "Activos del mercado",
-  "selectOneAsset": "Selecciona un activo",
-  "selectOneAssetDesc": "Debes seleccionar un activo para operar.",
-  "authRequired": "Inicia sesión",
-  "authRequiredDesc": "Necesitas sesión activa para operar.",
-  "sellSuccess": "Venta realizada",
-  "sellSuccessDesc": "Tu venta fue registrada correctamente.",
-  "sellError": "Error al vender",
-  "buySuccess": "Compra realizada",
-  "buySuccessDesc": "Tu compra fue registrada correctamente.",
-  "buyError": "Error al comprar",
-  "settingsSaved": "Configuración guardada",
-  "settingsSaveError": "Error al guardar configuración",
-  "settings": {
-    "title": "Configuración",
-    "description": "Administra las preferencias de tu mercado.",
+  "settings_title": "Configuración",
+  "settings_description": "Administra las preferencias de tu mercado.",
+  "welcome_message": "Selecciona un activo para ver su precio en tiempo real y operar.",
+  "labels": {
+    "marketAssets": "Activos del mercado"
+  },
+  "actions": {
+    "buy": "Comprar",
+    "sell": "Vender"
+  },
+  "status": {
+    "loadingMarket": "Cargando mercado..."
+  },
+  "validation": {
+    "selectOneAssetTitle": "Selecciona un activo",
+    "selectOneAssetDesc": "Debes seleccionar un activo para operar.",
+    "authRequiredTitle": "Inicia sesión",
+    "authRequiredDesc": "Necesitas sesión activa para operar."
+  },
+  "alerts": {
+    "buySuccessTitle": "Compra realizada",
+    "buySuccessDesc": "Tu compra fue registrada correctamente.",
+    "sellSuccessTitle": "Venta realizada",
+    "sellSuccessDesc": "Tu venta fue registrada correctamente.",
+    "buyErrorTitle": "Error al comprar",
+    "sellErrorTitle": "Error al vender"
+  },
+  "errors": {
+    "stream": "Error de conexión al mercado",
+    "assetNotOwned": "No puedes vender un activo que no tienes.",
+    "insufficientQuantity": "No tienes suficiente cantidad de este activo para vender.",
+    "invalidQuantity": "Cantidad inválida.",
+    "unknown": "Ocurrió un error."
+  },
+  "common": {
+    "low": "Baja",
+    "medium": "Media",
+    "high": "Alta",
+    "noInternet": "No hay conexión a internet",
+    "genericLoginError": "Ocurrió un error.",
+    "genericError": "Ocurrió un error.",
+    "errors": {
+      "timeout": "El servidor tardó demasiado en responder. Revisa tu conexión.",
+      "server": "Tuvimos un problema técnico. Intenta más tarde.",
+      "notFound": "No pudimos encontrar lo que buscabas."
+    }
+  },
+  "simulator": {
     "sections": {
       "marketBasics": "Conceptos básicos del mercado",
       "marketBasicsDesc": "Configura los parámetros iniciales y fundamentales del simulador.",
@@ -32,24 +58,28 @@
       "marketEvents": "Eventos del mercado",
       "marketEventsDesc": "Controla la aparición e impacto de eventos inesperados dentro del simulador."
     },
-    "initialCash": "Capital inicial",
-    "currency": "Divisa del mercado",
-    "marketVolatility": "Volatilidad del mercado",
-    "marketLiquidity": "Liquidez del mercado",
-    "thickSpeed": "Velocidad de simulación",
-    "transactionFee": "Comisión por transacción",
-    "eventFrequency": "Frecuencia de eventos",
-    "dividendImpact": "Impacto de dividendos",
-    "crashImpact": "Impacto de crash",
-    "allowShortSelling": "Permitir venta en corto",
-    "options": {
-      "usd": "USD - Dólar Estadounidense",
-      "eur": "EUR - Euro",
-      "mxn": "MXN - Peso Mexicano",
-      "low": "Baja",
-      "medium": "Media",
-      "high": "Alta",
-      "disabled": "Deshabilitado"
+    "settings": {
+      "initialCash": "Capital inicial",
+      "currency": "Divisa del mercado",
+      "marketVolatility": "Volatilidad del mercado",
+      "marketLiquidity": "Liquidez del mercado",
+      "thickSpeed": "Velocidad de simulación",
+      "transactionFee": "Comisión por transacción",
+      "eventFrequency": "Frecuencia de eventos",
+      "dividendImpact": "Impacto de dividendos",
+      "crashImpact": "Impacto de crash",
+      "allowShortSelling": "Permitir venta en corto"
+    },
+    "alerts": {
+      "buyErrorTitle": "Error al comprar",
+      "sellErrorTitle": "Error al vender"
+    },
+    "errors": {
+      "assetNotOwned": "No puedes vender este activo porque tienes 0 unidades.",
+      "insufficientQuantity": "No tienes suficientes unidades de este activo para vender.",
+      "invalidQuantity": "La cantidad ingresada no es válida.",
+      "noInternet": "No hay conexión a internet.",
+      "generic": "Ocurrió un error."
     }
   }
 }
