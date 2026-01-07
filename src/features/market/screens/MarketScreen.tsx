@@ -11,6 +11,7 @@ import { MarketHeaderActions } from "../components/MarketHeaderActions";
 import { TeamAssetsList } from "../components/TeamAssetsList";
 import { MarketStackParamList } from "../navigation/MarketNavigator";
 import { useMarketPresenter } from "../hooks/useMarketPresenter";
+import { AssetHistoryChart } from "../components/AssetHistoryChart";
 
 export default function MarketScreen() {
   const { t } = useTranslation("market");
@@ -23,6 +24,7 @@ export default function MarketScreen() {
   const {
     mergedAssets,
     selectedIds,
+    selectedAsset,
     isStreamReady,
     tradeLoading,
     streamError,
@@ -87,6 +89,13 @@ export default function MarketScreen() {
               />
             </View>
           </View>
+
+          {/* ✅ Chart: usa selectedAsset del presenter */}
+          {selectedAsset?.history?.length ? (
+            <View className="px-4">
+              <AssetHistoryChart asset={selectedAsset} />
+            </View>
+          ) : null}
 
           <View>
             <Text className="text-lg font-bold text-primaryText px-4 mb-2">
