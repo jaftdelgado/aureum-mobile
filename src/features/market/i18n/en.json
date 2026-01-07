@@ -1,27 +1,53 @@
 {
   "title": "Market",
-  "save": "Save",
-  "sell": "Sell",
-  "buy": "Buy",
-  "loadingMarket": "Loading market...",
-  "welcomeMessage": "Welcome to the market simulator.",
-  "streamError": "Market connection error",
-  "marketAssets": "Market assets",
-  "selectOneAsset": "Select an asset",
-  "selectOneAssetDesc": "You must select an asset to trade.",
-  "authRequired": "Login required",
-  "authRequiredDesc": "You need an active session to trade.",
-  "sellSuccess": "Sale successful",
-  "sellSuccessDesc": "Your sale was registered successfully.",
-  "sellError": "Error selling",
-  "buySuccess": "Purchase successful",
-  "buySuccessDesc": "Your purchase was registered successfully.",
-  "buyError": "Error buying",
-  "settingsSaved": "Settings saved",
-  "settingsSaveError": "Error saving settings",
-  "settings": {
-    "title": "Settings",
-    "description": "Manage your market preferences.",
+  "settings_title": "Settings",
+  "settings_description": "Manage your market preferences.",
+  "welcome_message": "Select an asset to see its real-time price and trade.",
+  "labels": {
+    "marketAssets": "Market assets"
+  },
+  "actions": {
+    "buy": "Buy",
+    "sell": "Sell"
+  },
+  "status": {
+    "loadingMarket": "Loading market..."
+  },
+  "validation": {
+    "selectOneAssetTitle": "Select an asset",
+    "selectOneAssetDesc": "You must select an asset to trade.",
+    "authRequiredTitle": "Sign in",
+    "authRequiredDesc": "You need an active session to trade."
+  },
+  "alerts": {
+    "buySuccessTitle": "Purchase completed",
+    "buySuccessDesc": "Your buy order was recorded successfully.",
+    "sellSuccessTitle": "Sale completed",
+    "sellSuccessDesc": "Your sell order was recorded successfully.",
+    "buyErrorTitle": "Buy error",
+    "sellErrorTitle": "Sell error"
+  },
+  "errors": {
+    "stream": "Market connection error",
+    "assetNotOwned": "You can't sell an asset you don't own.",
+    "insufficientQuantity": "You don't have enough quantity of this asset to sell.",
+    "invalidQuantity": "Invalid quantity.",
+    "unknown": "Something went wrong."
+  },
+  "common": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "noInternet": "No internet connection",
+    "genericLoginError": "Something went wrong.",
+    "genericError": "Something went wrong.",
+    "errors": {
+      "timeout": "The server took too long to respond. Check your connection.",
+      "server": "We had a technical issue. Please try again later.",
+      "notFound": "We couldn't find what you were looking for."
+    }
+  },
+  "simulator": {
     "sections": {
       "marketBasics": "Market Basics",
       "marketBasicsDesc": "Configure the initial and fundamental parameters of the simulator.",
@@ -32,24 +58,28 @@
       "marketEvents": "Market Events",
       "marketEventsDesc": "Control the appearance and impact of unexpected events within the simulator."
     },
-    "initialCash": "Initial Capital",
-    "currency": "Market Currency",
-    "marketVolatility": "Market Volatility",
-    "marketLiquidity": "Market Liquidity",
-    "thickSpeed": "Simulation Speed",
-    "transactionFee": "Transaction Fee",
-    "eventFrequency": "Event Frequency",
-    "dividendImpact": "Dividend Impact",
-    "crashImpact": "Crash Impact",
-    "allowShortSelling": "Allow Short Selling",
-    "options": {
-      "usd": "USD - US Dollar",
-      "eur": "EUR - Euro",
-      "mxn": "MXN - Mexican Peso",
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High",
-      "disabled": "Disabled"
+    "settings": {
+      "initialCash": "Initial Capital",
+      "currency": "Market Currency",
+      "marketVolatility": "Market Volatility",
+      "marketLiquidity": "Market Liquidity",
+      "thickSpeed": "Simulation Speed",
+      "transactionFee": "Transaction Fee",
+      "eventFrequency": "Event Frequency",
+      "dividendImpact": "Dividend Impact",
+      "crashImpact": "Crash Impact",
+      "allowShortSelling": "Allow Short Selling"
+    },
+    "alerts": {
+      "buyErrorTitle": "Buy error",
+      "sellErrorTitle": "Sell error"
+    },
+    "errors": {
+      "assetNotOwned": "You can't sell this asset because you own 0 units.",
+      "insufficientQuantity": "You don't have enough units of this asset to sell.",
+      "invalidQuantity": "The entered quantity is not valid.",
+      "noInternet": "No internet connection.",
+      "generic": "Something went wrong."
     }
   }
 }

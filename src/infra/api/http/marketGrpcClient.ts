@@ -59,6 +59,24 @@ function extractJsonObjects(buffer: string): { objects: string[]; rest: string }
   return { objects: objs, rest };
 }
 
+type PortfolioPosition = {
+  assetId: string;
+  quantity: number;
+};
+
+export type TradeBody = {
+  teamPublicId: string;
+  userPublicId: string;
+  assetPublicId: string;
+  quantity: number;
+  price?: number;
+};
+
+export const MarketErrors = {
+  ASSET_NOT_OWNED: "ASSET_NOT_OWNED",
+  INSUFFICIENT_ASSET_QUANTITY: "INSUFFICIENT_ASSET_QUANTITY",
+} as const;
+
 export class MarketGrpcClient {
   private baseUrl: string;
 
@@ -73,11 +91,16 @@ export class MarketGrpcClient {
     return `${this.baseUrl}/api/market/${path}/`;
   }
 
-  async buy<T = any>(body: unknown) {
+  private portfolioAssetsUrl(teamPublicId: string, userPublicId: string) {
+    return `${this.baseUrl}/api/portfolio/assets/team/${teamPublicId}/user/${userPublicId}`;
+  }
+
+  async buy<T = any>(body: TradeBody) {
     return this.postJson<T>(this.tradeUrl("buy"), body, "Buy");
   }
 
-  async sell<T = any>(body: unknown) {
+  async sell<T = any>(body: TradeBody) {
+    await this.assertCanSell(body);
     return this.postJson<T>(this.tradeUrl("sell"), body, "Sell");
   }
 
@@ -116,6 +139,66 @@ export class MarketGrpcClient {
         reject(e instanceof Error ? e : new Error(String(e)));
       }
     });
+  }
+
+  private async getPortfolioPositions(
+    teamPublicId: string,
+    userPublicId: string
+  ): Promise<PortfolioPosition[]> {
+    const token = await getAccessToken();
+    const url = this.portfolioAssetsUrl(teamPublicId, userPublicId);
+
+    return new Promise<PortfolioPosition[]>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", url, true);
+
+      xhr.setRequestHeader("Accept", "application/json");
+      if (token) xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+      xhr.onload = () => {
+        const status = xhr.status ?? 0;
+        const text = xhr.responseText ?? "";
+
+        if (status >= 200 && status < 300) {
+          try {
+            const parsed = text ? (JSON.parse(text) as PortfolioPosition[]) : [];
+            resolve(Array.isArray(parsed) ? parsed : []);
+          } catch {
+            resolve([]);
+          }
+          return;
+        }
+
+        reject(new Error(`Get portfolio failed: ${status} ${text}`));
+      };
+
+      xhr.onerror = () => reject(new Error("Get portfolio failed: XHR network error"));
+
+      try {
+        xhr.send(null);
+      } catch (e: any) {
+        reject(e instanceof Error ? e : new Error(String(e)));
+      }
+    });
+  }
+
+  private async assertCanSell(body: TradeBody): Promise<void> {
+    const qty = Number(body.quantity ?? 0);
+    if (!Number.isFinite(qty) || qty <= 0) {
+      throw new Error("INVALID_QUANTITY");
+    }
+
+    const positions = await this.getPortfolioPositions(body.teamPublicId, body.userPublicId);
+
+    const pos = positions.find((p) => p.assetId === body.assetPublicId);
+
+    if (!pos) {
+      throw new Error(MarketErrors.ASSET_NOT_OWNED);
+    }
+
+    if (Number(pos.quantity ?? 0) < qty) {
+      throw new Error(MarketErrors.INSUFFICIENT_ASSET_QUANTITY);
+    }
   }
 
   streamMarket<T>(teamPublicId: string, handlers: StreamHandlers<T>): () => void {
