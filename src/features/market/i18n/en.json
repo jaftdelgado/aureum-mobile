@@ -1,8 +1,27 @@
 {
   "title": "Market",
-  "settings_title": "Settings",
-  "settings_description": "Manage your market preferences.",
-  "simulator": {
+  "save": "Save",
+  "sell": "Sell",
+  "buy": "Buy",
+  "loadingMarket": "Loading market...",
+  "welcomeMessage": "Welcome to the market simulator.",
+  "streamError": "Market connection error",
+  "marketAssets": "Market assets",
+  "selectOneAsset": "Select an asset",
+  "selectOneAssetDesc": "You must select an asset to trade.",
+  "authRequired": "Login required",
+  "authRequiredDesc": "You need an active session to trade.",
+  "sellSuccess": "Sale successful",
+  "sellSuccessDesc": "Your sale was registered successfully.",
+  "sellError": "Error selling",
+  "buySuccess": "Purchase successful",
+  "buySuccessDesc": "Your purchase was registered successfully.",
+  "buyError": "Error buying",
+  "settingsSaved": "Settings saved",
+  "settingsSaveError": "Error saving settings",
+  "settings": {
+    "title": "Settings",
+    "description": "Manage your market preferences.",
     "sections": {
       "marketBasics": "Market Basics",
       "marketBasicsDesc": "Configure the initial and fundamental parameters of the simulator.",
@@ -13,17 +32,24 @@
       "marketEvents": "Market Events",
       "marketEventsDesc": "Control the appearance and impact of unexpected events within the simulator."
     },
-    "settings": {
-      "initialCash": "Initial Capital",
-      "currency": "Market Currency",
-      "marketVolatility": "Market Volatility",
-      "marketLiquidity": "Market Liquidity",
-      "thickSpeed": "Simulation Speed",
-      "transactionFee": "Transaction Fee",
-      "eventFrequency": "Event Frequency",
-      "dividendImpact": "Dividend Impact",
-      "crashImpact": "Crash Impact",
-      "allowShortSelling": "Allow Short Selling"
+    "initialCash": "Initial Capital",
+    "currency": "Market Currency",
+    "marketVolatility": "Market Volatility",
+    "marketLiquidity": "Market Liquidity",
+    "thickSpeed": "Simulation Speed",
+    "transactionFee": "Transaction Fee",
+    "eventFrequency": "Event Frequency",
+    "dividendImpact": "Dividend Impact",
+    "crashImpact": "Crash Impact",
+    "allowShortSelling": "Allow Short Selling",
+    "options": {
+      "usd": "USD - US Dollar",
+      "eur": "EUR - Euro",
+      "mxn": "MXN - Mexican Peso",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "disabled": "Disabled"
     }
   }
 }

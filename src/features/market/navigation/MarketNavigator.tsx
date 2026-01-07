@@ -4,7 +4,7 @@ import MarketSettingsScreen from '@features/market/screens/MarketSettingsScreen'
 
 export type MarketStackParamList = {
   Market: { teamId: string };
-  MarketSettings: undefined;
+  MarketSettings: { teamId: string };
 };
 
 const Stack = createNativeStackNavigator<MarketStackParamList>();
@@ -14,15 +14,8 @@ export function MarketNavigator({ route }: any) {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="Market"
-        component={MarketScreen}
-        initialParams={{ teamId }}
-      />
-      <Stack.Screen
-        name="MarketSettings"
-        component={MarketSettingsScreen}
-      />
+      <Stack.Screen name="Market" component={MarketScreen} initialParams={{ teamId }} />
+      <Stack.Screen name="MarketSettings" component={MarketSettingsScreen} />
     </Stack.Navigator>
   );
 }

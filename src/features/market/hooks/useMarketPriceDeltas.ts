@@ -40,8 +40,8 @@ export function useMarketPriceDeltas(
 
     prevMapRef.current = nextPrev;
     setDeltaMap(nextDelta);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [snapshot?.timestamp?.getTime()]); // solo recalcula por tick nuevo
+
+  }, [snapshot?.timestamp?.getTime()]);
 
   return deltaMap;
 }

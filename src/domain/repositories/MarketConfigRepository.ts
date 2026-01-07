@@ -1,5 +1,4 @@
-// src/domain/repositories/MarketConfigRepository.ts
-import type { MarketConfig } from "@domain/entities/MarketConfig";
+import type { MarketConfig } from '@domain/entities/MarketConfig';
 
 export interface MarketConfigRepository {
   getMarketConfig(teamPublicId: string): Promise<MarketConfig>;

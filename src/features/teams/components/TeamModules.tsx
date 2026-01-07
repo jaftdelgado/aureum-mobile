@@ -45,23 +45,11 @@ export const TeamModules: React.FC<TeamModulesProps> = ({
         icon={AssetsIcon}
         iconVariant="yellow"
       />
-     <ListOption 
-        text={t('team.portfolio')} 
-        onPress={onPortfolio} 
-        icon={PortfolioIcon} 
-        iconVariant="green" 
-      />
       <ListOption
-        text={t('team.movements')}
-        onPress={onTransactions}
-        icon={MovementsIcon}
-        iconVariant="purple"
-      />
-      <ListOption
-        text={t('team.settings')}
-        onPress={onSettings}
-        icon={SettingsIcon}
-        iconVariant="dark-gray"
+        text={t('team.portfolio')}
+        onPress={onPortfolio}
+        icon={PortfolioIcon}
+        iconVariant="green"
       />
     </ListContainer>
   );

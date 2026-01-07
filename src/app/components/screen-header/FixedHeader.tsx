@@ -63,13 +63,13 @@ export default function FixedHeader({
         style={StyleSheet.absoluteFillObject}
         maskElement={
           <LinearGradient
-            colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,0)']}
-            locations={[0, 0.6, 1]}
+            colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0.9)', 'rgba(255,255,255,0)']}
+            locations={[0, 0.8, 1]}
             style={StyleSheet.absoluteFillObject}
           />
         }>
         <BlurView
-          intensity={40}
+          intensity={30}
           tint={isDark ? 'dark' : 'light'}
           style={StyleSheet.absoluteFillObject}
         />

@@ -2,6 +2,7 @@ import React, { useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import { View, Alert, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation, useRoute, RouteProp, useTheme } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import CollapsibleHeaderLayout from '@app/components/screen-header/CollapsibleHeaderLayout';
 import { Text } from '@core/ui/Text';
@@ -27,9 +28,11 @@ import {
   canTrade as canTradeSchema,
 } from '../schemas/marketSchemas';
 
+type MarketScreenNavigationProp = NativeStackNavigationProp<MarketStackParamList, 'Market'>;
+
 export default function MarketScreen() {
   const { t } = useTranslation('market');
-  const navigation = useNavigation();
+  const navigation = useNavigation<MarketScreenNavigationProp>();
   const route = useRoute<RouteProp<MarketStackParamList, 'Market'>>();
   const { teamId } = route.params;
 
@@ -42,8 +45,11 @@ export default function MarketScreen() {
   const { snapshot, error: streamError } = useMarketStream(teamId);
   const { buy, sell, loading: tradeLoading } = useMarketTrading();
 
-  const handleSettings = () => {};
-  const handlePlay = () => {};
+  const handleSettings = () => {
+    navigation.navigate('MarketSettings', { teamId });
+  };
+
+  const handlePlay = () => { };
 
   const handlePressAsset = useCallback((id: string) => {
     setSelectedIds((prev) => (prev.includes(id) ? [] : [id]));
@@ -95,7 +101,7 @@ export default function MarketScreen() {
     return (teamAssets ?? []).map((item: any) => {
       const symbol = normSymbol(getAssetSymbol(item));
       const livePrice = symbol ? liveBySymbol.get(symbol) : undefined;
-      const direction: PriceDirection = symbol ? priceDirectionMap[symbol] ?? 'flat' : 'flat';
+      const direction: PriceDirection = symbol ? (priceDirectionMap[symbol] ?? 'flat') : 'flat';
 
       return {
         ...item,
@@ -115,8 +121,8 @@ export default function MarketScreen() {
     const res = validateSingleSelection(selectedIds);
     if (!res.ok) {
       Alert.alert(
-        t('select_one_asset', 'Selecciona un activo'),
-        t('select_one_asset_desc', 'Debes seleccionar un activo para operar.')
+        t('selectOneAsset', 'Selecciona un activo'),
+        t('selectOneAssetDesc', 'Debes seleccionar un activo para operar.')
       );
       return false;
     }
@@ -128,8 +134,8 @@ export default function MarketScreen() {
     const res = validateAuth(userPublicId);
     if (!res.ok) {
       Alert.alert(
-        t('auth_required', 'Inicia sesión'),
-        t('auth_required_desc', 'Necesitas sesión activa para operar.')
+        t('authRequired', 'Inicia sesión'),
+        t('authRequiredDesc', 'Necesitas sesión activa para operar.')
       );
       return null;
     }
@@ -158,11 +164,11 @@ export default function MarketScreen() {
       refetch?.();
 
       Alert.alert(
-        t('sell_success', 'Venta realizada'),
-        t('sell_success_desc', 'Tu venta fue registrada correctamente.')
+        t('sellSuccess', 'Venta realizada'),
+        t('sellSuccessDesc', 'Tu venta fue registrada correctamente.')
       );
     } catch (e: any) {
-      Alert.alert(t('sell_error', 'Error al vender'), e?.message ?? 'Error');
+      Alert.alert(t('sellError', 'Error al vender'), e?.message ?? 'Error');
     }
   }, [requireSelection, selectedAsset, ensureAuth, sell, teamId, refetch, t]);
 
@@ -188,11 +194,11 @@ export default function MarketScreen() {
       refetch?.();
 
       Alert.alert(
-        t('buy_success', 'Compra realizada'),
-        t('buy_success_desc', 'Tu compra fue registrada correctamente.')
+        t('buySuccess', 'Compra realizada'),
+        t('buySuccessDesc', 'Tu compra fue registrada correctamente.')
       );
     } catch (e: any) {
-      Alert.alert(t('buy_error', 'Error al comprar'), e?.message ?? 'Error');
+      Alert.alert(t('buyError', 'Error al comprar'), e?.message ?? 'Error');
     }
   }, [requireSelection, selectedAsset, ensureAuth, buy, teamId, refetch, t]);
 
@@ -202,8 +208,9 @@ export default function MarketScreen() {
     <CollapsibleHeaderLayout
       title={t('title')}
       onBack={() => navigation.goBack()}
-      rightAction={<MarketHeaderActions onSettingsPress={handleSettings} onPlayPress={handlePlay} />}
-    >
+      rightAction={
+        <MarketHeaderActions onSettingsPress={handleSettings} onPlayPress={handlePlay} />
+      }>
       {!isStreamReady ? (
         <View
           style={{
@@ -212,21 +219,20 @@ export default function MarketScreen() {
             alignItems: 'center',
             backgroundColor: colors.background,
             paddingVertical: 24,
-          }}
-        >
+          }}>
           <ActivityIndicator size="large" color={colors.primary} />
           <Text className="mt-3 text-secondaryText">
-            {t('loading_market', 'Cargando mercado...')}
+            {t('loadingMarket', 'Cargando mercado...')}
           </Text>
         </View>
       ) : (
         <View className="gap-6">
-          <Text className="text-center text-secondaryText">{t('welcome_message')}</Text>
+          <Text className="text-center text-secondaryText">{t('welcomeMessage')}</Text>
 
           {streamError ? (
             <View className="px-4">
               <Text className="text-center text-red-500">
-                {t('stream_error', 'Error de conexión al mercado')}: {streamError.message}
+                {t('streamError', 'Error de conexión al mercado')}: {streamError.message}
               </Text>
             </View>
           ) : null}
@@ -234,7 +240,7 @@ export default function MarketScreen() {
           <View className="flex-row gap-3 p-4">
             <View className="flex-1">
               <Button
-                title={t('sell', 'Vender')}
+                title={t('sell')}
                 variant="secondary"
                 onPress={handleSell}
                 size="md"
@@ -243,7 +249,7 @@ export default function MarketScreen() {
             </View>
             <View className="flex-1">
               <Button
-                title={t('buy', 'Comprar')}
+                title={t('buy')}
                 variant="primary"
                 onPress={handleBuy}
                 size="md"
@@ -253,8 +259,8 @@ export default function MarketScreen() {
           </View>
 
           <View>
-            <Text className="text-lg font-bold text-primaryText px-4 mb-2">
-              {t('market-assets', 'Activos del mercado')}
+            <Text className="mb-2 px-4 text-lg font-bold text-primaryText">
+              {t('marketAssets')}
             </Text>
 
             <TeamAssetsList

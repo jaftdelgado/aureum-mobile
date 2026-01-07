@@ -1,8 +1,27 @@
 {
   "title": "Mercado",
-  "settings_title": "Configuración",
-  "settings_description": "Administra las preferencias de tu mercado.",
-  "simulator": {
+  "save": "Guardar",
+  "sell": "Vender",
+  "buy": "Comprar",
+  "loadingMarket": "Cargando mercado...",
+  "welcomeMessage": "Bienvenido al simulador de mercado.",
+  "streamError": "Error de conexión al mercado",
+  "marketAssets": "Activos del mercado",
+  "selectOneAsset": "Selecciona un activo",
+  "selectOneAssetDesc": "Debes seleccionar un activo para operar.",
+  "authRequired": "Inicia sesión",
+  "authRequiredDesc": "Necesitas sesión activa para operar.",
+  "sellSuccess": "Venta realizada",
+  "sellSuccessDesc": "Tu venta fue registrada correctamente.",
+  "sellError": "Error al vender",
+  "buySuccess": "Compra realizada",
+  "buySuccessDesc": "Tu compra fue registrada correctamente.",
+  "buyError": "Error al comprar",
+  "settingsSaved": "Configuración guardada",
+  "settingsSaveError": "Error al guardar configuración",
+  "settings": {
+    "title": "Configuración",
+    "description": "Administra las preferencias de tu mercado.",
     "sections": {
       "marketBasics": "Conceptos básicos del mercado",
       "marketBasicsDesc": "Configura los parámetros iniciales y fundamentales del simulador.",
@@ -13,17 +32,24 @@
       "marketEvents": "Eventos del mercado",
       "marketEventsDesc": "Controla la aparición e impacto de eventos inesperados dentro del simulador."
     },
-    "settings": {
-      "initialCash": "Capital inicial",
-      "currency": "Divisa del mercado",
-      "marketVolatility": "Volatilidad del mercado",
-      "marketLiquidity": "Liquidez del mercado",
-      "thickSpeed": "Velocidad de simulación",
-      "transactionFee": "Comisión por transacción",
-      "eventFrequency": "Frecuencia de eventos",
-      "dividendImpact": "Impacto de dividendos",
-      "crashImpact": "Impacto de crash",
-      "allowShortSelling": "Permitir venta en corto"
+    "initialCash": "Capital inicial",
+    "currency": "Divisa del mercado",
+    "marketVolatility": "Volatilidad del mercado",
+    "marketLiquidity": "Liquidez del mercado",
+    "thickSpeed": "Velocidad de simulación",
+    "transactionFee": "Comisión por transacción",
+    "eventFrequency": "Frecuencia de eventos",
+    "dividendImpact": "Impacto de dividendos",
+    "crashImpact": "Impacto de crash",
+    "allowShortSelling": "Permitir venta en corto",
+    "options": {
+      "usd": "USD - Dólar Estadounidense",
+      "eur": "EUR - Euro",
+      "mxn": "MXN - Peso Mexicano",
+      "low": "Baja",
+      "medium": "Media",
+      "high": "Alta",
+      "disabled": "Deshabilitado"
     }
   }
 }
