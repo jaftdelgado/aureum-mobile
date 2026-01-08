@@ -40,7 +40,7 @@ export const PortfolioPnLChart: React.FC<Props> = ({ data }) => {
       const prevItem = prevDataRef.current.find(p => p.assetId === item.assetId);
       if (prevItem && prevItem.currentValue !== item.currentValue) {
         const isUp = item.currentValue > prevItem.currentValue;
-        newPulseColors[item.assetSymbol] = isUp ? '#4ade80' : '#f87171'; // Colores más brillantes (brillo)
+        newPulseColors[item.assetSymbol] = isUp ? '#4ade80' : '#f87171'; 
         hasChanges = true;
       }
     });

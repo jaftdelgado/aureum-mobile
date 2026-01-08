@@ -5,9 +5,8 @@ import { getLessonsUseCase } from "@app/di";
 export const useLessons = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null); // 1. Estado para errores
+  const [error, setError] = useState<string | null>(null); 
 
-  // 2. Envolvemos la lógica en useCallback para poder exportarla como 'refetch'
   const loadLessons = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -29,7 +28,7 @@ export const useLessons = () => {
   return { 
     lessons, 
     isLoading, 
-    error,      // Útil si quieres mostrar una alerta visual
-    refetch: loadLessons // 3. Crítico para el botón "Reintentar"
+    error,      
+    refetch: loadLessons 
   };
 };
