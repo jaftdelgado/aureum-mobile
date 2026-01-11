@@ -20,19 +20,19 @@ export const BasicsSection = ({ config, onOpenSelector }: Props) => {
 
     return (
         <ListContainer
-            title={t('market:settings.sections.marketBasics')}
-            description={t('market:settings.sections.marketBasicsDesc')}
+            title={t('market:simulator.settings.sections.marketBasics')}
+            description={t('market:simulator.settings.sections.marketBasicsDesc')}
         >
             <ListOption
-                text={t('market:settings.initialCash')}
+                text={t('market:simulator.settings.initialCash')}
                 rightText={config.initialCash.toLocaleString()}
                 onPress={() => { }}
             />
             <ListOption
-                text={t('market:settings.currency')}
+                text={t('market:simulator.settings.currency')}
                 rightText={config.currency}
                 onPress={() =>
-                    onOpenSelector('currency', t('market:settings.currency'), getCurrencyOptions)
+                    onOpenSelector('currency', t('market:simulator.settings.currency'), getCurrencyOptions)
                 }
             />
         </ListContainer>

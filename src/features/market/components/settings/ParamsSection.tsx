@@ -20,28 +20,28 @@ export const ParamsSection = ({ config, onOpenSelector }: Props) => {
 
     return (
         <ListContainer
-            title={t('market:settings.sections.marketParams')}
-            description={t('market:settings.sections.marketParamsDesc')}
+            title={t('market:simulator.settings.sections.marketParams')}
+            description={t('market:simulator.settings.sections.marketParamsDesc')}
         >
             <ListOption
-                text={t('market:settings.marketVolatility')}
-                rightText={t(`market:settings.options.${config.marketVolatility.toLowerCase()}`)}
+                text={t('market:simulator.settings.marketVolatility')}
+                rightText={t(`market:simulator.settings.options.${config.marketVolatility.toLowerCase()}`)}
                 onPress={() =>
-                    onOpenSelector('marketVolatility', t('market:settings.marketVolatility'), getSimpleOptions)
+                    onOpenSelector('marketVolatility', t('market:simulator.settings.marketVolatility'), getSimpleOptions)
                 }
             />
             <ListOption
-                text={t('market:settings.marketLiquidity')}
-                rightText={t(`market:settings.options.${config.marketLiquidity.toLowerCase()}`)}
+                text={t('market:simulator.settings.marketLiquidity')}
+                rightText={t(`market:simulator.settings.options.${config.marketLiquidity.toLowerCase()}`)}
                 onPress={() =>
-                    onOpenSelector('marketLiquidity', t('market:settings.marketLiquidity'), getSimpleOptions)
+                    onOpenSelector('marketLiquidity', t('market:simulator.settings.marketLiquidity'), getSimpleOptions)
                 }
             />
             <ListOption
-                text={t('market:settings.thickSpeed')}
-                rightText={t(`market:settings.options.${config.thickSpeed.toLowerCase()}`)}
+                text={t('market:simulator.settings.thickSpeed')}
+                rightText={t(`market:simulator.settings.options.${config.thickSpeed.toLowerCase()}`)}
                 onPress={() =>
-                    onOpenSelector('thickSpeed', t('market:settings.thickSpeed'), getThickSpeedOptions)
+                    onOpenSelector('thickSpeed', t('market:simulator.settings.thickSpeed'), getThickSpeedOptions)
                 }
             />
         </ListContainer>

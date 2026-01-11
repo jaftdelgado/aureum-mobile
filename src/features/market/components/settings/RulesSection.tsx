@@ -21,18 +21,18 @@ export const RulesSection = ({ config, onOpenSelector, onToggleShortSelling }: P
 
     return (
         <ListContainer
-            title={t('market:settings.sections.tradingRules')}
-            description={t('market:settings.sections.tradingRulesDesc')}
+            title={t('market:simulator.settings.sections.tradingRules')}
+            description={t('market:simulator.settings.sections.tradingRulesDesc')}
         >
             <ListOption
-                text={t('market:settings.transactionFee')}
-                rightText={t(`market:settings.options.${config.transactionFee.toLowerCase()}`)}
+                text={t('market:simulator.settings.transactionFee')}
+                rightText={t(`market:simulator.settings.options.${config.transactionFee.toLowerCase()}`)}
                 onPress={() =>
-                    onOpenSelector('transactionFee', t('market:settings.transactionFee'), getSimpleOptions)
+                    onOpenSelector('transactionFee', t('market:simulator.settings.transactionFee'), getSimpleOptions)
                 }
             />
             <ListOption
-                text={t('market:settings.allowShortSelling')}
+                text={t('market:simulator.settings.allowShortSelling')}
                 showSwitch
                 switchValue={config.allowShortSelling}
                 onSwitchChange={onToggleShortSelling}

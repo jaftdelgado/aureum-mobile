@@ -20,28 +20,28 @@ export const EventsSection = ({ config, onOpenSelector }: Props) => {
 
     return (
         <ListContainer
-            title={t('market:settings.sections.marketEvents')}
-            description={t('market:settings.sections.marketEventsDesc')}
+            title={t('market:simulator.settings.sections.marketEvents')}
+            description={t('market:simulator.settings.sections.marketEventsDesc')}
         >
             <ListOption
-                text={t('market:settings.eventFrequency')}
-                rightText={t(`market:settings.options.${config.eventFrequency.toLowerCase()}`)}
+                text={t('market:simulator.settings.eventFrequency')}
+                rightText={t(`market:simulator.settings.options.${config.eventFrequency.toLowerCase()}`)}
                 onPress={() =>
-                    onOpenSelector('eventFrequency', t('market:settings.eventFrequency'), getSimpleOptions)
+                    onOpenSelector('eventFrequency', t('market:simulator.settings.eventFrequency'), getSimpleOptions)
                 }
             />
             <ListOption
-                text={t('market:settings.dividendImpact')}
-                rightText={t(`market:settings.options.${config.dividendImpact.toLowerCase()}`)}
+                text={t('market:simulator.settings.dividendImpact')}
+                rightText={t(`market:simulator.settings.options.${config.dividendImpact.toLowerCase()}`)}
                 onPress={() =>
-                    onOpenSelector('dividendImpact', t('market:settings.dividendImpact'), getSimpleOptions)
+                    onOpenSelector('dividendImpact', t('market:simulator.settings.dividendImpact'), getSimpleOptions)
                 }
             />
             <ListOption
-                text={t('market:settings.crashImpact')}
-                rightText={t(`market:settings.options.${config.crashImpact.toLowerCase()}`)}
+                text={t('market:simulator.settings.crashImpact')}
+                rightText={t(`market:simulator.settings.options.${config.crashImpact.toLowerCase()}`)}
                 onPress={() =>
-                    onOpenSelector('crashImpact', t('market:settings.crashImpact'), getSimpleOptions)
+                    onOpenSelector('crashImpact', t('market:simulator.settings.crashImpact'), getSimpleOptions)
                 }
             />
         </ListContainer>

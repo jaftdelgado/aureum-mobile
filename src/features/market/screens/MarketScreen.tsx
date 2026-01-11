@@ -34,8 +34,10 @@ export default function MarketScreen() {
     onSellPress,
   } = useMarketPresenter(teamId);
 
-  const handleSettings = () => {};
-  const handlePlay = () => {};
+  const handleSettings = () => {
+    (navigation as any).navigate("MarketSettings", { teamId });
+  };
+  const handlePlay = () => { };
 
   return (
     <CollapsibleHeaderLayout

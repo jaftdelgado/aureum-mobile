@@ -2,6 +2,9 @@
   "title": "Mercado",
   "settings_title": "Configuración",
   "settings_description": "Administra las preferencias de tu mercado.",
+  "settingsSaved": "Configuración guardada correctamente.",
+  "settingsSaveError": "No se pudo guardar la configuración.",
+  "success": "Éxito",
   "welcome_message": "Selecciona un activo para ver su precio en tiempo real y operar.",
   "labels": {
     "marketAssets": "Activos del mercado"
@@ -35,6 +38,7 @@
     "unknown": "Ocurrió un error."
   },
   "common": {
+    "error": "Error",
     "low": "Baja",
     "medium": "Media",
     "high": "Alta",
@@ -59,6 +63,18 @@
       "marketEventsDesc": "Controla la aparición e impacto de eventos inesperados dentro del simulador."
     },
     "settings": {
+      "title": "Configuración",
+      "description": "Administra las preferencias de tu mercado.",
+      "sections": {
+        "marketBasics": "Conceptos básicos del mercado",
+        "marketBasicsDesc": "Configura los parámetros iniciales y fundamentales del simulador.",
+        "marketParams": "Parámetros del mercado",
+        "marketParamsDesc": "Ajusta el comportamiento general del mercado y su dinámica principal.",
+        "tradingRules": "Reglas de operación",
+        "tradingRulesDesc": "Define los límites y condiciones bajo los cuales los participantes podrán operar.",
+        "marketEvents": "Eventos del mercado",
+        "marketEventsDesc": "Controla la aparición e impacto de eventos inesperados dentro del simulador."
+      },
       "initialCash": "Capital inicial",
       "currency": "Divisa del mercado",
       "marketVolatility": "Volatilidad del mercado",
@@ -68,7 +84,16 @@
       "eventFrequency": "Frecuencia de eventos",
       "dividendImpact": "Impacto de dividendos",
       "crashImpact": "Impacto de crash",
-      "allowShortSelling": "Permitir venta en corto"
+      "allowShortSelling": "Permitir venta en corto",
+      "options": {
+        "usd": "USD - Dólar Estadounidense",
+        "eur": "EUR - Euro",
+        "mxn": "MXN - Peso Mexicano",
+        "low": "Baja",
+        "medium": "Media",
+        "high": "Alta",
+        "disabled": "Deshabilitado"
+      }
     },
     "alerts": {
       "buyErrorTitle": "Error al comprar",
