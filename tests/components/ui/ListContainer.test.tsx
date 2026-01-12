@@ -32,17 +32,16 @@ describe('ListContainer Component', () => {
   });
 
   it('should render children and apply container styles', () => {
-    const { toJSON } = render(
-      <ListContainer>
+    render(
+      <ListContainer testID="inner-card">
         <Text>Regular Child</Text>
       </ListContainer>
     );
 
     expect(screen.getByText('Regular Child')).toBeTruthy();
 
-    const tree = toJSON();
-    // @ts-ignore
-    const style = tree.props.style;
+    const container = screen.getByTestId('inner-card');
+    const style = container.props.style;
     const flattenedStyle = Array.isArray(style) ? Object.assign({}, ...style) : style;
 
     expect(flattenedStyle).toEqual(
@@ -65,11 +64,8 @@ describe('ListContainer Component', () => {
     const calls = (ListOption as jest.Mock).mock.calls;
 
     expect(calls).toHaveLength(3);
-
     expect(calls[0][0].isLast).toBe(false);
-
     expect(calls[1][0].isLast).toBe(false);
-
     expect(calls[2][0].isLast).toBe(true);
   });
 

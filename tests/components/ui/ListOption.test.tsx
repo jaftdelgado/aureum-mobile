@@ -5,6 +5,16 @@ import { ListOption } from '@core/ui/ListOption';
 import { IconContainer } from '@core/ui/IconContainer';
 import { useThemeColor } from '@core/design/useThemeColor';
 
+jest.mock('@app/providers/ThemeProvider', () => ({
+  useTheme: jest.fn(() => ({
+    theme: {
+      border: '#E5E5EA',
+      success: '#34C759',
+      primaryText: '#000000',
+    },
+  })),
+}));
+
 jest.mock('@core/design/useThemeColor', () => ({
   useThemeColor: jest.fn(),
 }));

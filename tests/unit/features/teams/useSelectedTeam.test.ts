@@ -143,7 +143,7 @@ describe('useSelectedTeam Hook', () => {
       act(() => { result.current.handleAssets(); });
       
       expect(mockNavigate).toHaveBeenCalledWith('AssetsRoot', {
-        screen: 'Assets',
+        screen: 'TeamAssets',
         params: { teamId: 'team-123' }
       });
     });
@@ -161,7 +161,7 @@ describe('useSelectedTeam Hook', () => {
     it('should navigate to Market', () => {
       const { result } = renderHook(() => useSelectedTeam());
       act(() => { result.current.handleMarket(); });
-      expect(mockNavigate).toHaveBeenCalledWith('MarketRoot');
+      expect(mockNavigate).toHaveBeenCalledWith('MarketRoot', { teamId: 'team-123' });
     });
 
     it('should navigate to Transactions', () => {
@@ -179,7 +179,8 @@ describe('useSelectedTeam Hook', () => {
     it('handleOverview should log to console', () => {
       const { result } = renderHook(() => useSelectedTeam());
       act(() => { result.current.handleOverview(); });
-      expect(consoleLogSpy).toHaveBeenCalledWith('Overview for:', 'team-123');
+
+      expect(consoleLogSpy).toHaveBeenCalledWith('Navegando a Portfolio con ID:', 'team-123');
     });
 
     it('handleSettings should log to console', () => {
