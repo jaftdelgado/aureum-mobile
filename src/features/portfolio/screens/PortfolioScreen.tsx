@@ -25,7 +25,7 @@ export const PortfolioScreen = () => {
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-background">
-        <ActivityIndicator size="large" color="#FFD700" />
+        <ActivityIndicator size="large" color="#FFD700" testID="portfolio-loading-indicator" />
       </View>
     );
   }

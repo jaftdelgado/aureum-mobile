@@ -69,7 +69,7 @@ export default function LessonsScreen() {
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-background">
-        <ActivityIndicator size="large" color="#D4AF37" />
+        <ActivityIndicator size="large" color="#D4AF37" testID="lessons-loading-indicator"/>
       </View>
     );
   }
