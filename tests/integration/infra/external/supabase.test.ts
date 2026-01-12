@@ -1,7 +1,3 @@
-const mockGetItemAsync = jest.fn();
-const mockSetItemAsync = jest.fn();
-const mockDeleteItemAsync = jest.fn();
-
 const mockStartAutoRefresh = jest.fn();
 const mockStopAutoRefresh = jest.fn();
 
@@ -16,12 +12,6 @@ const mockCreateClientFn = jest.fn(() => ({
 const mockAddEventListener = jest.fn();
 
 jest.mock('react-native-url-polyfill/auto', () => {});
-
-jest.mock('expo-secure-store', () => ({
-  getItemAsync: mockGetItemAsync,
-  setItemAsync: mockSetItemAsync,
-  deleteItemAsync: mockDeleteItemAsync,
-}));
 
 jest.mock('@supabase/supabase-js', () => ({
   createClient: mockCreateClientFn,
@@ -38,7 +28,7 @@ describe('Supabase Client Configuration (Integration)', () => {
   const OLD_ENV = process.env;
 
   beforeEach(() => {
-    jest.resetModules();
+    jest.resetModules(); 
     jest.clearAllMocks(); 
 
     process.env = {
@@ -52,7 +42,9 @@ describe('Supabase Client Configuration (Integration)', () => {
     process.env = OLD_ENV;
   });
 
-  it('should initialize Supabase client with environment variables and SecureStore adapter', () => {
+  it('should initialize Supabase client with environment variables and AsyncStorage', () => {
+    const AsyncStorage = require('@react-native-async-storage/async-storage');
+    
     require('@infra/external/supabase');
 
     expect(mockCreateClientFn).toHaveBeenCalledTimes(1);
@@ -61,29 +53,25 @@ describe('Supabase Client Configuration (Integration)', () => {
       'test-key',
       expect.objectContaining({
         auth: expect.objectContaining({
-          storage: expect.any(Object),
+          storage: AsyncStorage, 
           autoRefreshToken: true,
           persistSession: true,
+          detectSessionInUrl: false,
         }),
       })
     );
   });
 
-  it('should use ExpoSecureStore for storage operations', async () => {
+  it('should pass AsyncStorage as the storage adapter', () => {
+    const AsyncStorage = require('@react-native-async-storage/async-storage');
+    
     require('@infra/external/supabase');
 
     const calls = mockCreateClientFn.mock.calls[0] as any[];
     const options = calls[2];
     const storageAdapter = options.auth.storage;
 
-    await storageAdapter.getItem('my-key');
-    expect(mockGetItemAsync).toHaveBeenCalledWith('my-key');
-
-    await storageAdapter.setItem('my-key', 'my-val');
-    expect(mockSetItemAsync).toHaveBeenCalledWith('my-key', 'my-val');
-
-    await storageAdapter.removeItem('my-key');
-    expect(mockDeleteItemAsync).toHaveBeenCalledWith('my-key');
+    expect(storageAdapter).toBe(AsyncStorage);
   });
 
   it('should handle AppState changes to manage auto-refresh', () => {

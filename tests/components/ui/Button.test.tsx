@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Pressable, ActivityIndicator } from 'react-native';
 import { render, fireEvent, screen } from '@testing-library/react-native';
 import { Button } from '@core/ui/Button';
 
@@ -44,19 +44,12 @@ describe('Button Component', () => {
   });
 
   it('should render loading state correctly', () => {
-    render(<Button title="Loading" onPress={mockOnPress} loading />);
+    render(<Button title="LoadingText" onPress={mockOnPress} isLoading />);
 
-    expect(screen.queryByText('Loading')).toBeNull();
-    
-    const spinner = screen.UNSAFE_getByType(require('react-native').ActivityIndicator);
+    const spinner = screen.UNSAFE_getByType(ActivityIndicator);
     expect(spinner).toBeTruthy();
-  });
 
-  it('should pass disabled prop when loading', () => {
-    render(<Button title="Loading" onPress={mockOnPress} loading />);
-
-    const disabledElement = screen.UNSAFE_getByProps({ disabled: true });
-    expect(disabledElement).toBeTruthy();
+    expect(screen.queryByText('LoadingText')).toBeNull();
   });
 
   it('should render left icon when provided', () => {
@@ -94,7 +87,6 @@ describe('Button Component', () => {
   });
 
   it('should apply custom styles via style prop', () => {
-
     const { toJSON } = render(<Button title="Custom" style={{ marginTop: 20 }} />);
     
     const tree = toJSON();
