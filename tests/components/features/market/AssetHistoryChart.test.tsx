@@ -49,9 +49,7 @@ describe('AssetHistoryChart Component', () => {
     render(<AssetHistoryChart asset={asset as any} />);
 
     const props = mockLineChartProps[mockLineChartProps.length - 1];
-    expect(props.data).toEqual(
-      expect.arrayContaining([expect.objectContaining({ value: 123 })])
-    );
+    expect(props.data).toEqual(expect.arrayContaining([expect.objectContaining({ value: 123 })]));
   });
 
   it('should duplicate point when history has only 1 valid item', () => {

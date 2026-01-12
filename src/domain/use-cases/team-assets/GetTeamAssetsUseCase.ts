@@ -1,4 +1,3 @@
-// src/domain/use-cases/team-assets/GetTeamAssets.ts
 import type { TeamAssetRepository } from "@domain/repositories/TeamAssetRepository";
 import type { TeamAsset } from "@domain/entities/TeamAsset";
 
